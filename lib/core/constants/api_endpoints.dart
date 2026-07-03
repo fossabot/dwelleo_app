@@ -34,6 +34,11 @@ abstract final class ApiEndpoints {
   static const String subscriptions = '$_base/subscriptions';
 
   // ---- Market insights -----------------------------------------------------
+  // CAPTURED from live site traffic (2026-07-02): both take
+  //   ?unit_type_id={1|2}&heatmap=price&transaction_type={buy|rent}
+  // and /districts additionally takes &city_id={id}.
+  // buy → filtered_stats{price_of_meter,median}; rent → {monthly_price,
+  // annual_price,median}. Envelope: {success, data:[...]}.
   static const String marketCities = '$_base/market/cities';
   static const String marketDistricts = '$_base/market/districts';
 
@@ -141,6 +146,10 @@ abstract final class ApiEndpoints {
 abstract final class PropertyFilters {
   static const String listingType =
       'filter[listing_type]'; // for-sale | for-rent
+
+  /// On /developers: `broker` returns the brokers list (the website's
+  /// "Top Real Estate Brokers" tab). CAPTURED live 2026-07-02.
+  static const String userType = 'filter[user_type]';
   static const String propertyType = 'filter[property_type]';
   static const String propertyTypes = 'filter[property_types]';
   static const String unitType = 'filter[unit_type]';

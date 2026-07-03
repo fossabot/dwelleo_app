@@ -20,6 +20,20 @@ import '../../features/auth/domain/usecases/verify_otp.dart';
 import '../../features/auth/domain/usecases/forgot_password_usecases.dart';
 import '../../features/auth/presentation/cubit/auth_cubit.dart';
 import '../../features/auth/presentation/cubit/forgot_password_cubit.dart';
+import '../../features/home/data/datasources/home_remote_data_source.dart';
+import '../../features/home/data/repositories/home_repository_impl.dart';
+import '../../features/home/domain/repositories/home_repository.dart';
+import '../../features/home/domain/usecases/get_city_market_stats.dart';
+import '../../features/home/domain/usecases/get_featured_brokers.dart';
+import '../../features/home/domain/usecases/get_featured_developers.dart';
+import '../../features/home/domain/usecases/get_market_districts.dart';
+import '../../features/home/domain/usecases/get_projects.dart';
+import '../../features/home/presentation/cubit/explore_cubit.dart';
+import '../../features/home/presentation/cubit/home_cubit.dart';
+import '../../features/home/presentation/cubit/market_map_cubit.dart';
+import '../../features/home/presentation/cubit/market_stats_cubit.dart';
+import '../../features/home/presentation/cubit/search_box_cubit.dart';
+import '../storage/recent_searches_store.dart';
 import '../../features/properties/data/datasources/property_remote_data_source.dart';
 import '../../features/properties/data/repositories/property_repository_impl.dart';
 import '../../features/properties/domain/repositories/property_repository.dart';
@@ -114,4 +128,34 @@ Future<void> setupServiceLocator() async {
   sl.registerLazySingleton(() => GetPropertyDetail(sl<PropertyRepository>()));
   sl.registerFactory(() => PropertiesCubit(sl<GetProperties>()));
   sl.registerFactory(() => PropertyDetailCubit(sl<GetPropertyDetail>()));
+
+  // ── Feature: Home / Explore ───────────────────────────────────────────────
+  sl.registerLazySingleton<HomeRemoteDataSource>(
+    () => HomeRemoteDataSourceImpl(sl<Dio>()),
+  );
+  sl.registerLazySingleton<HomeRepository>(
+    () => HomeRepositoryImpl(sl<HomeRemoteDataSource>()),
+  );
+  sl.registerLazySingleton(() => GetProjects(sl<HomeRepository>()));
+  sl.registerLazySingleton(() => GetFeaturedDevelopers(sl<HomeRepository>()));
+  sl.registerLazySingleton(() => GetFeaturedBrokers(sl<HomeRepository>()));
+  sl.registerLazySingleton(() => GetCityMarketStats(sl<HomeRepository>()));
+  sl.registerLazySingleton(() => GetMarketDistricts(sl<HomeRepository>()));
+  sl.registerLazySingleton<RecentSearchesStore>(RecentSearchesStore.new);
+  sl.registerFactory(
+    () => HomeCubit(
+      sl<GetProperties>(),
+      sl<GetProjects>(),
+      sl<GetFeaturedDevelopers>(),
+      sl<GetFeaturedBrokers>(),
+    ),
+  );
+  sl.registerFactory(() => ExploreCubit(sl<GetProjects>()));
+  sl.registerFactory(() => MarketStatsCubit(sl<GetCityMarketStats>()));
+  sl.registerFactory(
+    () => MarketMapCubit(sl<GetCityMarketStats>(), sl<GetMarketDistricts>()),
+  );
+  sl.registerFactory(
+    () => SearchBoxCubit(sl<LookupService>(), sl<RecentSearchesStore>()),
+  );
 }
