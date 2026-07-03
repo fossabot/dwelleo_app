@@ -373,6 +373,480 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No results found'**
   String get noResults;
+
+  /// No description provided for @explore.
+  ///
+  /// In en, this message translates to:
+  /// **'Explore'**
+  String get explore;
+
+  /// No description provided for @aiSearchShort.
+  ///
+  /// In en, this message translates to:
+  /// **'AI Search'**
+  String get aiSearchShort;
+
+  /// No description provided for @all.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get all;
+
+  /// No description provided for @buy.
+  ///
+  /// In en, this message translates to:
+  /// **'Buy'**
+  String get buy;
+
+  /// No description provided for @rent.
+  ///
+  /// In en, this message translates to:
+  /// **'Rent'**
+  String get rent;
+
+  /// No description provided for @heroTitleLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Find What You Need'**
+  String get heroTitleLead;
+
+  /// No description provided for @heroTitleAccent.
+  ///
+  /// In en, this message translates to:
+  /// **'with Confidence'**
+  String get heroTitleAccent;
+
+  /// No description provided for @heroSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Whether searching, investing, or listing — Dwelleo\'s AI-driven insights help you decide fast, clear, and simple.'**
+  String get heroSubtitle;
+
+  /// No description provided for @searchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'City, area or project'**
+  String get searchHint;
+
+  /// No description provided for @tryAiSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Try AI Search'**
+  String get tryAiSearch;
+
+  /// No description provided for @quickPriceStats.
+  ///
+  /// In en, this message translates to:
+  /// **'Price Statistics'**
+  String get quickPriceStats;
+
+  /// No description provided for @quickApartmentsRiyadh.
+  ///
+  /// In en, this message translates to:
+  /// **'Apartments in Riyadh'**
+  String get quickApartmentsRiyadh;
+
+  /// No description provided for @quickVillasJeddah.
+  ///
+  /// In en, this message translates to:
+  /// **'Villas in Jeddah'**
+  String get quickVillasJeddah;
+
+  /// No description provided for @quickOffPlanProjects.
+  ///
+  /// In en, this message translates to:
+  /// **'Off-Plan Projects'**
+  String get quickOffPlanProjects;
+
+  /// No description provided for @newLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'NEW'**
+  String get newLabel;
+
+  /// No description provided for @aiBannerTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Meet the AI Sales Agent'**
+  String get aiBannerTitle;
+
+  /// No description provided for @aiBannerBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Answers every buyer instantly in Arabic and English — 24/7.'**
+  String get aiBannerBody;
+
+  /// No description provided for @excellentProperties.
+  ///
+  /// In en, this message translates to:
+  /// **'Some Excellent Properties'**
+  String get excellentProperties;
+
+  /// No description provided for @viewAll.
+  ///
+  /// In en, this message translates to:
+  /// **'View All'**
+  String get viewAll;
+
+  /// No description provided for @exploreProjectsLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Explore Projects by'**
+  String get exploreProjectsLead;
+
+  /// No description provided for @exploreProjectsAccent.
+  ///
+  /// In en, this message translates to:
+  /// **'Cities'**
+  String get exploreProjectsAccent;
+
+  /// No description provided for @exploreProjectsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Browse developments across prime locations, tailored to your lifestyle and investment goals.'**
+  String get exploreProjectsSubtitle;
+
+  /// No description provided for @startingFrom.
+  ///
+  /// In en, this message translates to:
+  /// **'Starting From'**
+  String get startingFrom;
+
+  /// No description provided for @cityIntelligenceLead.
+  ///
+  /// In en, this message translates to:
+  /// **'City'**
+  String get cityIntelligenceLead;
+
+  /// No description provided for @cityIntelligenceAccent.
+  ///
+  /// In en, this message translates to:
+  /// **'intelligence.'**
+  String get cityIntelligenceAccent;
+
+  /// No description provided for @cityIntelligenceSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Live average price per square meter across Saudi cities.'**
+  String get cityIntelligenceSubtitle;
+
+  /// No description provided for @apartment.
+  ///
+  /// In en, this message translates to:
+  /// **'Apartment'**
+  String get apartment;
+
+  /// No description provided for @villa.
+  ///
+  /// In en, this message translates to:
+  /// **'Villa'**
+  String get villa;
+
+  /// No description provided for @marketLeader.
+  ///
+  /// In en, this message translates to:
+  /// **'Market leader'**
+  String get marketLeader;
+
+  /// No description provided for @sarPerSqm.
+  ///
+  /// In en, this message translates to:
+  /// **'SAR / m²'**
+  String get sarPerSqm;
+
+  /// No description provided for @sortedByPriceDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Sorted by price · highest first'**
+  String get sortedByPriceDesc;
+
+  /// No description provided for @sourceDwelleoIndex.
+  ///
+  /// In en, this message translates to:
+  /// **'Source: Dwelleo Index'**
+  String get sourceDwelleoIndex;
+
+  /// No description provided for @featuredDevelopersLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Featured'**
+  String get featuredDevelopersLead;
+
+  /// No description provided for @featuredDevelopersAccent.
+  ///
+  /// In en, this message translates to:
+  /// **'Developers'**
+  String get featuredDevelopersAccent;
+
+  /// No description provided for @featuredDevelopersSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Meet the trusted partners shaping the future of real estate with Dwelleo.'**
+  String get featuredDevelopersSubtitle;
+
+  /// No description provided for @comingSoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Coming Soon'**
+  String get comingSoon;
+
+  /// No description provided for @aiSearchStubBody.
+  ///
+  /// In en, this message translates to:
+  /// **'AI-powered text and voice property search is on the way.'**
+  String get aiSearchStubBody;
+
+  /// No description provided for @profileStubBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Your account, listings and settings will live here.'**
+  String get profileStubBody;
+
+  /// No description provided for @savedEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No saved properties yet'**
+  String get savedEmptyTitle;
+
+  /// No description provided for @savedEmptyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap the heart on any property to keep it here.'**
+  String get savedEmptyBody;
+
+  /// No description provided for @browseProperties.
+  ///
+  /// In en, this message translates to:
+  /// **'Browse Properties'**
+  String get browseProperties;
+
+  /// No description provided for @propertiesForSale.
+  ///
+  /// In en, this message translates to:
+  /// **'Properties for Sale'**
+  String get propertiesForSale;
+
+  /// No description provided for @propertiesForRent.
+  ///
+  /// In en, this message translates to:
+  /// **'Properties for Rent'**
+  String get propertiesForRent;
+
+  /// No description provided for @badgeSale.
+  ///
+  /// In en, this message translates to:
+  /// **'Sale'**
+  String get badgeSale;
+
+  /// No description provided for @badgeRent.
+  ///
+  /// In en, this message translates to:
+  /// **'Rent'**
+  String get badgeRent;
+
+  /// No description provided for @beds.
+  ///
+  /// In en, this message translates to:
+  /// **'Beds'**
+  String get beds;
+
+  /// No description provided for @baths.
+  ///
+  /// In en, this message translates to:
+  /// **'Baths'**
+  String get baths;
+
+  /// No description provided for @subscriptions.
+  ///
+  /// In en, this message translates to:
+  /// **'Subscriptions'**
+  String get subscriptions;
+
+  /// No description provided for @subscriptionsStubBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Plans and pricing will appear here as soon as they go live.'**
+  String get subscriptionsStubBody;
+
+  /// No description provided for @aiSalesAgent.
+  ///
+  /// In en, this message translates to:
+  /// **'AI Sales Agent'**
+  String get aiSalesAgent;
+
+  /// No description provided for @commercial.
+  ///
+  /// In en, this message translates to:
+  /// **'Commercial'**
+  String get commercial;
+
+  /// No description provided for @propertyTypeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Property Type'**
+  String get propertyTypeLabel;
+
+  /// No description provided for @listingLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Listing'**
+  String get listingLabel;
+
+  /// No description provided for @latestSearches.
+  ///
+  /// In en, this message translates to:
+  /// **'Latest searches'**
+  String get latestSearches;
+
+  /// No description provided for @marketDataTag.
+  ///
+  /// In en, this message translates to:
+  /// **'Market Data'**
+  String get marketDataTag;
+
+  /// No description provided for @cityIntelligenceSubtitleCount.
+  ///
+  /// In en, this message translates to:
+  /// **'Live average price per square meter across {count} Saudi cities.'**
+  String cityIntelligenceSubtitleCount(String count);
+
+  /// No description provided for @avgPriceTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Average price · {type} {listing}'**
+  String avgPriceTitle(String type, String listing);
+
+  /// No description provided for @toBuy.
+  ///
+  /// In en, this message translates to:
+  /// **'to buy'**
+  String get toBuy;
+
+  /// No description provided for @toRent.
+  ///
+  /// In en, this message translates to:
+  /// **'to rent'**
+  String get toRent;
+
+  /// No description provided for @sarPerMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'SAR / mo'**
+  String get sarPerMonth;
+
+  /// No description provided for @marketIntelligenceTag.
+  ///
+  /// In en, this message translates to:
+  /// **'Dwelleo Market Intelligence'**
+  String get marketIntelligenceTag;
+
+  /// No description provided for @interactiveMarketMap.
+  ///
+  /// In en, this message translates to:
+  /// **'Interactive Market map'**
+  String get interactiveMarketMap;
+
+  /// No description provided for @marketMapSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Understand trends, forecast opportunities, and make informed real-estate decisions with Dwelleo\'s data-driven insights.'**
+  String get marketMapSubtitle;
+
+  /// No description provided for @heatmapIntensity.
+  ///
+  /// In en, this message translates to:
+  /// **'Heatmap Intensity'**
+  String get heatmapIntensity;
+
+  /// No description provided for @lowLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Low'**
+  String get lowLabel;
+
+  /// No description provided for @highLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'High'**
+  String get highLabel;
+
+  /// No description provided for @hybrid.
+  ///
+  /// In en, this message translates to:
+  /// **'Hybrid'**
+  String get hybrid;
+
+  /// No description provided for @backToCities.
+  ///
+  /// In en, this message translates to:
+  /// **'Cities'**
+  String get backToCities;
+
+  /// No description provided for @topDevelopers.
+  ///
+  /// In en, this message translates to:
+  /// **'Top Real Estate Developers'**
+  String get topDevelopers;
+
+  /// No description provided for @topBrokers.
+  ///
+  /// In en, this message translates to:
+  /// **'Top Real Estate Brokers'**
+  String get topBrokers;
+
+  /// No description provided for @featuredBrokersLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Featured'**
+  String get featuredBrokersLead;
+
+  /// No description provided for @featuredBrokersAccent.
+  ///
+  /// In en, this message translates to:
+  /// **'Brokers'**
+  String get featuredBrokersAccent;
+
+  /// No description provided for @maidRooms.
+  ///
+  /// In en, this message translates to:
+  /// **'Maid Rooms'**
+  String get maidRooms;
+
+  /// No description provided for @driverRooms.
+  ///
+  /// In en, this message translates to:
+  /// **'Driver Rooms'**
+  String get driverRooms;
+
+  /// No description provided for @developerLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Developer'**
+  String get developerLabel;
+
+  /// No description provided for @expectedHandover.
+  ///
+  /// In en, this message translates to:
+  /// **'Expected Handover'**
+  String get expectedHandover;
+
+  /// No description provided for @viewProperties.
+  ///
+  /// In en, this message translates to:
+  /// **'View Properties'**
+  String get viewProperties;
+
+  /// No description provided for @viewPropertiesHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Opens this partner\'s live listings'**
+  String get viewPropertiesHint;
+
+  /// No description provided for @recenter.
+  ///
+  /// In en, this message translates to:
+  /// **'Recenter'**
+  String get recenter;
 }
 
 class _AppLocalizationsDelegate
