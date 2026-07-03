@@ -81,7 +81,7 @@ class _LoginScreenState extends State<LoginScreen> {
       child: BlocListener<AuthCubit, AuthState>(
         listener: (context, state) {
           if (state is AuthSuccess) {
-            context.go(RoutePaths.propertySearch);
+            context.go(RoutePaths.home);
           } else if (state is AuthFailure) {
             setState(() {
               _showError = true;
