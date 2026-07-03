@@ -75,14 +75,29 @@ class SearchBoxCubit extends Cubit<SearchBoxState> {
   void selectType(PropertyTypeOption? type) =>
       emit(state.copyWith(propertyType: () => type));
 
-  /// Case-insensitive match of the typed text against lookup cities
-  /// (EN or AR — /lookup names come localized). Null when no match.
+  /// Resolves the typed text to a lookup city id (EN or AR — /lookup names come
+  /// localized). Exact match wins; otherwise a word-prefix match for queries of
+  /// 2+ chars. Deliberately avoids substring/`q.contains(name)` matching, which
+  /// let empty or short city names ("Al…") match unrelated input and filter to
+  /// the wrong city. Null when no confident match.
   int? resolveCityId(String query) {
     final q = query.trim().toLowerCase();
     if (q.isEmpty) return null;
+
+    // 1) Exact (case-insensitive) match.
     for (final c in state.cities) {
-      final name = c.name.toLowerCase();
-      if (name == q || name.contains(q) || q.contains(name)) {
+      final name = c.name.trim().toLowerCase();
+      if (name.isNotEmpty && name == q) return int.tryParse(c.id);
+    }
+
+    // 2) Word-prefix match — the city name, or a word within it, starts with
+    //    the query. Only for 2+ chars so single letters can't match arbitrarily.
+    if (q.length < 2) return null;
+    for (final c in state.cities) {
+      final name = c.name.trim().toLowerCase();
+      if (name.isEmpty) continue;
+      final words = name.split(RegExp(r'\s+'));
+      if (name.startsWith(q) || words.any((w) => w.startsWith(q))) {
         return int.tryParse(c.id);
       }
     }

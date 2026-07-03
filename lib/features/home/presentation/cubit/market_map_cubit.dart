@@ -51,6 +51,14 @@ class MarketMapCubit extends Cubit<MarketMapState> {
 
   Future<void> load() => _fetchCities(state.query);
 
+  /// Pull-to-refresh: bypass caches and re-fetch the current view (cities, plus
+  /// the drilled-in city's districts if any) so numbers actually update.
+  Future<void> refresh() => Future.wait([
+    _fetchCities(state.query, force: true),
+    if (state.focusedCity != null)
+      _fetchDistricts(state.focusedCity!, state.query, force: true),
+  ]);
+
   Future<void> setUnitType(int unitTypeId) =>
       _applyQuery(state.query.copyWith(unitTypeId: unitTypeId));
 
@@ -80,9 +88,9 @@ class MarketMapCubit extends Cubit<MarketMapState> {
     );
   }
 
-  Future<void> _fetchCities(MarketQuery query) async {
+  Future<void> _fetchCities(MarketQuery query, {bool force = false}) async {
     final cached = _cityCache[query.key];
-    if (cached != null) {
+    if (cached != null && !force) {
       emit(state.copyWith(query: query, cities: SectionLoaded(cached)));
       return;
     }
@@ -98,9 +106,13 @@ class MarketMapCubit extends Cubit<MarketMapState> {
     );
   }
 
-  Future<void> _fetchDistricts(CityMarketStat city, MarketQuery query) async {
+  Future<void> _fetchDistricts(
+    CityMarketStat city,
+    MarketQuery query, {
+    bool force = false,
+  }) async {
     final cacheKey = '${city.cityId}-${query.key}';
-    final cached = _districtCache[cacheKey];
+    final cached = force ? null : _districtCache[cacheKey];
     emit(
       state.copyWith(
         query: query,

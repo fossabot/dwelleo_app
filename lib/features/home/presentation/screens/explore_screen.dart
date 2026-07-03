@@ -35,13 +35,24 @@ class _ExploreScreenState extends State<ExploreScreen> {
       final wanted = widget.initialCity?.trim().toLowerCase();
       final state = _cubit.state;
       if (wanted == null || wanted.isEmpty || state is! ExploreLoaded) return;
-      for (final city in state.cities) {
-        if (city.toLowerCase().contains(wanted) ||
-            wanted.contains(city.toLowerCase())) {
-          _cubit.selectCity(city);
+      // Exact-then-prefix match; avoids short/substring names pre-selecting the
+      // wrong chip (mirrors SearchBoxCubit.resolveCityId).
+      String? match;
+      for (final c in state.cities) {
+        if (c.toLowerCase() == wanted) {
+          match = c;
           break;
         }
       }
+      if (match == null && wanted.length >= 2) {
+        for (final c in state.cities) {
+          if (c.toLowerCase().startsWith(wanted)) {
+            match = c;
+            break;
+          }
+        }
+      }
+      if (match != null) _cubit.selectCity(match);
     });
   }
 

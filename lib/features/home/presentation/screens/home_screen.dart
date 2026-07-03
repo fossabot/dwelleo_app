@@ -77,8 +77,8 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> _refresh() {
     return Future.wait([
       _homeCubit.refresh(),
-      _tableCubit.load(),
-      _mapCubit.load(),
+      _tableCubit.refresh(),
+      _mapCubit.refresh(),
     ]);
   }
 

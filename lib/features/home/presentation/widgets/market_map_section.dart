@@ -151,8 +151,13 @@ class _MarketMapSectionState extends State<MarketMapSection> {
       );
       return;
     }
-    // Country view: frame ALL city bubbles (never lets the user stay lost
-    // after panning away — see also the Recenter chip).
+    // Country view: only re-frame once city data is actually loaded. Toggling
+    // filters emits a transient SectionLoading first; moving the camera then
+    // would jump to the country view and back (a visible double flicker), so
+    // we hold the current camera until the loaded emit arrives.
+    if (state.cities is! SectionLoaded<List<CityMarketStat>>) return;
+    // Frame ALL city bubbles (never lets the user stay lost after panning
+    // away — see also the Recenter chip).
     final points = switch (state.cities) {
       SectionLoaded<List<CityMarketStat>>(:final data) => [
         for (final c in data)

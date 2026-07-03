@@ -40,15 +40,19 @@ class MarketStatsCubit extends Cubit<MarketStatsState> {
 
   Future<void> load() => _fetch(state.query);
 
+  /// Pull-to-refresh: bypass the cache and re-fetch the current selection so
+  /// the RefreshIndicator actually delivers fresh numbers.
+  Future<void> refresh() => _fetch(state.query, force: true);
+
   Future<void> setUnitType(int unitTypeId) =>
       _fetch(state.query.copyWith(unitTypeId: unitTypeId));
 
   Future<void> setTransaction(MarketTransaction transaction) =>
       _fetch(state.query.copyWith(transaction: transaction));
 
-  Future<void> _fetch(MarketQuery query) async {
+  Future<void> _fetch(MarketQuery query, {bool force = false}) async {
     final cached = _cache[query.key];
-    if (cached != null) {
+    if (cached != null && !force) {
       emit(state.copyWith(query: query, stats: SectionLoaded(cached)));
       return;
     }
