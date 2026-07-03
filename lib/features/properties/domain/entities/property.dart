@@ -1,26 +1,15 @@
 import 'package:equatable/equatable.dart';
 
-/// A media object as returned by the API: `{id, path, path_thumbnail, mime_type}`.
-/// `path`/`thumbnail` are absolute S3 URLs.
-class MediaImage extends Equatable {
-  final int id;
-  final String path;
-  final String? thumbnail;
-  final String? mimeType;
+import '../../../../core/domain/entities/geo_point.dart';
+import '../../../../core/domain/entities/media_image.dart';
+import '../../../../core/domain/entities/named_ref.dart';
 
-  const MediaImage({
-    required this.id,
-    required this.path,
-    this.thumbnail,
-    this.mimeType,
-  });
-
-  /// Best URL for a small/list context, falling back to the full path.
-  String get displayThumb => thumbnail?.isNotEmpty == true ? thumbnail! : path;
-
-  @override
-  List<Object?> get props => [id, path, thumbnail, mimeType];
-}
+// Shared value objects (MediaImage, NamedRef, GeoPoint) moved to core/ when the
+// home feature started using them too. Re-exported so existing imports of this
+// file keep resolving them unchanged.
+export '../../../../core/domain/entities/geo_point.dart';
+export '../../../../core/domain/entities/media_image.dart';
+export '../../../../core/domain/entities/named_ref.dart';
 
 /// `listing_type`: `{key, label}` — key is stable (`for-sale`/`for-rent`),
 /// label is localized by `Accept-Language`.
@@ -35,18 +24,6 @@ class ListingType extends Equatable {
 
   @override
   List<Object?> get props => [key, label];
-}
-
-/// A localized reference object (property_type, region, city, area).
-/// `name`/`title` come pre-resolved for the requested locale.
-class NamedRef extends Equatable {
-  final int id;
-  final String name;
-
-  const NamedRef({required this.id, required this.name});
-
-  @override
-  List<Object?> get props => [id, name];
 }
 
 /// The listing owner (developer / broker / agent / individual_broker).
@@ -91,18 +68,6 @@ class PropertyTag extends Equatable {
 
   @override
   List<Object?> get props => [id, title, color];
-}
-
-class GeoPoint extends Equatable {
-  final double? lat;
-  final double? lng;
-
-  const GeoPoint({this.lat, this.lng});
-
-  bool get isValid => lat != null && lng != null;
-
-  @override
-  List<Object?> get props => [lat, lng];
 }
 
 class PropertyLocation extends Equatable {

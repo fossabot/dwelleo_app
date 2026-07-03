@@ -9,6 +9,7 @@ abstract final class AppConstants {
   static const String localeKey = 'locale';
   static const String themeModeKey = 'theme_mode';
   static const String onboardingDoneKey = 'onboarding_done';
+  static const String rememberMeKey = 'remember_me';
 
   // Network timeouts (ms). The dwelleo API can be slow on cold auth requests,
   // so the receive window is generous to avoid spurious timeouts.

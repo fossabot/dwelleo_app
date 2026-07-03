@@ -9,6 +9,8 @@ import 'app/app.dart';
 import 'core/config/app_config.dart';
 import 'core/di/service_locator.dart';
 import 'core/localization/locale_cubit.dart';
+import 'core/session/session_state.dart';
+import 'core/storage/secure_storage.dart';
 import 'core/theme/theme_cubit.dart';
 
 /// Single startup path shared by every flavor entry point
@@ -41,6 +43,20 @@ Future<void> bootstrap(Flavor flavor) async {
       await setupServiceLocator();
       await sl<LocaleCubit>().init();
       await sl<ThemeCubit>().init();
+
+      // Restore session for the router guard. If the last login didn't ask to
+      // be remembered, drop the persisted token so a cold start requires login.
+      final storage = sl<SecureStorage>();
+      final onboardingDone = await storage.isOnboardingDone();
+      final rememberMe = await storage.getRememberMe();
+      var token = await storage.getAccessToken();
+      if (token != null && !rememberMe) {
+        await storage.clearAuth();
+        token = null;
+      }
+      sl<SessionState>()
+        ..onboardingDone = onboardingDone
+        ..isLoggedIn = token != null;
 
       runApp(const DwelleoApp());
     },

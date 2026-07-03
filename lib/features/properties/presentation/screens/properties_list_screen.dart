@@ -5,17 +5,33 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/di/service_locator.dart';
 import '../../../../core/routing/route_paths.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../domain/entities/property.dart';
 import '../../domain/entities/property_query.dart';
 import '../cubit/properties_cubit.dart';
 import '../cubit/properties_state.dart';
 import '../widgets/property_card.dart';
+import '../widgets/property_filters_sheet.dart';
 
 /// `for-sale` (Buy) or `for-rent` (Rent). Null = curated home set.
+/// [cityId]/[propertyTypeId]/[developerId] are the real API filter ids;
+/// [title] lets the caller pass a pre-localized heading
+/// (e.g. "Apartments in Riyadh" or a developer's name).
 class PropertiesListScreen extends StatefulWidget {
   final String? listingType;
+  final int? cityId;
+  final int? propertyTypeId;
+  final int? developerId;
+  final String? title;
 
-  const PropertiesListScreen({super.key, this.listingType});
+  const PropertiesListScreen({
+    super.key,
+    this.listingType,
+    this.cityId,
+    this.propertyTypeId,
+    this.developerId,
+    this.title,
+  });
 
   @override
   State<PropertiesListScreen> createState() => _PropertiesListScreenState();
@@ -27,11 +43,21 @@ class _PropertiesListScreenState extends State<PropertiesListScreen> {
   @override
   void initState() {
     super.initState();
+    final hasFilters =
+        widget.listingType != null ||
+        widget.cityId != null ||
+        widget.propertyTypeId != null ||
+        widget.developerId != null;
     _cubit = sl<PropertiesCubit>()
       ..load(
-        query: widget.listingType == null
+        query: !hasFilters
             ? null
-            : PropertyQuery(listingType: widget.listingType),
+            : PropertyQuery(
+                listingType: widget.listingType,
+                cityId: widget.cityId,
+                propertyTypeId: widget.propertyTypeId,
+                developerId: widget.developerId,
+              ),
       );
   }
 
@@ -45,25 +71,44 @@ class _PropertiesListScreenState extends State<PropertiesListScreen> {
   Widget build(BuildContext context) {
     return BlocProvider.value(
       value: _cubit,
-      child: _PropertiesView(listingType: widget.listingType),
+      child: _PropertiesView(
+        listingType: widget.listingType,
+        title: widget.title,
+      ),
     );
   }
 }
 
 class _PropertiesView extends StatelessWidget {
   final String? listingType;
-  const _PropertiesView({this.listingType});
+  final String? title;
+  const _PropertiesView({this.listingType, this.title});
 
-  String get _title => switch (listingType) {
-    'for-rent' => 'Properties for Rent',
-    'for-sale' => 'Properties for Sale',
-    _ => 'Properties',
-  };
+  String _titleOf(AppLocalizations l10n) =>
+      title ??
+      switch (listingType) {
+        'for-rent' => l10n.propertiesForRent,
+        'for-sale' => l10n.propertiesForSale,
+        _ => l10n.properties,
+      };
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(_title)),
+      appBar: AppBar(
+        title: Text(_titleOf(AppLocalizations.of(context))),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.tune),
+            onPressed: () async {
+              final cubit = context.read<PropertiesCubit>();
+              final base = cubit.query ?? const PropertyQuery();
+              final result = await showPropertyFiltersSheet(context, base);
+              if (result != null) cubit.load(query: result);
+            },
+          ),
+        ],
+      ),
       body: BlocBuilder<PropertiesCubit, PropertiesState>(
         builder: (context, state) {
           return switch (state) {

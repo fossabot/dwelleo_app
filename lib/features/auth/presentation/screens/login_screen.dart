@@ -81,7 +81,7 @@ class _LoginScreenState extends State<LoginScreen> {
       child: BlocListener<AuthCubit, AuthState>(
         listener: (context, state) {
           if (state is AuthSuccess) {
-            context.go(RoutePaths.propertySearch);
+            context.go(RoutePaths.home);
           } else if (state is AuthFailure) {
             setState(() {
               _showError = true;
@@ -213,6 +213,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   ? () => context.read<AuthCubit>().login(
                                       email: _email.text.trim(),
                                       password: _password.text,
+                                      rememberMe: _rememberMe,
                                     )
                                   : null,
                               child: loading

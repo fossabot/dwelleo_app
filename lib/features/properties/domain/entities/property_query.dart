@@ -15,6 +15,10 @@ class PropertyQuery extends Equatable {
   final int? minBathrooms;
   final num? minPrice;
   final num? maxPrice;
+
+  /// Built area in m² → real `filter[from_area]` / `filter[to_area]`.
+  final num? minArea;
+  final num? maxArea;
   final String? furnishingStatus;
   final bool? onlyFavorites;
 
@@ -33,6 +37,8 @@ class PropertyQuery extends Equatable {
     this.minBathrooms,
     this.minPrice,
     this.maxPrice,
+    this.minArea,
+    this.maxArea,
     this.furnishingStatus,
     this.onlyFavorites,
     this.sort = '-created_at',
@@ -50,6 +56,8 @@ class PropertyQuery extends Equatable {
     int? minBathrooms,
     num? minPrice,
     num? maxPrice,
+    num? minArea,
+    num? maxArea,
     String? furnishingStatus,
     bool? onlyFavorites,
     String? sort,
@@ -66,6 +74,8 @@ class PropertyQuery extends Equatable {
       minBathrooms: minBathrooms ?? this.minBathrooms,
       minPrice: minPrice ?? this.minPrice,
       maxPrice: maxPrice ?? this.maxPrice,
+      minArea: minArea ?? this.minArea,
+      maxArea: maxArea ?? this.maxArea,
       furnishingStatus: furnishingStatus ?? this.furnishingStatus,
       onlyFavorites: onlyFavorites ?? this.onlyFavorites,
       sort: sort ?? this.sort,
@@ -85,6 +95,8 @@ class PropertyQuery extends Equatable {
     minBathrooms,
     minPrice,
     maxPrice,
+    minArea,
+    maxArea,
     furnishingStatus,
     onlyFavorites,
     sort,

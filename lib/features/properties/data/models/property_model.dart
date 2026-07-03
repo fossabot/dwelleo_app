@@ -1,3 +1,5 @@
+import '../../../../core/data/models/shared_models.dart';
+import '../../../../core/utils/json_parse.dart';
 import '../../domain/entities/property.dart';
 
 /// Maps the verified real Dwelleo JSON (see docs/api/REAL_API_SPEC.md) into
@@ -58,18 +60,7 @@ abstract final class PropertyModel {
 
   // ── nested parsers ─────────────────────────────────────────────────────────
 
-  static MediaImage? _image(dynamic v) {
-    final m = _asMap(v);
-    if (m == null) return null;
-    final path = m['path']?.toString();
-    if (path == null || path.isEmpty) return null;
-    return MediaImage(
-      id: _toInt(m['id']) ?? 0,
-      path: path,
-      thumbnail: m['path_thumbnail']?.toString(),
-      mimeType: m['mime_type']?.toString(),
-    );
-  }
+  static MediaImage? _image(dynamic v) => MediaImageModel.fromJson(v);
 
   static List<MediaImage> _imageList(dynamic v) {
     if (v is! List) return const [];
@@ -84,14 +75,7 @@ abstract final class PropertyModel {
     return ListingType(key: key, label: (m['label'] ?? key).toString());
   }
 
-  static NamedRef? _namedRef(dynamic v) {
-    final m = _asMap(v);
-    if (m == null) return null;
-    final id = _toInt(m['id']);
-    final name = (m['name'] ?? m['title'] ?? '').toString();
-    if (id == null && name.isEmpty) return null;
-    return NamedRef(id: id ?? 0, name: name);
-  }
+  static NamedRef? _namedRef(dynamic v) => NamedRefModel.fromJson(v);
 
   static PropertyOwner? _owner(dynamic v) {
     final m = _asMap(v);
@@ -146,34 +130,11 @@ abstract final class PropertyModel {
         .toList(growable: false);
   }
 
-  // ── primitive coercion ──────────────────────────────────────────────────────
+  // ── primitive coercion (shared, see core/utils/json_parse.dart) ────────────
 
-  static Map<String, dynamic>? _asMap(dynamic v) =>
-      v is Map<String, dynamic> ? v : null;
-
-  static int? _toInt(dynamic v) {
-    if (v is int) return v;
-    if (v is num) return v.toInt();
-    if (v is String) return int.tryParse(v);
-    return null;
-  }
-
-  static num? _toNum(dynamic v) {
-    if (v is num) return v;
-    if (v is String) return num.tryParse(v.replaceAll(',', ''));
-    return null;
-  }
-
-  static double? _toDouble(dynamic v) {
-    if (v is num) return v.toDouble();
-    if (v is String) return double.tryParse(v);
-    return null;
-  }
-
-  static bool _toBool(dynamic v) {
-    if (v is bool) return v;
-    if (v is num) return v != 0;
-    if (v is String) return v == 'true' || v == '1';
-    return false;
-  }
+  static Map<String, dynamic>? _asMap(dynamic v) => JsonParse.asMap(v);
+  static int? _toInt(dynamic v) => JsonParse.toInt(v);
+  static num? _toNum(dynamic v) => JsonParse.toNum(v);
+  static double? _toDouble(dynamic v) => JsonParse.toDouble(v);
+  static bool _toBool(dynamic v) => JsonParse.toBool(v);
 }

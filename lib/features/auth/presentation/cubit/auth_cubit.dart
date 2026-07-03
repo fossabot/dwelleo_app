@@ -2,6 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/errors/api_result.dart';
 import '../../../../core/errors/failure.dart';
+import '../../../../core/session/session_state.dart';
 import '../../../../core/storage/secure_storage.dart';
 import '../../domain/entities/auth_session.dart';
 import '../../domain/usecases/login.dart';
@@ -18,6 +19,7 @@ class AuthCubit extends Cubit<AuthState> {
   final VerifyOtp _verifyOtp;
   final ResendOtp _resendOtp;
   final SecureStorage _storage;
+  final SessionState _session;
 
   AuthCubit(
     this._login,
@@ -25,15 +27,22 @@ class AuthCubit extends Cubit<AuthState> {
     this._verifyOtp,
     this._resendOtp,
     this._storage,
+    this._session,
   ) : super(const AuthIdle());
 
-  Future<void> login({required String email, required String password}) async {
+  Future<void> login({
+    required String email,
+    required String password,
+    bool rememberMe = false,
+  }) async {
     emit(const AuthLoading());
     final result = await _login(email: email, password: password);
     if (isClosed) return;
     await result.when(
       success: (session) async {
         await _persist(session);
+        await _storage.setRememberMe(rememberMe);
+        _session.isLoggedIn = true;
         emit(AuthSuccess(session));
       },
       error: (failure) async => emit(AuthFailure(_message(failure))),

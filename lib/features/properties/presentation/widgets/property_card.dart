@@ -4,7 +4,10 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../../core/constants/app_assets.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/utils/dwelleo_images.dart';
 import '../../../../core/utils/formatters.dart';
+import '../../../../core/widgets/arrow_badge.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../domain/entities/property.dart';
 
 /// Compact property card used in the list. Mirrors the dwelleo.sa listing card.
@@ -22,9 +25,12 @@ class PropertyCard extends StatelessWidget {
       child: InkWell(
         onTap: onTap,
         child: Column(
+          // Hug content so the card never stretches with dead space when a
+          // parent (e.g. Home's horizontal rail) gives it extra height.
+          mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _CardImage(property: property),
+            _CardImage(property: property, onArrowTap: onTap),
             Padding(
               padding: const EdgeInsets.fromLTRB(14, 12, 14, 14),
               child: Column(
@@ -102,7 +108,8 @@ class PropertyCard extends StatelessWidget {
 
 class _CardImage extends StatelessWidget {
   final Property property;
-  const _CardImage({required this.property});
+  final VoidCallback? onArrowTap;
+  const _CardImage({required this.property, this.onArrowTap});
 
   @override
   Widget build(BuildContext context) {
@@ -114,7 +121,11 @@ class _CardImage extends StatelessWidget {
         children: [
           if (url != null)
             CachedNetworkImage(
-              imageUrl: url,
+              // Bridge the API's raw S3 PNGs through dwelleo.sa's own image
+              // optimizer: resized + WebP/AVIF via the Accept header.
+              imageUrl: DwelleoImages.optimized(url, width: 828),
+              httpHeaders: DwelleoImages.headers,
+              memCacheWidth: 828,
               fit: BoxFit.cover,
               placeholder: (ctx, _) => const _ImageFallback(),
               errorWidget: (ctx, url, error) => const _ImageFallback(),
@@ -122,20 +133,31 @@ class _CardImage extends StatelessWidget {
           else
             const _ImageFallback(),
           if (property.isFeatured)
-            const Positioned(
+            PositionedDirectional(
               top: 10,
-              left: 10,
-              child: _Badge(label: 'Featured', color: AppColors.accent),
+              start: 10,
+              child: _Badge(
+                label: AppLocalizations.of(context).featured,
+                color: AppColors.accent,
+              ),
             ),
           if (property.listingType != null)
-            Positioned(
+            PositionedDirectional(
               top: 10,
-              right: 10,
+              end: 10,
               child: _Badge(
-                label: property.listingType!.isForRent ? 'Rent' : 'Sale',
+                label: property.listingType!.isForRent
+                    ? AppLocalizations.of(context).badgeRent
+                    : AppLocalizations.of(context).badgeSale,
                 color: AppColors.accentFor(Theme.of(context).brightness),
               ),
             ),
+          // The site's ↗ tap-affordance.
+          PositionedDirectional(
+            bottom: 10,
+            end: 10,
+            child: ArrowBadge(size: 32, onTap: onArrowTap),
+          ),
         ],
       ),
     );
@@ -193,6 +215,7 @@ class _SpecRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final color = Theme.of(context).colorScheme.onSurfaceVariant;
     return Wrap(
       spacing: 14,
@@ -201,13 +224,26 @@ class _SpecRow extends StatelessWidget {
         if (property.bedrooms != null)
           _Spec(
             svg: AppSvg.bed,
-            label: '${property.bedrooms} Beds',
+            label: '${property.bedrooms} ${l10n.beds}',
             color: color,
           ),
         if (property.bathrooms != null)
           _Spec(
             svg: AppSvg.bath,
-            label: '${property.bathrooms} Baths',
+            label: '${property.bathrooms} ${l10n.baths}',
+            color: color,
+          ),
+        // The website's cards also surface maid/driver rooms when present.
+        if (property.hasMaidRoom)
+          _Spec(
+            svg: AppSvg.bed,
+            label: '${property.maidRoom} ${l10n.maidRooms}',
+            color: color,
+          ),
+        if (property.hasDriverRoom)
+          _Spec(
+            svg: AppSvg.bed,
+            label: '${property.driverRoom} ${l10n.driverRooms}',
             color: color,
           ),
         if (property.areaSqm != null)
