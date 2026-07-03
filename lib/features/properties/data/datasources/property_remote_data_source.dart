@@ -54,6 +54,8 @@ class PropertyRemoteDataSourceImpl implements PropertyRemoteDataSource {
     put(PropertyFilters.bathrooms, q.minBathrooms);
     put(PropertyFilters.minPrice, q.minPrice);
     put(PropertyFilters.maxPrice, q.maxPrice);
+    put(PropertyFilters.fromArea, q.minArea);
+    put(PropertyFilters.toArea, q.maxArea);
     put(PropertyFilters.furnishingStatus, q.furnishingStatus);
     if (q.onlyFavorites == true) put(PropertyFilters.isFavorite, 1);
     return p;
