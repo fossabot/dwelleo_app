@@ -213,6 +213,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   ? () => context.read<AuthCubit>().login(
                                       email: _email.text.trim(),
                                       password: _password.text,
+                                      rememberMe: _rememberMe,
                                     )
                                   : null,
                               child: loading

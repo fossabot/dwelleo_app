@@ -57,6 +57,16 @@ class SecureStorage {
     return v == 'true';
   }
 
+  /// Whether the last login asked to be remembered. When false, [bootstrap]
+  /// clears the persisted token on the next cold start so login is required.
+  Future<void> setRememberMe(bool value) =>
+      _storage.write(key: AppConstants.rememberMeKey, value: value.toString());
+
+  Future<bool> getRememberMe() async {
+    final v = await _storage.read(key: AppConstants.rememberMeKey);
+    return v == 'true';
+  }
+
   Future<void> clearAuth() async {
     await _storage.delete(
       key: AppConstants.accessTokenKey,

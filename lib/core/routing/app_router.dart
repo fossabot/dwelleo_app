@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../di/service_locator.dart';
+import '../session/session_state.dart';
 import '../../app/app_shell.dart';
 import '../../features/ai_search/presentation/screens/ai_search_screen.dart';
 import '../../features/auth/presentation/screens/forgot_password_screen.dart';
@@ -25,9 +27,38 @@ class AppRouter {
   // NOTE: a "skip onboarding once completed + auth" redirect guard will be added
   // when the login/signup flow lands. It is intentionally omitted now so the
   // onboarding flow is always reachable while we build and verify it.
+  /// Auth routes (reachable only while logged out).
+  static const Set<String> _authRoutes = {
+    RoutePaths.login,
+    RoutePaths.forgotPassword,
+    RoutePaths.signupRole,
+    RoutePaths.signupForm,
+    RoutePaths.signupOtp,
+    RoutePaths.language,
+  };
+
   static final GoRouter router = GoRouter(
     initialLocation: RoutePaths.onboarding,
     debugLogDiagnostics: true,
+    // Synchronous guard over the in-memory [SessionState] (populated at boot):
+    //   not onboarded        → force onboarding
+    //   onboarded, logged out → auth routes only (else → login)
+    //   logged in            → onboarding/auth routes bounce to home
+    redirect: (context, state) {
+      final session = sl<SessionState>();
+      final loc = state.matchedLocation;
+      final atOnboarding = loc == RoutePaths.onboarding;
+
+      if (!session.onboardingDone) {
+        return atOnboarding ? null : RoutePaths.onboarding;
+      }
+      if (!session.isLoggedIn) {
+        return _authRoutes.contains(loc) ? null : RoutePaths.login;
+      }
+      return (atOnboarding || _authRoutes.contains(loc))
+          ? RoutePaths.home
+          : null;
+    },
     routes: [
       GoRoute(
         path: RoutePaths.onboarding,

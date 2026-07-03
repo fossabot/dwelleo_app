@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/constants/app_assets.dart';
 import '../../../../core/di/service_locator.dart';
+import '../../../../core/session/session_state.dart';
 import '../../../../core/localization/locale_cubit.dart';
 import '../../../../core/routing/route_paths.dart';
 import '../../../../core/storage/secure_storage.dart';
@@ -49,6 +50,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
 
   Future<void> _finish() async {
     await sl<SecureStorage>().setOnboardingDone();
+    sl<SessionState>().onboardingDone = true;
     if (mounted) context.go(RoutePaths.login);
   }
 

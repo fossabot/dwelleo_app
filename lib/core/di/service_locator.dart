@@ -33,6 +33,7 @@ import '../../features/home/presentation/cubit/home_cubit.dart';
 import '../../features/home/presentation/cubit/market_map_cubit.dart';
 import '../../features/home/presentation/cubit/market_stats_cubit.dart';
 import '../../features/home/presentation/cubit/search_box_cubit.dart';
+import '../session/session_state.dart';
 import '../storage/recent_searches_store.dart';
 import '../../features/properties/data/datasources/property_remote_data_source.dart';
 import '../../features/properties/data/repositories/property_repository_impl.dart';
@@ -52,6 +53,10 @@ Future<void> setupServiceLocator() async {
   sl.registerLazySingleton<SecureStorage>(
     () => SecureStorage(sl<FlutterSecureStorage>()),
   );
+
+  // In-memory auth/onboarding snapshot for the router guard (populated in
+  // bootstrap before runApp).
+  sl.registerLazySingleton<SessionState>(() => SessionState());
 
   // ── Locale & Theme ─────────────────────────────────────────────────────────
   sl.registerLazySingleton<LocaleCubit>(() => LocaleCubit(sl<SecureStorage>()));
@@ -103,6 +108,7 @@ Future<void> setupServiceLocator() async {
       sl<VerifyOtp>(),
       sl<ResendOtp>(),
       sl<SecureStorage>(),
+      sl<SessionState>(),
     ),
   );
   // Forgot password (send-otp → verify → reset-password).
