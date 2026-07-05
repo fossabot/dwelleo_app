@@ -10,7 +10,9 @@ flutter_native_splash:
   image_dark: assets/images/splash/splash_screen.png
   android: true
   ios: true
-  fullscreen: true
+  # NOTE: keep false — fullscreen:true injects UIStatusBarHidden into Info.plist,
+  # which hides the status bar app-wide on iOS (not just the splash).
+  fullscreen: false
   android_gravity: fill
   ios_content_mode: scaleAspectFill
   android_12:

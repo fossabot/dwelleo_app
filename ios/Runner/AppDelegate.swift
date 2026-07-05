@@ -22,8 +22,10 @@ import UIKit
     // which is populated by the GITIGNORED ios/Flutter/Secrets.xcconfig — the key
     // is NEVER hardcoded/committed. Restrict it to the app's bundle IDs.
 #if canImport(GoogleMaps)
+    // Only a real Google key (starts with "AIza") is used; placeholders like
+    // "PASTE_…" or "<new iOS key>" are skipped so the map fails cleanly.
     if let mapsKey = Bundle.main.object(forInfoDictionaryKey: "MapsApiKey") as? String,
-       !mapsKey.isEmpty, !mapsKey.hasPrefix("PASTE_") {
+       mapsKey.hasPrefix("AIza") {
       GMSServices.provideAPIKey(mapsKey)
     }
 #else
