@@ -5,25 +5,19 @@
 *.swp
 .DS_Store
 .atom/
-.build/
-.buildlog/
 .history
 .svn/
-.swiftpm/
 migrate_working_dir/
 
-# IntelliJ related
+# Editor-local configuration
 *.iml
 *.ipr
 *.iws
 .idea/
+.vscode/*
+!.vscode/launch.json
 
-# The .vscode folder contains launch configuration and tasks you configure in
-# VS Code which you may wish to be included in version control, so this line
-# is commented out by default.
-#.vscode/
-
-# Flutter/Dart/Pub related
+# Flutter/Dart/Pub generated output
 **/doc/api/
 **/ios/Flutter/.last_build_id
 .dart_tool/
@@ -32,23 +26,30 @@ migrate_working_dir/
 .pub/
 /build/
 /coverage/
+devtools_options.yaml
 
-# Symbolication related
+# Symbolication / obfuscation outputs
 app.*.symbols
-
-# Obfuscation related
 app.*.map.json
 
-# Android Studio will place build artifacts here
+# Android build output and local files
+/android/.gradle/
+/android/build/
+/android/app/build/
 /android/app/debug
 /android/app/profile
 /android/app/release
+android/local.properties
+android/secrets.properties
 
 # ── Secrets & credentials (NEVER commit) ────────────────────────────────────
 # Environment files
 .env
 .env.*
 !.env.example
+.dart-defines
+*.dartdefines
+dart_defines/
 
 # Android signing
 *.jks
@@ -62,39 +63,38 @@ key.properties
 *.cer
 *.certSigningRequest
 
-# Firebase / Google services
+# Xcode/SwiftPM local state and user data (do not ignore shared xcschemes)
+ios/Flutter/Secrets.xcconfig
+ios/build/
+ios/.symlinks/
+ios/Pods/
+ios/Podfile.lock.backup
+**/*.xcodeproj/xcuserdata/
+**/*.xcworkspace/xcuserdata/
+**/*.xcscheme~
+**/*.xcscheme.bak
+**/*.xcscheme.backup
+**/xcshareddata/swiftpm/configuration/
+
+# Firebase client config supplied per flavor by developers/CI.
+# These are client config files, not service accounts, but they require rules,
+# App Check, API-key restrictions, and environment review before sharing.
 google-services.json
 GoogleService-Info.plist
 firebase_options*.dart
 firebase_app_id_file.json
+ios/config/GoogleService-Info-*.plist
 
 # Service accounts & API keys
 service-account.json
+*-service-account.json
 *.pem
 secrets.json
 
-# Native Maps API keys (injected at build time — never commit real values)
-ios/Flutter/Secrets.xcconfig
-android/secrets.properties
-android/local.properties
-
-# Fastlane
+# Fastlane local output/configuration
 fastlane/Appfile
 fastlane/Matchfile
 fastlane/report.xml
 fastlane/Preview.html
 fastlane/screenshots
 fastlane/test_output
-
-# Dart-define / flavors (local overrides)
-dart_defines/
-*.dartdefines
-
-# Per-flavor Firebase iOS configs (provided locally / via CI)
-ios/config/GoogleService-Info-*.plist
-
-# iOS build artifacts
-ios/build/
-
-# Flutter DevTools (auto-generated)
-devtools_options.yaml
