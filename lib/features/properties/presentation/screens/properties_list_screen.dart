@@ -232,6 +232,12 @@ class _ResultsBar extends StatelessWidget {
             children: [
               OutlinedButton.icon(
                 onPressed: onFilters,
+                // Override the global theme's Size.fromHeight(54) (width=∞) so
+                // the button hugs its content inside the Row/Stack.
+                style: OutlinedButton.styleFrom(
+                  minimumSize: const Size(0, 44),
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                ),
                 icon: const Icon(Icons.tune_rounded, size: 18),
                 label: Text(l10n.filters),
               ),
