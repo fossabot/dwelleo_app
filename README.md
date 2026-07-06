@@ -194,15 +194,15 @@ feature/
 
 ## Environments and flavors
 
-The repository defines three application environments.
+The repository defines three application environments. Detailed alignment, pending configuration decisions, Firebase/Maps strategy, and exact run/build commands are maintained in [`docs/flavors_and_environments.md`](docs/flavors_and_environments.md).
 
-| Flavor | Dart entry point | Android application ID | API base URL |
-|---|---|---|---|
-| `dev` | `lib/main_dev.dart` | `sa.dwelleo.app.dev` | `https://api.dwelleo.sa` |
-| `staging` | `lib/main_staging.dart` | `sa.dwelleo.app.staging` | `https://staging-api.dwelleo.sa` |
-| `production` | `lib/main_production.dart` | `sa.dwelleo.app` | `https://api.dwelleo.sa` |
+| Flavor | Dart entry point | Android application ID | iOS bundle ID | API base URL | Logging |
+|---|---|---|---|---|---|
+| `dev` | `lib/main_dev.dart` | `sa.dwelleo.app.dev` | `sa.dwelleo.app.dev` | `https://api.dwelleo.sa` | verbose, redacted |
+| `staging` | `lib/main_staging.dart` | `sa.dwelleo.app.staging` | `sa.dwelleo.app.staging` | `https://staging-api.dwelleo.sa` | reduced path/status |
+| `production` | `lib/main_production.dart` | `sa.dwelleo.app` | `sa.dwelleo.app` | `https://api.dwelleo.sa` | minimal |
 
-The development flavor currently points to the live API by design because a separate development backend is not configured. Use care when testing write operations.
+The development flavor currently points to the live API by design because a separate development backend is not configured. Use care when testing write operations; do not silently change this without a confirmed backend contract.
 
 Matching shared iOS schemes exist for:
 
