@@ -331,6 +331,9 @@ Every production feature should be reviewed in:
 
 ## Quality checks
 
+CI quality-gate design, required-check candidates, and repository-admin follow-up are documented in [`docs/ci/quality_gates.md`](docs/ci/quality_gates.md) and [`docs/ci/repository_admin_checklist.md`](docs/ci/repository_admin_checklist.md).
+
+
 Run the local quality gate before opening a pull request:
 
 ```bash
