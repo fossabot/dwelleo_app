@@ -1,0 +1,11 @@
+# Proposed CODEOWNERS for repository-admin review. Adjust GitHub handles before
+# enabling required owner reviews in branch protection/rulesets.
+
+* @hakemm663
+
+/.github/ @hakemm663
+/android/ @hakemm663
+/ios/ @hakemm663
+/lib/ @hakemm663
+/test/ @hakemm663
+/docs/ @hakemm663

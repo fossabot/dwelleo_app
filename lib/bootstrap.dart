@@ -21,6 +21,7 @@ Future<void> bootstrap(Flavor flavor) async {
   // by the zone handler before the handler itself is set up.
   WidgetsFlutterBinding.ensureInitialized();
   AppConfig.init(flavor);
+  final config = AppConfig.instance;
 
   runZonedGuarded(
     () async {
@@ -36,8 +37,13 @@ Future<void> bootstrap(Flavor flavor) async {
           return true;
         };
       } catch (error, stack) {
-        // Never block app launch on telemetry/init failure.
-        debugPrint('Firebase initialization failed: $error\n$stack');
+        // Never block app launch on telemetry/init failure. Keep production
+        // startup diagnostics minimal and non-sensitive.
+        if (config.isProduction) {
+          debugPrint('Firebase initialization failed.');
+        } else {
+          debugPrint('Firebase initialization failed: $error\n$stack');
+        }
       }
 
       await setupServiceLocator();
@@ -67,7 +73,11 @@ Future<void> bootstrap(Flavor flavor) async {
           FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
         }
       } catch (_) {}
-      debugPrint('Uncaught zone error: $error\n$stack');
+      if (config.isProduction) {
+        debugPrint('Uncaught zone error.');
+      } else {
+        debugPrint('Uncaught zone error: $error\n$stack');
+      }
     },
   );
 }
