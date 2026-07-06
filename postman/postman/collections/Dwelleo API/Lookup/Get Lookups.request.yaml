@@ -1,0 +1,14 @@
+$kind: http-request
+name: Get Lookups
+order: 1000
+method: GET
+url: '{{baseUrl}}/api/v1/lookup'
+description: |-
+  CONFIRMED 2026-06-25. Returns ALL filter lookups at once:
+  {message, data:{amenities, property_types, tags, cities, areas}}.
+  No `type` query param is required or honored. Cache client-side.
+headers:
+  - key: Accept
+    value: application/json
+  - key: Accept-Language
+    value: '{{locale}}'

@@ -1,0 +1,11 @@
+# DEPRECATED — INVENTED. The real auth is NAFATH (see Nafath Initiate/Status/Complete).
+# Email/password login + OTP + token refresh do NOT exist in Dwelleo. Do not use.
+$kind: http-request
+name: '[DEPRECATED – not real] see Nafath flow'
+order: 9000
+method: GET
+url: '{{baseUrl}}/api/v1/auth/nafath/initiate'
+description: 'Invented in a previous session. Dwelleo uses Nafath, not email/password. Kept only because it cannot be deleted from here; ignore it.'
+headers:
+  - key: Accept
+    value: application/json

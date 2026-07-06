@@ -1,0 +1,35 @@
+$kind: collection
+name: Dwelleo API
+description: |-
+  Dwelleo real-estate app API (base path /api/v1). Base URL https://api.dwelleo.sa (Laravel 11).
+
+  SOURCE OF TRUTH: docs/api/REAL_API_SPEC.md — verified against the LIVE backend on 2026-06-25.
+
+  Convention:
+  - Requests whose description starts with "CONFIRMED" were observed returning real data.
+  - Requests whose first lines start with "# UNVERIFIED" have GUESSED route/params/payload and
+    MUST be replaced with real captures (Chrome network traffic on dwelleo.sa) before use.
+
+  Reads (properties/projects/developers/lookup/subscriptions lists) are public (no auth).
+  Page size is server-fixed at 20; per_page is ignored; page via ?page=N.
+  Accept-Language: ar|en controls localization.
+variables:
+  baseUrl: https://api.dwelleo.sa
+  token: ""
+  refreshToken: ""
+  locale: en
+auth:
+  - id: a53e96dc-18eb-4224-84ea-47516a402f78
+    type: bearer
+    name: Bearer Token
+scripts:
+  - type: http:beforeRequest
+    code: |-
+      // Apply broadly-applicable headers if not already set on the request
+      if (!pm.request.headers.has('Accept')) {
+        pm.request.headers.add({ key: 'Accept', value: 'application/json' });
+      }
+      if (!pm.request.headers.has('Accept-Language')) {
+        pm.request.headers.add({ key: 'Accept-Language', value: pm.variables.replaceIn('{{locale}}') });
+      }
+    language: text/javascript

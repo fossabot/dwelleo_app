@@ -1,0 +1,14 @@
+$kind: http-request
+name: Get Subscriptions
+order: 1000
+method: GET
+url: '{{baseUrl}}/api/v1/subscriptions'
+description: |-
+  CONFIRMED 2026-06-25. {message:"Subscription plans retrieved successfully",
+  data:[]}. Endpoint correct; currently returns no plans. Plan object shape is
+  PENDING until plans are populated.
+headers:
+  - key: Accept
+    value: application/json
+  - key: Accept-Language
+    value: '{{locale}}'

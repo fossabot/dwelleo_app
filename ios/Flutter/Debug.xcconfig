@@ -1,1 +1,8 @@
+// Flavors: pull the Pods config that matches the ACTIVE build configuration
+// (Debug-dev → Pods-Runner.debug-dev.xcconfig, etc.). macOS is case-insensitive
+// so "Debug-dev" resolves to the lowercase "debug-dev" file CocoaPods generates.
+#include? "Pods/Target Support Files/Pods-Runner/Pods-Runner.${CONFIGURATION}.xcconfig"
+#include? "Pods/Target Support Files/Pods-Runner/Pods-Runner.debug.xcconfig"
 #include "Generated.xcconfig"
+// Gitignored — provides MAPS_API_KEY for Info.plist ($(MAPS_API_KEY)).
+#include? "Secrets.xcconfig"

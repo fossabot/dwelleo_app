@@ -1,0 +1,18 @@
+$kind: http-request
+name: List Developers
+order: 1000
+method: GET
+url: '{{baseUrl}}/api/v1/developers?page=1'
+description: |-
+  CONFIRMED 2026-06-25. {message, data:{developers:[{id,name,image,rating,
+  featured,featuredInHome}], pagination:{total,count,per_page,current_page,
+  total_pages}}}. Page via ?page=N. Page size is server-fixed at 20; `per_page`
+  is IGNORED.
+headers:
+  - key: Accept
+    value: application/json
+  - key: Accept-Language
+    value: '{{locale}}'
+queryParams:
+  - key: page
+    value: '1'

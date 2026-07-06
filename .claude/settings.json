@@ -1,0 +1,21 @@
+{
+  "includeCoAuthoredBy": false,
+  "attribution": {
+    "commit": "",
+    "pr": ""
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "description": "No-codegen reminders: ARB changes need flutter gen-l10n; pubspec changes need flutter pub get (project does not use build_runner)",
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash -c 'f=\"${CLAUDE_FILE_PATHS:-}\"; for file in $f; do case \"$file\" in *.arb) echo \"⚠️  ARB changed → run: flutter gen-l10n\";; *pubspec.yaml) echo \"⚠️  pubspec.yaml changed → run: flutter pub get\";; esac; done; exit 0'"
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,19 @@
+$kind: http-request
+name: List Properties (home/featured set)
+order: 1000
+method: GET
+url: '{{baseUrl}}/api/v1/properties'
+description: |-
+  CONFIRMED 2026-06-25. Returns the curated home/featured set:
+  {message, data:{properties:[...]}} with NO pagination key.
+
+  NOTE: The filterable, paginated property SEARCH (listing_type, property_type,
+  beds/baths, price, city, off-plan/ready, page) uses query params whose exact
+  names are NOT yet verified. `per_page` is ignored (page size fixed at 20) and
+  `filter[property_type]` did NOT filter. Capture the real params from network
+  traffic on /en/properties/for-sale before adding them here.
+headers:
+  - key: Accept
+    value: application/json
+  - key: Accept-Language
+    value: '{{locale}}'

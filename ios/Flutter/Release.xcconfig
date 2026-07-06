@@ -1,1 +1,8 @@
+// Flavors: pull the Pods config that matches the ACTIVE build configuration
+// (Release-dev → Pods-Runner.release-dev.xcconfig, Profile-* configs also use
+// this file → Pods-Runner.profile-*.xcconfig). Falls back to the plain release.
+#include? "Pods/Target Support Files/Pods-Runner/Pods-Runner.${CONFIGURATION}.xcconfig"
+#include? "Pods/Target Support Files/Pods-Runner/Pods-Runner.release.xcconfig"
 #include "Generated.xcconfig"
+// Gitignored — provides MAPS_API_KEY for Info.plist ($(MAPS_API_KEY)).
+#include? "Secrets.xcconfig"

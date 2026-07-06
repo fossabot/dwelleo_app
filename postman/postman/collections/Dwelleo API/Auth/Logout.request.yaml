@@ -1,0 +1,21 @@
+# UNVERIFIED — route/params/payload are GUESSED, not confirmed against the live API.
+# Capture the real request from dwelleo.sa network traffic before trusting this. See docs/api/REAL_API_SPEC.md
+$kind: http-request
+name: Logout
+order: 5000
+method: POST
+url: '{{baseUrl}}/api/v1/auth/logout'
+description: Invalidate the current session / refresh token and log the user out.
+headers:
+  - key: Content-Type
+    value: application/json
+  - key: Accept
+    value: application/json
+  - key: Accept-Language
+    value: '{{locale}}'
+body:
+  type: json
+  content: |-
+    {
+      "refresh_token": "{{refreshToken}}"
+    }

@@ -1,0 +1,13 @@
+# UNVERIFIED — route/params/payload are GUESSED, not confirmed against the live API.
+# Capture the real request from dwelleo.sa network traffic before trusting this. See docs/api/REAL_API_SPEC.md
+$kind: http-request
+name: Get Profile
+order: 6000
+method: GET
+url: '{{baseUrl}}/api/v1/profile'
+description: Retrieve the authenticated user's profile. Requires a valid bearer token.
+headers:
+  - key: Accept
+    value: application/json
+  - key: Accept-Language
+    value: '{{locale}}'

@@ -1,0 +1,19 @@
+$kind: http-request
+name: Nafath Initiate
+order: 1000
+method: POST
+url: '{{baseUrl}}/api/v1/auth/nafath/initiate'
+description: |-
+  CONFIRMED route (web bundle). Auth is NAFATH (Saudi national identity). Step 1:
+  initiate returns a Nafath transaction + random number confirmed in the Nafath app.
+  EXACT request body PENDING — capture from a real login on /en/login.
+headers:
+  - key: Content-Type
+    value: application/json
+  - key: Accept
+    value: application/json
+  - key: Accept-Language
+    value: '{{locale}}'
+body:
+  type: json
+  content: '{ "_comment": "BODY PENDING — capture real /auth/nafath/initiate payload" }'

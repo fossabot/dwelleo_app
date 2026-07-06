@@ -1,0 +1,11 @@
+$kind: http-request
+name: Get Developer Locations
+order: 3000
+method: GET
+url: '{{baseUrl}}/api/v1/developers/locations'
+description: 'CONFIRMED route (web bundle: /api/v1/developers/locations).'
+headers:
+  - key: Accept
+    value: application/json
+  - key: Accept-Language
+    value: '{{locale}}'

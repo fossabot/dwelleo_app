@@ -1,0 +1,21 @@
+# Dwelleo native splash.
+# - iOS + Android < 12: the full Figma splash design (splash_screen.png) on black.
+# - Android 12+: the OS only allows a centered icon, so we show the launcher
+#   logo on a black background to keep the same brand look.
+# Regenerate with: dart run flutter_native_splash:create
+flutter_native_splash:
+  color: "#000000"
+  color_dark: "#000000"
+  image: assets/images/splash/splash_screen.png
+  image_dark: assets/images/splash/splash_screen.png
+  android: true
+  ios: true
+  # NOTE: keep false — fullscreen:true injects UIStatusBarHidden into Info.plist,
+  # which hides the status bar app-wide on iOS (not just the splash).
+  fullscreen: false
+  android_gravity: fill
+  ios_content_mode: scaleAspectFill
+  android_12:
+    color: "#000000"
+    color_dark: "#000000"
+    image: assets/images/launcher/logo.png

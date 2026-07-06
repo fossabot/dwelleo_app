@@ -1,0 +1,20 @@
+$kind: http-request
+name: Search Properties (filters)
+order: 1500
+method: GET
+url: '{{baseUrl}}/api/v1/properties?filter%5Blisting_type%5D=for-sale&sort%5Bcreated_at%5D=-created_at&page=1'
+description: |-
+  Real Spatie filter param NAMES (from web bundle), brackets URL-encoded. Keys:
+  filter[listing_type] for-sale|for-rent, filter[property_type], filter[property_types],
+  filter[unit_type], filter[bedrooms], filter[bathrooms], filter[min_price], filter[max_price],
+  filter[city_id], filter[area_id], filter[region_id], filter[developer_id], filter[project_id],
+  filter[owner_id], filter[amenities], filter[furnishing_status], filter[availability_status],
+  filter[is_favorite], filter[is_featured], filter[featured], filter[featuredInHome],
+  filter[locations], filter[from_area], filter[to_area], filter[min_handover_date],
+  filter[max_handover_date], filter[commute_time], filter[language_spoken], sort[created_at], page.
+  NOTE: filtered-search RESPONSE ENVELOPE still to be captured from a live call.
+headers:
+  - key: Accept
+    value: application/json
+  - key: Accept-Language
+    value: '{{locale}}'

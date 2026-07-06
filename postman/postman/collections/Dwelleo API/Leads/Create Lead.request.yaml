@@ -1,0 +1,24 @@
+# UNVERIFIED — route/params/payload are GUESSED, not confirmed against the live API.
+# Capture the real request from dwelleo.sa network traffic before trusting this. See docs/api/REAL_API_SPEC.md
+$kind: http-request
+name: Create Lead
+order: 1000
+method: POST
+url: '{{baseUrl}}/api/v1/leads'
+description: Create a new lead/inquiry for a property.
+headers:
+  - key: Content-Type
+    value: application/json
+  - key: Accept
+    value: application/json
+  - key: Accept-Language
+    value: '{{locale}}'
+body:
+  type: json
+  content: |-
+    {
+      "name": "John Doe",
+      "phone": "+966500000000",
+      "property_id": "123",
+      "message": "I'm interested in this property"
+    }

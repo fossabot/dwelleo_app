@@ -1,0 +1,15 @@
+$kind: http-request
+name: List Projects
+order: 1000
+method: GET
+url: '{{baseUrl}}/api/v1/projects'
+description: |-
+  CONFIRMED 2026-06-25. {message, data:{projects:[{id,slug,image,images,
+  location_coordinates,developer,launch_date,is_off_plan,expected_handover_date,
+  city,amenities,overview_description,gallery,starting_price,is_favorite,seo,
+  name,description,translations}]}}.
+headers:
+  - key: Accept
+    value: application/json
+  - key: Accept-Language
+    value: '{{locale}}'

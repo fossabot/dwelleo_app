@@ -1,0 +1,21 @@
+# Dwelleo app launcher icon.
+# Assets are the REAL brand mark (green peacock-house) extracted from the official
+# logo, composed on the brand purple. Regenerate platform icons after any change:
+#   dart run flutter_launcher_icons
+flutter_launcher_icons:
+  android: true
+  ios: true
+  min_sdk_android: 24
+
+  # Legacy Android + iOS (iOS flattens transparency): purple square + green mark.
+  image_path: "assets/images/launcher/logo.png"
+  remove_alpha_ios: true
+
+  # Adaptive icon (Android 8+): solid purple background + transparent green mark.
+  adaptive_icon_background: "#6B4FA0"
+  adaptive_icon_foreground: "assets/images/launcher/foreground.png"
+  # Themed icon (Android 13+): monochrome silhouette tinted by the system.
+  adaptive_icon_monochrome: "assets/images/launcher/monochrome.png"
+
+  web:
+    generate: false

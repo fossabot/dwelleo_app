@@ -1,0 +1,16 @@
+# UNVERIFIED — route/params/payload are GUESSED, not confirmed against the live API.
+# Capture the real request from dwelleo.sa network traffic before trusting this. See docs/api/REAL_API_SPEC.md
+$kind: http-request
+name: Get Project By Id Or Slug
+order: 2000
+method: GET
+url: '{{baseUrl}}/api/v1/projects/:idOrSlug'
+description: Retrieve a single project's details by its numeric id or slug.
+headers:
+  - key: Accept
+    value: application/json
+  - key: Accept-Language
+    value: '{{locale}}'
+pathVariables:
+  - key: idOrSlug
+    value: '123'

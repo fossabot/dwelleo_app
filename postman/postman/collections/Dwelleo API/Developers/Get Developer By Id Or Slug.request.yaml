@@ -1,0 +1,11 @@
+$kind: http-request
+name: Get Developer By Id
+order: 2000
+method: GET
+url: '{{baseUrl}}/api/v1/developers/260'
+description: 'CONFIRMED route (web bundle: /api/v1/developers/{id}).'
+headers:
+  - key: Accept
+    value: application/json
+  - key: Accept-Language
+    value: '{{locale}}'

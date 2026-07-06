@@ -1,0 +1,25 @@
+# UNVERIFIED — route/params/payload are GUESSED, not confirmed against the live API.
+# Capture the real request from dwelleo.sa network traffic before trusting this. See docs/api/REAL_API_SPEC.md
+$kind: http-request
+name: Register
+order: 1000
+method: POST
+url: '{{baseUrl}}/api/v1/auth/register'
+description: Register a new user account (buyer/seller). Returns auth tokens on success.
+headers:
+  - key: Content-Type
+    value: application/json
+  - key: Accept
+    value: application/json
+  - key: Accept-Language
+    value: '{{locale}}'
+body:
+  type: json
+  content: |-
+    {
+      "name": "John Doe",
+      "email": "john@example.com",
+      "phone": "+966500000000",
+      "password": "Passw0rd!",
+      "role": "buyer"
+    }

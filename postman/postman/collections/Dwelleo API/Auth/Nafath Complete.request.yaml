@@ -1,0 +1,16 @@
+$kind: http-request
+name: Nafath Complete
+order: 1200
+method: POST
+url: '{{baseUrl}}/api/v1/auth/nafath/complete'
+description: 'CONFIRMED route. Step 3: completes login, issues session/token. BODY PENDING — capture from a real login.'
+headers:
+  - key: Content-Type
+    value: application/json
+  - key: Accept
+    value: application/json
+  - key: Accept-Language
+    value: '{{locale}}'
+body:
+  type: json
+  content: '{ "_comment": "BODY PENDING — capture real /auth/nafath/complete payload" }'

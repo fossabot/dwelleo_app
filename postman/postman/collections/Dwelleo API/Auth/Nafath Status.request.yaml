@@ -1,0 +1,11 @@
+$kind: http-request
+name: Nafath Status
+order: 1100
+method: GET
+url: '{{baseUrl}}/api/v1/auth/nafath/status'
+description: 'CONFIRMED route. Step 2: poll until user approves in the Nafath app. Identifier params PENDING.'
+headers:
+  - key: Accept
+    value: application/json
+  - key: Accept-Language
+    value: '{{locale}}'
