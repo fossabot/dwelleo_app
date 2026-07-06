@@ -44,6 +44,11 @@ class _LocationPickerScreenState extends State<_LocationPickerScreen> {
   // Default view: Riyadh (real coordinates, not invented data).
   static const _fallback = LatLng(24.7136, 46.6753);
 
+  // geocoding v5 replaced the top-level functions with an instance API.
+  // Created once per screen (never inside build) and reused for every
+  // reverse-geocode as the pin moves.
+  final Geocoding _geocoder = Geocoding();
+
   GoogleMapController? _map;
   LatLng _center = _fallback;
   String _address = '';
@@ -75,7 +80,10 @@ class _LocationPickerScreenState extends State<_LocationPickerScreen> {
   Future<void> _resolve(LatLng at) async {
     setState(() => _resolving = true);
     try {
-      final marks = await placemarkFromCoordinates(at.latitude, at.longitude);
+      final marks = await _geocoder.placemarkFromCoordinates(
+        at.latitude,
+        at.longitude,
+      );
       if (!mounted) return;
       final p = marks.first;
       final parts = [
