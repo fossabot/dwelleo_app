@@ -225,18 +225,45 @@ class _ResultsBar extends StatelessWidget {
               ),
             ),
           ),
-          Badge(
-            isLabelVisible: filterCount > 0,
-            label: Text('$filterCount'),
-            backgroundColor: AppColors.accentFor(
-              Theme.of(context).brightness,
-            ),
-            textColor: AppColors.onAccentFor(Theme.of(context).brightness),
-            child: OutlinedButton.icon(
-              onPressed: onFilters,
-              icon: const Icon(Icons.tune_rounded, size: 18),
-              label: Text(l10n.filters),
-            ),
+          // Manual badge (not Material Badge, which floods the framework
+          // '!semantics.parentDataDirty' assertion and blanks the screen).
+          Stack(
+            clipBehavior: Clip.none,
+            children: [
+              OutlinedButton.icon(
+                onPressed: onFilters,
+                icon: const Icon(Icons.tune_rounded, size: 18),
+                label: Text(l10n.filters),
+              ),
+              if (filterCount > 0)
+                PositionedDirectional(
+                  top: -4,
+                  end: -4,
+                  child: Container(
+                    constraints: const BoxConstraints(
+                      minWidth: 18,
+                      minHeight: 18,
+                    ),
+                    padding: const EdgeInsets.symmetric(horizontal: 5),
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: AppColors.accentFor(Theme.of(context).brightness),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Text(
+                      '$filterCount',
+                      style: TextStyle(
+                        color: AppColors.onAccentFor(
+                          Theme.of(context).brightness,
+                        ),
+                        fontSize: 10,
+                        fontWeight: FontWeight.w700,
+                        height: 1,
+                      ),
+                    ),
+                  ),
+                ),
+            ],
           ),
         ],
       ),
