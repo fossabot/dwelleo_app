@@ -14,14 +14,14 @@ Snapshot: `development` @ merge of PR #6 (`feat/home_screen`) + 3 follow-up comm
 | Tags / Releases | **none** |
 | `.github/workflows` | **none** |
 | fastlane | **none** |
-| Branch protections / open PRs / issues | **unverified** — needs GitHub-side check (no API auth from audit env) |
+| Branch protections / rulesets / open PRs / issues | **unverified** — needs GitHub-side check (no API auth from audit env). Required-review enforcement was not demonstrated by PR #7 |
 
 ## Toolchain & flavors
 
 - Flutter (repo-tested): 3.44.4 stable / Dart 3.12.2. SDK constraint `^3.11.5`.
 - Entry points: `main.dart`, `main_dev.dart`, `main_staging.dart`, `main_production.dart`; `bootstrap.dart` initializes Firebase, Crashlytics, Performance, service locator.
-- Android: 1 `productFlavors` block; iOS: dev scheme present (`dev.xcscheme` + local backup file — untracked noise).
-- **Committed config of note:** `android/app/google-services.json` (Firebase, in-repo), `l10n.yaml`, launcher/splash configs.
+- Android: 1 `productFlavors` block; iOS: shared dev, staging, and production schemes are present under `ios/Runner.xcodeproj/xcshareddata/xcschemes/`.
+- **Committed config of note:** `android/app/google-services.json` (Firebase client configuration, in-repo; requires Security Rules, App Check, API-key restriction, and environment review), `l10n.yaml`, launcher/splash configs.
 
 ## Modules (verified by inspection)
 
@@ -59,7 +59,5 @@ cache, ExploreCubit, RecentSearchesStore, HtmlText, app-boot widget test).
 
 ## Uncommitted-changes register (working tree at audit time)
 
-- `pubspec.yaml` + `pubspec.lock`: dependency bump batch (cupertino_icons, dio 5.10,
-  equatable 2.1, connectivity/package_info/device_info majors, **geocoding→5 BREAKING**).
-  → Validate & land in PR-2; do not commit as-is.
+- `pubspec.yaml` + `pubspec.lock`: dependency bump batch observed during PR-1 audit (cupertino_icons, dio 5.10, equatable 2.1, connectivity/package_info/device_info majors, **geocoding→5 BREAKING**). → PR-2 must validate each dependency individually; do not accept a bulk update merely because `pub get` succeeds.
 - `android/gradle.properties`, `ios/Podfile.lock`, Xcode swiftpm/scheme-backup, `.vscode/` → local env noise; gitignore review in PR-2.
