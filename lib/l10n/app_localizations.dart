@@ -847,6 +847,96 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Recenter'**
   String get recenter;
+
+  /// No description provided for @filters.
+  ///
+  /// In en, this message translates to:
+  /// **'Filters'**
+  String get filters;
+
+  /// No description provided for @reset.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset'**
+  String get reset;
+
+  /// No description provided for @showResults.
+  ///
+  /// In en, this message translates to:
+  /// **'Show Results'**
+  String get showResults;
+
+  /// No description provided for @savedSearches.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved searches'**
+  String get savedSearches;
+
+  /// No description provided for @saveSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Save this search'**
+  String get saveSearch;
+
+  /// No description provided for @searchSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Search saved — find it in Filters.'**
+  String get searchSaved;
+
+  /// No description provided for @resultsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} results'**
+  String resultsCount(String count);
+
+  /// No description provided for @priceRangeSar.
+  ///
+  /// In en, this message translates to:
+  /// **'Price (SAR)'**
+  String get priceRangeSar;
+
+  /// No description provided for @minPrice.
+  ///
+  /// In en, this message translates to:
+  /// **'Min'**
+  String get minPrice;
+
+  /// No description provided for @maxPrice.
+  ///
+  /// In en, this message translates to:
+  /// **'Max'**
+  String get maxPrice;
+
+  /// No description provided for @furnishing.
+  ///
+  /// In en, this message translates to:
+  /// **'Furnishing'**
+  String get furnishing;
+
+  /// No description provided for @furnishingUnfurnished.
+  ///
+  /// In en, this message translates to:
+  /// **'Unfurnished'**
+  String get furnishingUnfurnished;
+
+  /// No description provided for @furnishingSemi.
+  ///
+  /// In en, this message translates to:
+  /// **'Semi-furnished'**
+  String get furnishingSemi;
+
+  /// No description provided for @furnishingPartially.
+  ///
+  /// In en, this message translates to:
+  /// **'Partially furnished'**
+  String get furnishingPartially;
+
+  /// No description provided for @contactUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact details are not available for this listing.'**
+  String get contactUnavailable;
 }
 
 class _AppLocalizationsDelegate

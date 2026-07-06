@@ -3,10 +3,18 @@ import 'package:equatable/equatable.dart';
 /// Domain-level search criteria for the property list.
 /// Maps to the real Spatie `filter[...]` params in the data layer
 /// (see PropertyFilters in lib/core/constants/api_endpoints.dart).
+///
+/// CONTRACT (re-verified live 2026-07-06): sending `page` switches
+/// `/properties` into the paginated search (pagination envelope present);
+/// `filter[property_types][]` (ARRAY syntax) filters by type — the singular
+/// `filter[property_type]` is accepted but silently ignored by the backend
+/// and must not be sent.
 class PropertyQuery extends Equatable {
   /// `for-sale` | `for-rent`.
   final String? listingType;
-  final int? propertyTypeId;
+
+  /// Property-type ids (multi-select, like the website's type menu).
+  final List<int> propertyTypeIds;
   final int? cityId;
   final int? areaId;
   final int? regionId;
@@ -15,10 +23,6 @@ class PropertyQuery extends Equatable {
   final int? minBathrooms;
   final num? minPrice;
   final num? maxPrice;
-
-  /// Built area in m² → real `filter[from_area]` / `filter[to_area]`.
-  final num? minArea;
-  final num? maxArea;
   final String? furnishingStatus;
   final bool? onlyFavorites;
 
@@ -28,7 +32,7 @@ class PropertyQuery extends Equatable {
 
   const PropertyQuery({
     this.listingType,
-    this.propertyTypeId,
+    this.propertyTypeIds = const [],
     this.cityId,
     this.areaId,
     this.regionId,
@@ -37,56 +41,67 @@ class PropertyQuery extends Equatable {
     this.minBathrooms,
     this.minPrice,
     this.maxPrice,
-    this.minArea,
-    this.maxArea,
     this.furnishingStatus,
     this.onlyFavorites,
     this.sort = '-created_at',
     this.page = 1,
   });
 
+  /// Number of user-visible filters applied (for the filter-badge count).
+  int get activeFilterCount =>
+      (propertyTypeIds.isEmpty ? 0 : 1) +
+      (cityId == null ? 0 : 1) +
+      (minBedrooms == null ? 0 : 1) +
+      (minBathrooms == null ? 0 : 1) +
+      (minPrice == null && maxPrice == null ? 0 : 1) +
+      (furnishingStatus == null ? 0 : 1);
+
+  /// Nullable-aware copy: pass a closure to SET (or clear with `() => null`);
+  /// omit to keep the current value.
   PropertyQuery copyWith({
-    String? listingType,
-    int? propertyTypeId,
-    int? cityId,
-    int? areaId,
-    int? regionId,
-    int? developerId,
-    int? minBedrooms,
-    int? minBathrooms,
-    num? minPrice,
-    num? maxPrice,
-    num? minArea,
-    num? maxArea,
-    String? furnishingStatus,
-    bool? onlyFavorites,
+    String? Function()? listingType,
+    List<int>? propertyTypeIds,
+    int? Function()? cityId,
+    int? Function()? areaId,
+    int? Function()? regionId,
+    int? Function()? developerId,
+    int? Function()? minBedrooms,
+    int? Function()? minBathrooms,
+    num? Function()? minPrice,
+    num? Function()? maxPrice,
+    String? Function()? furnishingStatus,
+    bool? Function()? onlyFavorites,
     String? sort,
     int? page,
   }) {
     return PropertyQuery(
-      listingType: listingType ?? this.listingType,
-      propertyTypeId: propertyTypeId ?? this.propertyTypeId,
-      cityId: cityId ?? this.cityId,
-      areaId: areaId ?? this.areaId,
-      regionId: regionId ?? this.regionId,
-      developerId: developerId ?? this.developerId,
-      minBedrooms: minBedrooms ?? this.minBedrooms,
-      minBathrooms: minBathrooms ?? this.minBathrooms,
-      minPrice: minPrice ?? this.minPrice,
-      maxPrice: maxPrice ?? this.maxPrice,
-      minArea: minArea ?? this.minArea,
-      maxArea: maxArea ?? this.maxArea,
-      furnishingStatus: furnishingStatus ?? this.furnishingStatus,
-      onlyFavorites: onlyFavorites ?? this.onlyFavorites,
+      listingType: listingType == null ? this.listingType : listingType(),
+      propertyTypeIds: propertyTypeIds ?? this.propertyTypeIds,
+      cityId: cityId == null ? this.cityId : cityId(),
+      areaId: areaId == null ? this.areaId : areaId(),
+      regionId: regionId == null ? this.regionId : regionId(),
+      developerId: developerId == null ? this.developerId : developerId(),
+      minBedrooms: minBedrooms == null ? this.minBedrooms : minBedrooms(),
+      minBathrooms: minBathrooms == null ? this.minBathrooms : minBathrooms(),
+      minPrice: minPrice == null ? this.minPrice : minPrice(),
+      maxPrice: maxPrice == null ? this.maxPrice : maxPrice(),
+      furnishingStatus: furnishingStatus == null
+          ? this.furnishingStatus
+          : furnishingStatus(),
+      onlyFavorites: onlyFavorites == null
+          ? this.onlyFavorites
+          : onlyFavorites(),
       sort: sort ?? this.sort,
       page: page ?? this.page,
     );
   }
 
+  PropertyQuery withPage(int page) => copyWith(page: page);
+
   @override
   List<Object?> get props => [
     listingType,
-    propertyTypeId,
+    propertyTypeIds,
     cityId,
     areaId,
     regionId,
@@ -95,8 +110,6 @@ class PropertyQuery extends Equatable {
     minBathrooms,
     minPrice,
     maxPrice,
-    minArea,
-    maxArea,
     furnishingStatus,
     onlyFavorites,
     sort,

@@ -67,6 +67,9 @@ dependencies:
   freerasp: ^8.0.0
   intl_phone_field: ^3.2.0
   geocoding: ^5.0.0
+  # Native phone/WhatsApp actions for the property contact bar (PR-7).
+  # Official flutter.dev plugin — the standard for tel:/https intents.
+  url_launcher: ^6.3.1
 
 dev_dependencies:
   flutter_test:

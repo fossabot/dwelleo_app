@@ -3,10 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+import '../../../../core/analytics/analytics_service.dart';
 import '../../../../core/constants/app_assets.dart';
 import '../../../../core/di/service_locator.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/utils/contact_launcher.dart';
 import '../../../../core/utils/formatters.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../domain/entities/property.dart';
 import '../cubit/property_detail_cubit.dart';
 import '../cubit/property_detail_state.dart';
@@ -58,7 +61,10 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
         bottomNavigationBar:
             BlocBuilder<PropertyDetailCubit, PropertyDetailState>(
               builder: (context, state) => state is PropertyDetailLoaded
-                  ? _ContactBar(owner: state.property.owner)
+                  ? _ContactBar(
+                      propertyId: state.property.id,
+                      owner: state.property.owner,
+                    )
                   : const SizedBox.shrink(),
             ),
       ),
@@ -481,34 +487,56 @@ class _OwnerCard extends StatelessWidget {
 }
 
 class _ContactBar extends StatelessWidget {
+  final int propertyId;
   final PropertyOwner? owner;
-  const _ContactBar({required this.owner});
+  const _ContactBar({required this.propertyId, required this.owner});
 
-  void _todo(BuildContext context, String label) {
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text('$label — coming soon')));
+  Future<void> _contact(BuildContext context, {required bool whatsApp}) async {
+    final l10n = AppLocalizations.of(context);
+    final phone = owner?.phone;
+    if (phone == null || phone.trim().isEmpty) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(l10n.contactUnavailable)));
+      return;
+    }
+    // App-side lead signal (backend leads/ingest lands once its payload is
+    // captured — @bodyPending discipline).
+    sl<AnalyticsService>().leadContact(
+      method: whatsApp ? 'whatsapp' : 'call',
+      propertyId: propertyId,
+      ownerType: owner?.userType,
+    );
+    final ok = whatsApp
+        ? await ContactLauncher.whatsApp(phone)
+        : await ContactLauncher.call(phone);
+    if (!ok && context.mounted) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(l10n.contactUnavailable)));
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return SafeArea(
       minimum: const EdgeInsets.fromLTRB(16, 8, 16, 12),
       child: Row(
         children: [
           Expanded(
             child: FilledButton.icon(
-              onPressed: () => _todo(context, 'Call'),
+              onPressed: () => _contact(context, whatsApp: false),
               icon: const Icon(Icons.phone, size: 18),
-              label: const Text('Call'),
+              label: Text(l10n.callNow),
             ),
           ),
           const SizedBox(width: 12),
           Expanded(
             child: OutlinedButton.icon(
-              onPressed: () => _todo(context, 'WhatsApp'),
+              onPressed: () => _contact(context, whatsApp: true),
               icon: SvgPicture.asset(AppSvg.whatsapp, width: 18, height: 18),
-              label: const Text('WhatsApp'),
+              label: Text(l10n.whatsapp),
             ),
           ),
         ],

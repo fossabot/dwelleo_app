@@ -395,4 +395,52 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get recenter => 'Recenter';
+
+  @override
+  String get filters => 'Filters';
+
+  @override
+  String get reset => 'Reset';
+
+  @override
+  String get showResults => 'Show Results';
+
+  @override
+  String get savedSearches => 'Saved searches';
+
+  @override
+  String get saveSearch => 'Save this search';
+
+  @override
+  String get searchSaved => 'Search saved — find it in Filters.';
+
+  @override
+  String resultsCount(String count) {
+    return '$count results';
+  }
+
+  @override
+  String get priceRangeSar => 'Price (SAR)';
+
+  @override
+  String get minPrice => 'Min';
+
+  @override
+  String get maxPrice => 'Max';
+
+  @override
+  String get furnishing => 'Furnishing';
+
+  @override
+  String get furnishingUnfurnished => 'Unfurnished';
+
+  @override
+  String get furnishingSemi => 'Semi-furnished';
+
+  @override
+  String get furnishingPartially => 'Partially furnished';
+
+  @override
+  String get contactUnavailable =>
+      'Contact details are not available for this listing.';
 }

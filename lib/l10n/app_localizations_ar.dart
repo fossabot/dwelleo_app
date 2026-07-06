@@ -394,4 +394,51 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get recenter => 'إعادة التمركز';
+
+  @override
+  String get filters => 'التصفية';
+
+  @override
+  String get reset => 'إعادة تعيين';
+
+  @override
+  String get showResults => 'عرض النتائج';
+
+  @override
+  String get savedSearches => 'عمليات البحث المحفوظة';
+
+  @override
+  String get saveSearch => 'احفظ هذا البحث';
+
+  @override
+  String get searchSaved => 'تم حفظ البحث — تجده في التصفية.';
+
+  @override
+  String resultsCount(String count) {
+    return '$count نتيجة';
+  }
+
+  @override
+  String get priceRangeSar => 'السعر (ريال)';
+
+  @override
+  String get minPrice => 'الأدنى';
+
+  @override
+  String get maxPrice => 'الأقصى';
+
+  @override
+  String get furnishing => 'التأثيث';
+
+  @override
+  String get furnishingUnfurnished => 'غير مؤثثة';
+
+  @override
+  String get furnishingSemi => 'شبه مؤثثة';
+
+  @override
+  String get furnishingPartially => 'مؤثثة جزئيًا';
+
+  @override
+  String get contactUnavailable => 'بيانات التواصل غير متاحة لهذا الإعلان.';
 }

@@ -141,5 +141,27 @@
   "expectedHandover": "التسليم المتوقع",
   "viewProperties": "عرض العقارات",
   "viewPropertiesHint": "يفتح إعلانات هذا الشريك مباشرةً",
-  "recenter": "إعادة التمركز"
+  "recenter": "إعادة التمركز",
+  "filters": "التصفية",
+  "reset": "إعادة تعيين",
+  "showResults": "عرض النتائج",
+  "savedSearches": "عمليات البحث المحفوظة",
+  "saveSearch": "احفظ هذا البحث",
+  "searchSaved": "تم حفظ البحث — تجده في التصفية.",
+  "resultsCount": "{count} نتيجة",
+  "@resultsCount": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "priceRangeSar": "السعر (ريال)",
+  "minPrice": "الأدنى",
+  "maxPrice": "الأقصى",
+  "furnishing": "التأثيث",
+  "furnishingUnfurnished": "غير مؤثثة",
+  "furnishingSemi": "شبه مؤثثة",
+  "furnishingPartially": "مؤثثة جزئيًا",
+  "contactUnavailable": "بيانات التواصل غير متاحة لهذا الإعلان."
 }

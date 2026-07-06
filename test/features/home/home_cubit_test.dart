@@ -10,6 +10,7 @@ import 'package:dwelleo_app/features/home/domain/usecases/get_projects.dart';
 import 'package:dwelleo_app/features/home/presentation/cubit/home_cubit.dart';
 import 'package:dwelleo_app/features/home/presentation/cubit/home_state.dart';
 import 'package:dwelleo_app/features/properties/domain/entities/property.dart';
+import 'package:dwelleo_app/features/properties/domain/entities/property_page.dart';
 import 'package:dwelleo_app/features/properties/domain/entities/property_query.dart';
 import 'package:dwelleo_app/features/properties/domain/repositories/property_repository.dart';
 import 'package:dwelleo_app/features/properties/domain/usecases/get_properties.dart';
@@ -61,6 +62,15 @@ class _FakePropertyRepo implements PropertyRepository {
   Future<ApiResult<List<Property>>> getProperties({
     PropertyQuery? query,
   }) async => result;
+
+  @override
+  Future<ApiResult<PropertyPage>> searchProperties(
+    PropertyQuery query,
+  ) async => result.when(
+    success: (items) =>
+        ApiSuccess(PropertyPage(properties: items)),
+    error: ApiError.new,
+  );
 
   @override
   Future<ApiResult<Property>> getPropertyBySlug(String slug) async =>

@@ -141,5 +141,27 @@
   "expectedHandover": "Expected Handover",
   "viewProperties": "View Properties",
   "viewPropertiesHint": "Opens this partner's live listings",
-  "recenter": "Recenter"
+  "recenter": "Recenter",
+  "filters": "Filters",
+  "reset": "Reset",
+  "showResults": "Show Results",
+  "savedSearches": "Saved searches",
+  "saveSearch": "Save this search",
+  "searchSaved": "Search saved — find it in Filters.",
+  "resultsCount": "{count} results",
+  "@resultsCount": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "priceRangeSar": "Price (SAR)",
+  "minPrice": "Min",
+  "maxPrice": "Max",
+  "furnishing": "Furnishing",
+  "furnishingUnfurnished": "Unfurnished",
+  "furnishingSemi": "Semi-furnished",
+  "furnishingPartially": "Partially furnished",
+  "contactUnavailable": "Contact details are not available for this listing."
 }
