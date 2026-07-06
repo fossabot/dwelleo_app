@@ -617,7 +617,7 @@
 				FLAVOR = dev;
 				FLUTTER_TARGET = lib/main_dev.dart;
 				INFOPLIST_FILE = Runner/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = Dwelleo;
+				INFOPLIST_KEY_CFBundleDisplayName = "Dwelleo Dev";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.business";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -711,7 +711,7 @@
 				FLAVOR = dev;
 				FLUTTER_TARGET = lib/main_dev.dart;
 				INFOPLIST_FILE = Runner/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = Dwelleo;
+				INFOPLIST_KEY_CFBundleDisplayName = "Dwelleo Dev";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.business";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -941,7 +941,7 @@
 				FLAVOR = dev;
 				FLUTTER_TARGET = lib/main_dev.dart;
 				INFOPLIST_FILE = Runner/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = Dwelleo;
+				INFOPLIST_KEY_CFBundleDisplayName = "Dwelleo Dev";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.business";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -970,7 +970,7 @@
 				FLAVOR = dev;
 				FLUTTER_TARGET = lib/main_dev.dart;
 				INFOPLIST_FILE = Runner/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = Dwelleo;
+				INFOPLIST_KEY_CFBundleDisplayName = "Dwelleo Dev";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.business";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1107,7 +1107,7 @@
 				FLAVOR = staging;
 				FLUTTER_TARGET = lib/main_staging.dart;
 				INFOPLIST_FILE = Runner/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = Dwelleo;
+				INFOPLIST_KEY_CFBundleDisplayName = "Dwelleo Staging";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.business";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1312,7 +1312,7 @@
 				FLAVOR = staging;
 				FLUTTER_TARGET = lib/main_staging.dart;
 				INFOPLIST_FILE = Runner/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = Dwelleo;
+				INFOPLIST_KEY_CFBundleDisplayName = "Dwelleo Staging";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.business";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1408,7 +1408,7 @@
 				FLAVOR = staging;
 				FLUTTER_TARGET = lib/main_staging.dart;
 				INFOPLIST_FILE = Runner/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = Dwelleo;
+				INFOPLIST_KEY_CFBundleDisplayName = "Dwelleo Staging";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.business";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1646,7 +1646,7 @@
 				FLAVOR = dev;
 				FLUTTER_TARGET = lib/main_dev.dart;
 				INFOPLIST_FILE = Runner/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = Dwelleo;
+				INFOPLIST_KEY_CFBundleDisplayName = "Dwelleo Dev";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.business";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1674,7 +1674,7 @@
 				FLAVOR = dev;
 				FLUTTER_TARGET = lib/main_dev.dart;
 				INFOPLIST_FILE = Runner/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = Dwelleo;
+				INFOPLIST_KEY_CFBundleDisplayName = "Dwelleo Dev";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.business";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
