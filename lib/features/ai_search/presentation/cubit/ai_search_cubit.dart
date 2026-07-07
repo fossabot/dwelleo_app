@@ -1,7 +1,10 @@
+import 'dart:async';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Provides the ApiResult.when extension used below.
 import '../../../../core/errors/api_result.dart';
+import '../../../../core/errors/failure.dart';
 import '../../../properties/domain/usecases/search_properties.dart';
 import '../../domain/entities/ai_search_models.dart';
 import '../../domain/usecases/interpret_ai_query.dart';
@@ -50,8 +53,59 @@ class AiSearchCubit extends Cubit<AiSearchState> {
       return;
     }
 
+    await _resolve(utterance, interpretation);
+  }
+
+  /// The site's "Are you looking to rent or buy?" follow-up: re-runs the
+  /// last answer's interpretation with an explicit listing type, appended
+  /// as a new user turn ([label] is the localized chip the user tapped).
+  Future<void> submitRefined({
+    required String label,
+    required String listingType,
+  }) async {
+    final current = _turns;
+    if (current.isEmpty || current.last.loading) return;
+    final answer = current.last.answer;
+    if (answer == null) return;
+
+    emit(
+      AiSearchChat(
+        List.unmodifiable([
+          ...current,
+          AiSearchTurn(utterance: label, loading: true),
+        ]),
+      ),
+    );
+
+    final b = answer.interpretation;
+    await _resolve(
+      label,
+      AiInterpretation(
+        listingType: listingType,
+        propertyType: b.propertyType,
+        city: b.city,
+        minBedrooms: b.minBedrooms,
+        minBathrooms: b.minBathrooms,
+        minPrice: b.minPrice,
+        maxPrice: b.maxPrice,
+        furnishingStatus: b.furnishingStatus,
+      ),
+    );
+  }
+
+  static const _searchTimeout = Duration(seconds: 15);
+
+  Future<void> _resolve(
+    String utterance,
+    AiInterpretation interpretation,
+  ) async {
     final query = interpretation.toQuery();
-    final result = await _search(query);
+    ApiResult result;
+    try {
+      result = await _search(query).timeout(_searchTimeout);
+    } on TimeoutException {
+      result = const ApiError(NetworkFailure('Request timed out'));
+    }
     if (isClosed) return;
 
     result.when(
@@ -66,8 +120,16 @@ class AiSearchCubit extends Cubit<AiSearchState> {
           ),
         ),
       ),
-      error: (failure) =>
-          _replaceLast(AiSearchTurn(utterance: utterance, failure: failure)),
+      error: (failure) => _replaceLast(
+        AiSearchTurn(
+          utterance: utterance,
+          failure: failure,
+          // Preserved so retry() can re-run the exact filters instead of
+          // re-interpreting the utterance (which loses all filters when the
+          // utterance is a chip label like "Rent").
+          retryInterpretation: interpretation,
+        ),
+      ),
     );
   }
 
@@ -75,9 +137,25 @@ class AiSearchCubit extends Cubit<AiSearchState> {
   Future<void> retry() async {
     final current = _turns;
     if (current.isEmpty || current.last.failure == null) return;
-    final utterance = current.last.utterance;
-    emit(AiSearchChat(List.unmodifiable(current.sublist(0, current.length - 1))));
-    await submit(utterance);
+    final failed = current.last;
+    final base = current.sublist(0, current.length - 1);
+    final retryInterp = failed.retryInterpretation;
+    if (retryInterp != null) {
+      // Re-run with the exact same filters (avoids re-interpreting chip labels
+      // from submitRefined which would lose city/bedroom/price filters).
+      emit(
+        AiSearchChat(
+          List.unmodifiable([
+            ...base,
+            AiSearchTurn(utterance: failed.utterance, loading: true),
+          ]),
+        ),
+      );
+      await _resolve(failed.utterance, retryInterp);
+    } else {
+      emit(AiSearchChat(List.unmodifiable(base)));
+      await submit(failed.utterance);
+    }
   }
 
   /// Back to the welcome view (new conversation).

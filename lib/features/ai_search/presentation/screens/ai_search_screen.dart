@@ -9,21 +9,52 @@ import '../../../../core/di/service_locator.dart';
 import '../../../../core/localization/failure_l10n.dart';
 import '../../../../core/routing/route_paths.dart';
 import '../../../../core/speech/speech_service.dart';
+import '../../../../core/speech/tts_service.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/utils/arabic_utils.dart';
 import '../../../../core/utils/dwelleo_images.dart';
 import '../../../../core/utils/formatters.dart';
 import '../../../../core/widgets/dwelleo_app_bar.dart';
 import '../../../../core/widgets/motion.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../../l10n/app_localizations_ar.dart';
+import '../../../../l10n/app_localizations_en.dart';
 import '../../../properties/domain/entities/property.dart';
 import '../../domain/entities/ai_search_models.dart';
 import '../cubit/ai_search_cubit.dart';
 import '../cubit/ai_search_state.dart';
 
+// Module-level singletons — avoids allocating new l10n instances on every
+// widget rebuild or state transition.
+final _arL10n = AppLocalizationsAr();
+final _enL10n = AppLocalizationsEn();
+
+/// Conversation-language l10n: app locale takes precedence; falls back to
+/// utterance-script detection so typing Arabic in EN mode also answers in AR.
+AppLocalizations _replyL10nFor(String utterance, {bool appIsArabic = false}) =>
+    (appIsArabic || hasArabic(utterance)) ? _arL10n : _enL10n;
+
+/// The agent's conversational sentence for a resolved turn — shown in the
+/// black bubble AND spoken aloud. Null while loading.
+String? _sentenceFor(AiSearchTurn turn, AppLocalizations replyL10n) {
+  if (turn.loading) return null;
+  if (turn.failure != null) return turn.failure!.localized(replyL10n);
+  if (turn.unrecognized) return replyL10n.aiNoSignal;
+  final answer = turn.answer!;
+  final base = answer.total > 0
+      ? replyL10n.aiReplyFound(Formatters.count(answer.total))
+      : replyL10n.aiReplyNone;
+  // Site parity: when listing intent is missing, the agent asks
+  // "Are you looking to rent or buy?" (quick chips answer it).
+  final ask = answer.total > 0 && answer.interpretation.listingType == null;
+  return ask ? '$base\n${replyL10n.aiAskListing}' : base;
+}
+
 /// AI Search — the site's `/ai-voice-search` experience as a native chat:
 /// welcome + the six live-site suggestions, then a conversation where each
 /// utterance (typed or spoken) is interpreted on-device onto VERIFIED
-/// `/properties` filters and answered with live results.
+/// `/properties` filters and answered with live results — spoken back by
+/// the agent (TTS) in the user's language, like the website.
 class AiSearchScreen extends StatefulWidget {
   const AiSearchScreen({super.key});
 
@@ -35,6 +66,11 @@ class _AiSearchScreenState extends State<AiSearchScreen> {
   late final AiSearchCubit _cubit;
   late final TextEditingController _input;
   late final ScrollController _scroll;
+  final TtsService _tts = sl<TtsService>();
+
+  /// Number of resolved turns already spoken (avoids re-speaking on rebuilds).
+  int _spoken = 0;
+  bool _muted = false;
 
   @override
   void initState() {
@@ -46,10 +82,39 @@ class _AiSearchScreenState extends State<AiSearchScreen> {
 
   @override
   void dispose() {
+    _tts.stop();
     _input.dispose();
     _scroll.dispose();
     _cubit.close();
     super.dispose();
+  }
+
+  /// Speaks the newest resolved turn in the user's language (site parity:
+  /// the agent answers with its voice for BOTH typed and spoken input).
+  void _maybeSpeak(AiSearchState state, BuildContext context) {
+    switch (state) {
+      case AiSearchIdle():
+        _spoken = 0;
+        _tts.stop();
+      case AiSearchChat(:final turns):
+        final resolved = turns.where((t) => !t.loading).length;
+        if (resolved <= _spoken || turns.isEmpty || turns.last.loading) {
+          return;
+        }
+        if (_muted) return;
+        _spoken = resolved;
+        final turn = turns.last;
+        final appIsArabic =
+            Localizations.localeOf(context).languageCode == 'ar';
+        final useArabic = appIsArabic || hasArabic(turn.utterance);
+        final text = _sentenceFor(
+          turn,
+          _replyL10nFor(turn.utterance, appIsArabic: appIsArabic),
+        );
+        if (text != null) {
+          _tts.speak(text, arabic: useArabic);
+        }
+    }
   }
 
   void _send([String? text]) {
@@ -77,6 +142,16 @@ class _AiSearchScreenState extends State<AiSearchScreen> {
     return Scaffold(
       appBar: DwelleoAppBar(
         actions: [
+          IconButton(
+            tooltip: l10n.aiVoiceReplies,
+            onPressed: () => setState(() {
+              _muted = !_muted;
+              if (_muted) _tts.stop();
+            }),
+            icon: Icon(
+              _muted ? Icons.volume_off_rounded : Icons.volume_up_rounded,
+            ),
+          ),
           BlocBuilder<AiSearchCubit, AiSearchState>(
             bloc: _cubit,
             builder: (context, state) => switch (state) {
@@ -96,7 +171,10 @@ class _AiSearchScreenState extends State<AiSearchScreen> {
             Expanded(
               child: BlocConsumer<AiSearchCubit, AiSearchState>(
                 bloc: _cubit,
-                listener: (context, state) => _scrollToEnd(),
+                listener: (context, state) {
+                  _scrollToEnd();
+                  _maybeSpeak(state, context);
+                },
                 builder: (context, state) => switch (state) {
                   AiSearchIdle() => _WelcomeView(onAsk: _send),
                   AiSearchChat(:final turns) => _ThreadView(
@@ -104,6 +182,10 @@ class _AiSearchScreenState extends State<AiSearchScreen> {
                     controller: _scroll,
                     onRetry: _cubit.retry,
                     onAsk: _send,
+                    onRefine: (label, listingType) => _cubit.submitRefined(
+                      label: label,
+                      listingType: listingType,
+                    ),
                   ),
                 },
               ),
@@ -152,7 +234,7 @@ class _WelcomeView extends StatelessWidget {
       children: [
         Center(
           child: PulseGlow(
-            glowColor: AppColors.accentLight,
+            glowColor: accent,
             strength: 1.2,
             child: Container(
               width: 88,
@@ -160,10 +242,15 @@ class _WelcomeView extends StatelessWidget {
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                gradient: const LinearGradient(
+                gradient: LinearGradient(
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
-                  colors: [AppColors.accentLight, AppColors.accent],
+                  colors: brightness == Brightness.dark
+                      ? [
+                          AppColors.primary.withValues(alpha: 0.75),
+                          AppColors.primary,
+                        ]
+                      : [AppColors.accentLight, AppColors.accent],
                 ),
                 border: Border.all(
                   color: Colors.white.withValues(alpha: 0.25),
@@ -337,12 +424,14 @@ class _ThreadView extends StatelessWidget {
   final ScrollController controller;
   final VoidCallback onRetry;
   final ValueChanged<String> onAsk;
+  final void Function(String label, String listingType) onRefine;
 
   const _ThreadView({
     required this.turns,
     required this.controller,
     required this.onRetry,
     required this.onAsk,
+    required this.onRefine,
   });
 
   @override
@@ -360,7 +449,12 @@ class _ThreadView extends StatelessWidget {
             children: [
               _UserBubble(text: turn.utterance),
               const SizedBox(height: 10),
-              _AssistantEntry(turn: turn, onRetry: onRetry, onAsk: onAsk),
+              _AssistantEntry(
+                turn: turn,
+                onRetry: onRetry,
+                onAsk: onAsk,
+                onRefine: onRefine,
+              ),
             ],
           ),
         );
@@ -376,16 +470,15 @@ class _UserBubble extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final brightness = Theme.of(context).brightness;
+    // Site parity: user bubble is lime in dark mode, PURPLE in light mode.
+    final dark = Theme.of(context).brightness == Brightness.dark;
     return Align(
       alignment: AlignmentDirectional.centerEnd,
       child: Container(
         constraints: const BoxConstraints(maxWidth: 300),
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
         decoration: BoxDecoration(
-          color: brightness == Brightness.dark
-              ? AppColors.primary
-              : AppColors.ink,
+          color: dark ? AppColors.primary : AppColors.accent,
           borderRadius: const BorderRadiusDirectional.only(
             topStart: Radius.circular(16),
             topEnd: Radius.circular(16),
@@ -399,10 +492,51 @@ class _UserBubble extends StatelessWidget {
             fontSize: 13.5,
             height: 1.35,
             fontWeight: FontWeight.w600,
-            color: brightness == Brightness.dark
-                ? AppColors.ink
-                : Colors.white,
+            color: dark ? AppColors.ink : Colors.white,
           ),
+        ),
+      ),
+    );
+  }
+}
+
+/// The agent's speech bubble — theme-aware: a dark surface with white text in
+/// dark mode, and a light grey surface with dark text in light mode (a pure
+/// black bubble in light mode reads as a bug).
+class _AgentBubble extends StatelessWidget {
+  final Widget child;
+
+  const _AgentBubble({required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    final dark = Theme.of(context).brightness == Brightness.dark;
+    final scheme = Theme.of(context).colorScheme;
+    final bubble = dark ? AppColors.cardDark : const Color(0xFFEFF1EA);
+    final onBubble = dark ? Colors.white : AppColors.textPrimary;
+    return Align(
+      alignment: AlignmentDirectional.centerStart,
+      child: Container(
+        constraints: const BoxConstraints(maxWidth: 320),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
+        decoration: BoxDecoration(
+          color: bubble,
+          borderRadius: const BorderRadiusDirectional.only(
+            topStart: Radius.circular(4),
+            topEnd: Radius.circular(16),
+            bottomStart: Radius.circular(16),
+            bottomEnd: Radius.circular(16),
+          ),
+          border: Border.all(color: scheme.outline),
+        ),
+        child: DefaultTextStyle(
+          style: TextStyle(
+            fontSize: 13.5,
+            height: 1.45,
+            fontWeight: FontWeight.w500,
+            color: onBubble,
+          ),
+          child: child,
         ),
       ),
     );
@@ -413,122 +547,159 @@ class _AssistantEntry extends StatelessWidget {
   final AiSearchTurn turn;
   final VoidCallback onRetry;
   final ValueChanged<String> onAsk;
+  final void Function(String label, String listingType) onRefine;
 
   const _AssistantEntry({
     required this.turn,
     required this.onRetry,
     required this.onAsk,
+    required this.onRefine,
   });
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
+    final appL10n = AppLocalizations.of(context);
+    final appIsArabic = Localizations.localeOf(context).languageCode == 'ar';
+    final replyL10n = _replyL10nFor(turn.utterance, appIsArabic: appIsArabic);
+
+    final answer = turn.answer;
+    final askListing =
+        answer != null &&
+        answer.total > 0 &&
+        answer.interpretation.listingType == null;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _AgentBubble(
+          child: turn.loading
+              ? Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    SizedBox(
+                      width: 13,
+                      height: 13,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: AppColors.accentFor(
+                          Theme.of(context).brightness,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Text(appL10n.aiThinking),
+                  ],
+                )
+              : Text(_sentenceFor(turn, replyL10n) ?? ''),
+        ),
+        if (turn.failure != null)
+          Padding(
+            padding: const EdgeInsetsDirectional.only(start: 4, top: 2),
+            child: TextButton.icon(
+              onPressed: onRetry,
+              icon: const Icon(Icons.refresh_rounded, size: 16),
+              label: Text(replyL10n.retry),
+            ),
+          ),
+        if (turn.unrecognized)
+          Padding(
+            padding: const EdgeInsetsDirectional.only(top: 8),
+            child: Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: [
+                for (final s in [
+                  replyL10n.aiSuggestion1,
+                  replyL10n.aiSuggestion2,
+                ])
+                  ActionChip(
+                    label: Text(s, style: const TextStyle(fontSize: 11.5)),
+                    onPressed: () => onAsk(s),
+                  ),
+              ],
+            ),
+          ),
+        if (askListing)
+          Padding(
+            padding: const EdgeInsetsDirectional.only(top: 8),
+            child: Wrap(
+              spacing: 8,
+              children: [
+                for (final (label, key) in [
+                  (replyL10n.buy, 'for-sale'),
+                  (replyL10n.rent, 'for-rent'),
+                ])
+                  ActionChip(
+                    avatar: Icon(
+                      key == 'for-sale'
+                          ? Icons.sell_outlined
+                          : Icons.key_outlined,
+                      size: 15,
+                    ),
+                    label: Text(
+                      label,
+                      style: const TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    onPressed: () => onRefine(label, key),
+                  ),
+              ],
+            ),
+          ),
+        if (answer != null)
+          Padding(
+            padding: const EdgeInsetsDirectional.only(top: 10),
+            child: _ResultsCard(answer: answer, replyL10n: replyL10n),
+          ),
+      ],
+    );
+  }
+}
+
+/// Results block under the agent bubble: recognized-filter chips, live
+/// count, preview tiles and the "view all" handoff.
+class _ResultsCard extends StatelessWidget {
+  final AiSearchAnswer answer;
+  final AppLocalizations replyL10n;
+
+  const _ResultsCard({required this.answer, required this.replyL10n});
+
+  @override
+  Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     final accent = AppColors.accentFor(Theme.of(context).brightness);
 
-    final Widget body;
-    if (turn.loading) {
-      body = Row(
-        children: [
-          SizedBox(
-            width: 14,
-            height: 14,
-            child: CircularProgressIndicator(strokeWidth: 2, color: accent),
-          ),
-          const SizedBox(width: 10),
-          Text(
-            l10n.aiThinking,
-            style: TextStyle(fontSize: 12.5, color: scheme.onSurfaceVariant),
-          ),
-        ],
-      );
-    } else if (turn.failure != null) {
-      body = Column(
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: scheme.surfaceContainerHighest.withValues(alpha: 0.5),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: accent.withValues(alpha: 0.25)),
+      ),
+      child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            turn.failure!.localized(l10n),
-            style: TextStyle(
-              fontSize: 13,
-              height: 1.4,
-              color: scheme.onSurface,
-            ),
-          ),
-          const SizedBox(height: 4),
-          TextButton.icon(
-            onPressed: onRetry,
-            icon: const Icon(Icons.refresh_rounded, size: 16),
-            label: Text(l10n.retry),
-          ),
-        ],
-      );
-    } else if (turn.unrecognized) {
-      body = Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            l10n.aiNoSignal,
-            style: TextStyle(
-              fontSize: 13,
-              height: 1.45,
-              color: scheme.onSurface,
-            ),
-          ),
-          const SizedBox(height: 8),
-          Wrap(
-            spacing: 8,
-            runSpacing: 8,
+          Row(
             children: [
-              for (final s in [l10n.aiSuggestion1, l10n.aiSuggestion2])
-                ActionChip(
-                  label: Text(s, style: const TextStyle(fontSize: 11.5)),
-                  onPressed: () => onAsk(s),
+              Icon(Icons.auto_awesome, size: 14, color: accent),
+              const SizedBox(width: 6),
+              Text(
+                replyL10n.aiSearch,
+                style: TextStyle(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: 0.4,
+                  color: accent,
                 ),
+              ),
             ],
           ),
+          const SizedBox(height: 10),
+          _AnswerBody(answer: answer),
         ],
-      );
-    } else {
-      body = _AnswerBody(answer: turn.answer!);
-    }
-
-    return Align(
-      alignment: AlignmentDirectional.centerStart,
-      child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.all(14),
-        decoration: BoxDecoration(
-          color: scheme.surfaceContainerHighest.withValues(alpha: 0.5),
-          borderRadius: const BorderRadiusDirectional.only(
-            topStart: Radius.circular(4),
-            topEnd: Radius.circular(16),
-            bottomStart: Radius.circular(16),
-            bottomEnd: Radius.circular(16),
-          ),
-          border: Border.all(color: accent.withValues(alpha: 0.25)),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Icon(Icons.auto_awesome, size: 14, color: accent),
-                const SizedBox(width: 6),
-                Text(
-                  l10n.aiSearch,
-                  style: TextStyle(
-                    fontSize: 11,
-                    fontWeight: FontWeight.w800,
-                    letterSpacing: 0.4,
-                    color: accent,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 10),
-            body,
-          ],
-        ),
       ),
     );
   }

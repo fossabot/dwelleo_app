@@ -50,6 +50,7 @@ import '../../features/properties/presentation/cubit/property_detail_cubit.dart'
 import '../../features/ai_search/domain/usecases/interpret_ai_query.dart';
 import '../../features/ai_search/presentation/cubit/ai_search_cubit.dart';
 import '../speech/speech_service.dart';
+import '../speech/tts_service.dart';
 
 final sl = GetIt.instance;
 
@@ -149,6 +150,7 @@ Future<void> setupServiceLocator() async {
   // widget-layer voice input (cubit stays use-case-only per CLAUDE.md).
   sl.registerLazySingleton(() => InterpretAiQuery(sl<LookupService>()));
   sl.registerLazySingleton<SpeechService>(() => SpeechService());
+  sl.registerLazySingleton<TtsService>(() => TtsService());
   sl.registerFactory(
     () => AiSearchCubit(sl<InterpretAiQuery>(), sl<SearchProperties>()),
   );

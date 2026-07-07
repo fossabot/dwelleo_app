@@ -183,5 +183,9 @@
   "aiMicUnavailable": "الإدخال الصوتي غير متاح على هذا الجهاز — يمكنك الكتابة.",
   "aiViewAllResults": "عرض كل النتائج ({count})",
   "aiFromPrice": "من {price}",
-  "aiUpToPrice": "حتى {price}"
+  "aiUpToPrice": "حتى {price}",
+  "aiReplyFound": "وجدت {count} عقارًا مطابقًا — إليك أفضل الخيارات.",
+  "aiReplyNone": "لم أجد نتائج مطابقة. جرّب تعديل المدينة أو النوع أو الميزانية.",
+  "aiAskListing": "هل تبحث عن الإيجار أم الشراء؟",
+  "aiVoiceReplies": "الردود الصوتية"
 }

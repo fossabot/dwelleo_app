@@ -511,4 +511,19 @@ class AppLocalizationsAr extends AppLocalizations {
   String aiUpToPrice(String price) {
     return 'حتى $price';
   }
+
+  @override
+  String aiReplyFound(String count) {
+    return 'وجدت $count عقارًا مطابقًا — إليك أفضل الخيارات.';
+  }
+
+  @override
+  String get aiReplyNone =>
+      'لم أجد نتائج مطابقة. جرّب تعديل المدينة أو النوع أو الميزانية.';
+
+  @override
+  String get aiAskListing => 'هل تبحث عن الإيجار أم الشراء؟';
+
+  @override
+  String get aiVoiceReplies => 'الردود الصوتية';
 }

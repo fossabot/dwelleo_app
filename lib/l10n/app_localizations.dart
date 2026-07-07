@@ -1057,6 +1057,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Up to {price}'**
   String aiUpToPrice(String price);
+
+  /// No description provided for @aiReplyFound.
+  ///
+  /// In en, this message translates to:
+  /// **'I found {count} matching properties — here are my top picks.'**
+  String aiReplyFound(String count);
+
+  /// No description provided for @aiReplyNone.
+  ///
+  /// In en, this message translates to:
+  /// **'I couldn\'t find matches for that. Try adjusting the city, type or budget.'**
+  String get aiReplyNone;
+
+  /// No description provided for @aiAskListing.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you looking to rent or buy?'**
+  String get aiAskListing;
+
+  /// No description provided for @aiVoiceReplies.
+  ///
+  /// In en, this message translates to:
+  /// **'Voice replies'**
+  String get aiVoiceReplies;
 }
 
 class _AppLocalizationsDelegate

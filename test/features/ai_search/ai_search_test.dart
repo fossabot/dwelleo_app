@@ -229,6 +229,57 @@ void main() {
       await cubit.close();
     });
 
+    test('submitRefined appends a turn with the listing type applied',
+        () async {
+      final repo = _StubRepo();
+      final cubit = AiSearchCubit(_FakeInterpret(), SearchProperties(repo));
+      await cubit.submit('3 bedroom apartments in Riyadh');
+      expect(
+        (cubit.state as AiSearchChat).turns.last.answer!.query.listingType,
+        isNull,
+      );
+
+      await cubit.submitRefined(label: 'Rent', listingType: 'for-rent');
+      final turns = (cubit.state as AiSearchChat).turns;
+      expect(turns.length, 2);
+      expect(turns.last.utterance, 'Rent');
+      final q = turns.last.answer!.query;
+      expect(q.listingType, 'for-rent');
+      expect(q.propertyTypeIds, [1], reason: 'keeps the prior filters');
+      expect(q.cityId, 1);
+      expect(q.minBedrooms, 3);
+      await cubit.close();
+    });
+
+    test('retry after submitRefined preserves all original filters', () async {
+      // Fail the 2nd search call (the submitRefined call) so we get a failure
+      // turn that carries retryInterpretation; retry must re-run those exact
+      // filters rather than re-interpreting the chip label "Rent".
+      final repo = _StubRepo(failOnCall: 2);
+      final cubit = AiSearchCubit(_FakeInterpret(), SearchProperties(repo));
+      await cubit.submit('3 bedroom apartments in Riyadh');
+      await cubit.submitRefined(label: 'Rent', listingType: 'for-rent');
+
+      final failed = (cubit.state as AiSearchChat).turns.last;
+      expect(failed.failure, isA<NetworkFailure>());
+      expect(failed.retryInterpretation?.listingType, 'for-rent');
+      expect(failed.retryInterpretation?.minBedrooms, 3);
+
+      await cubit.retry();
+      final q = (cubit.state as AiSearchChat).turns.last.answer!.query;
+      expect(q.listingType, 'for-rent', reason: 'listing type survives retry');
+      expect(q.cityId, 1, reason: 'city filter preserved');
+      expect(q.minBedrooms, 3, reason: 'bedroom filter preserved');
+      await cubit.close();
+    });
+
+    test('submitRefined without a prior answer is a no-op', () async {
+      final cubit = AiSearchCubit(_FakeInterpret(), SearchProperties(_StubRepo()));
+      await cubit.submitRefined(label: 'Rent', listingType: 'for-rent');
+      expect(cubit.state, isA<AiSearchIdle>());
+      await cubit.close();
+    });
+
     test('reset returns to the welcome state', () async {
       final cubit = AiSearchCubit(_FakeInterpret(), SearchProperties(_StubRepo()));
       await cubit.submit('villas in Riyadh');
@@ -263,14 +314,17 @@ class _FakeLookup extends LookupService {
 
 class _StubRepo implements PropertyRepository {
   final bool failFirst;
+  /// If set, the call at this 1-indexed position returns a failure.
+  final int? failOnCall;
   int searchCalls = 0;
 
-  _StubRepo({this.failFirst = false});
+  _StubRepo({this.failFirst = false, this.failOnCall});
 
   @override
   Future<ApiResult<PropertyPage>> searchProperties(PropertyQuery query) async {
     searchCalls++;
-    if (failFirst && searchCalls == 1) {
+    if ((failFirst && searchCalls == 1) ||
+        (failOnCall != null && searchCalls == failOnCall)) {
       return const ApiError(NetworkFailure());
     }
     return ApiSuccess(

@@ -71,7 +71,7 @@ class InterpretAiQuery {
         .replaceAll('ى', 'ي')
         .replaceAll('ئ', 'ي')
         .replaceAll('ؤ', 'و')
-        .replaceAll(RegExp(r'[^a-z0-9؀-ۿ.]+'), ' ');
+        .replaceAll(RegExp(r'[^a-z0-9؀-ۿݐ-ݿﭐ-﷿ﹰ-ﻼ.]+'), ' ');
     return ' ${s.trim()} ';
   }
 

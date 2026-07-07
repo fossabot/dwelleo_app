@@ -77,6 +77,9 @@ dependencies:
   # interpreter as typed queries. `record` stays for the future audio-upload
   # flow once that contract is captured.
   speech_to_text: ^7.3.0
+  # Agent voice replies for AI Search (site parity: the assistant SPEAKS its
+  # answers in AR/EN). On-device TTS, verified publisher, latest stable.
+  flutter_tts: ^4.2.5
 
 dev_dependencies:
   flutter_test:

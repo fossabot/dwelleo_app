@@ -87,11 +87,17 @@ class AiSearchTurn {
   final Failure? failure;
   final bool unrecognized;
 
+  /// Stored on failed turns so [AiSearchCubit.retry] can re-run the exact
+  /// same [AiInterpretation] instead of re-interpreting the utterance (which
+  /// loses all filters when the utterance is a chip label like "Rent").
+  final AiInterpretation? retryInterpretation;
+
   const AiSearchTurn({
     required this.utterance,
     this.loading = false,
     this.answer,
     this.failure,
     this.unrecognized = false,
+    this.retryInterpretation,
   });
 }

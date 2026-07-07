@@ -514,4 +514,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String aiUpToPrice(String price) {
     return 'Up to $price';
   }
+
+  @override
+  String aiReplyFound(String count) {
+    return 'I found $count matching properties — here are my top picks.';
+  }
+
+  @override
+  String get aiReplyNone =>
+      'I couldn\'t find matches for that. Try adjusting the city, type or budget.';
+
+  @override
+  String get aiAskListing => 'Are you looking to rent or buy?';
+
+  @override
+  String get aiVoiceReplies => 'Voice replies';
 }

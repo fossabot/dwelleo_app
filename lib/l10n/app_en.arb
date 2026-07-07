@@ -204,5 +204,16 @@
         "type": "String"
       }
     }
-  }
+  },
+  "aiReplyFound": "I found {count} matching properties — here are my top picks.",
+  "@aiReplyFound": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "aiReplyNone": "I couldn't find matches for that. Try adjusting the city, type or budget.",
+  "aiAskListing": "Are you looking to rent or buy?",
+  "aiVoiceReplies": "Voice replies"
 }
