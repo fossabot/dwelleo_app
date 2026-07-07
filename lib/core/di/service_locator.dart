@@ -34,14 +34,23 @@ import '../../features/home/presentation/cubit/market_map_cubit.dart';
 import '../../features/home/presentation/cubit/market_stats_cubit.dart';
 import '../../features/home/presentation/cubit/search_box_cubit.dart';
 import '../session/session_state.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
+
+import '../analytics/analytics_service.dart';
 import '../storage/recent_searches_store.dart';
+import '../storage/saved_searches_store.dart';
 import '../../features/properties/data/datasources/property_remote_data_source.dart';
 import '../../features/properties/data/repositories/property_repository_impl.dart';
 import '../../features/properties/domain/repositories/property_repository.dart';
 import '../../features/properties/domain/usecases/get_properties.dart';
 import '../../features/properties/domain/usecases/get_property_detail.dart';
+import '../../features/properties/domain/usecases/search_properties.dart';
 import '../../features/properties/presentation/cubit/properties_cubit.dart';
 import '../../features/properties/presentation/cubit/property_detail_cubit.dart';
+import '../../features/ai_search/domain/usecases/interpret_ai_query.dart';
+import '../../features/ai_search/presentation/cubit/ai_search_cubit.dart';
+import '../speech/speech_service.dart';
+import '../speech/tts_service.dart';
 
 final sl = GetIt.instance;
 
@@ -131,9 +140,20 @@ Future<void> setupServiceLocator() async {
     () => PropertyRepositoryImpl(sl<PropertyRemoteDataSource>()),
   );
   sl.registerLazySingleton(() => GetProperties(sl<PropertyRepository>()));
+  sl.registerLazySingleton(() => SearchProperties(sl<PropertyRepository>()));
   sl.registerLazySingleton(() => GetPropertyDetail(sl<PropertyRepository>()));
-  sl.registerFactory(() => PropertiesCubit(sl<GetProperties>()));
+  sl.registerFactory(() => PropertiesCubit(sl<SearchProperties>()));
   sl.registerFactory(() => PropertyDetailCubit(sl<GetPropertyDetail>()));
+
+  // ── Feature: AI Search (PR-11) ───────────────────────────────────────────
+  // On-device interpreter over verified /properties filters; SpeechService is
+  // widget-layer voice input (cubit stays use-case-only per CLAUDE.md).
+  sl.registerLazySingleton(() => InterpretAiQuery(sl<LookupService>()));
+  sl.registerLazySingleton<SpeechService>(() => SpeechService());
+  sl.registerLazySingleton<TtsService>(() => TtsService());
+  sl.registerFactory(
+    () => AiSearchCubit(sl<InterpretAiQuery>(), sl<SearchProperties>()),
+  );
 
   // ── Feature: Home / Explore ───────────────────────────────────────────────
   sl.registerLazySingleton<HomeRemoteDataSource>(
@@ -148,6 +168,10 @@ Future<void> setupServiceLocator() async {
   sl.registerLazySingleton(() => GetCityMarketStats(sl<HomeRepository>()));
   sl.registerLazySingleton(() => GetMarketDistricts(sl<HomeRepository>()));
   sl.registerLazySingleton<RecentSearchesStore>(RecentSearchesStore.new);
+  sl.registerLazySingleton<SavedSearchesStore>(SavedSearchesStore.new);
+  sl.registerLazySingleton<AnalyticsService>(
+    () => AnalyticsService(FirebaseAnalytics.instance),
+  );
   sl.registerFactory(
     () => HomeCubit(
       sl<GetProperties>(),

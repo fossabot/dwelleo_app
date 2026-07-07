@@ -1,6 +1,8 @@
 import '../../../../core/data/models/shared_models.dart';
 import '../../../../core/utils/json_parse.dart';
+import '../../domain/entities/page_info.dart';
 import '../../domain/entities/property.dart';
+import '../../domain/entities/property_page.dart';
 
 /// Maps the verified real Dwelleo JSON (see docs/api/REAL_API_SPEC.md) into
 /// domain [Property] entities. All parsing is null-tolerant and type-tolerant
@@ -15,6 +17,25 @@ abstract final class PropertyModel {
         .whereType<Map<String, dynamic>>()
         .map(fromJson)
         .toList(growable: false);
+  }
+
+  /// Parse a paginated-search envelope `{data:{properties:[...],
+  /// pagination:{...}}}` (present whenever `page` is sent — verified live).
+  static PropertyPage pageFromEnvelope(Map<String, dynamic> json) {
+    final data = _asMap(json['data']);
+    final pag = _asMap(data?['pagination']);
+    return PropertyPage(
+      properties: listFromEnvelope(json),
+      pageInfo: pag == null
+          ? null
+          : PageInfo(
+              total: _toInt(pag['total']) ?? 0,
+              count: _toInt(pag['count']) ?? 0,
+              perPage: _toInt(pag['per_page']) ?? 20,
+              currentPage: _toInt(pag['current_page']) ?? 1,
+              totalPages: _toInt(pag['total_pages']) ?? 1,
+            ),
+    );
   }
 
   /// Parse the detail envelope. Tolerates `{data:{...}}` or `{data:{property:{...}}}`.

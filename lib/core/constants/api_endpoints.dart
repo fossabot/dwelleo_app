@@ -12,8 +12,13 @@ abstract final class ApiEndpoints {
   static const String _base = '/api/v1';
 
   // ---- Reads: catalog (public, no auth) ------------------------------------
-  /// GET — home/featured set `{message,data:{properties:[...]}}`.
-  /// Filtered search uses Spatie params, see [PropertyFilters]. Detail: [propertyBySlug].
+  /// GET — dual-mode (re-verified live 2026-07-06):
+  ///  • bare call → curated home/featured set `{message,data:{properties}}`
+  ///  • with `?page=N` → PAGINATED SEARCH: `{message,data:{properties[20],
+  ///    pagination{total,count,per_page:20,current_page,total_pages}}}`,
+  ///    honoring filter[listing_type|city_id|bedrooms|min_price|max_price]
+  ///    and filter[property_types][] (array syntax). Corpus at capture:
+  ///    1,912 properties / 96 pages.
   static const String properties = '$_base/properties';
   static String propertyBySlug(String slug) => '$_base/properties/$slug';
 
@@ -150,8 +155,16 @@ abstract final class PropertyFilters {
   /// On /developers: `broker` returns the brokers list (the website's
   /// "Top Real Estate Brokers" tab). CAPTURED live 2026-07-02.
   static const String userType = 'filter[user_type]';
+  /// VERIFIED NO-OP (live probe 2026-07-06): the backend accepts this key
+  /// but does not filter by it. Kept only as documentation — do not send.
   static const String propertyType = 'filter[property_type]';
+
+  /// VERIFIED (live probe 2026-07-06): must use ARRAY syntax — repeat
+  /// `filter[property_types][]=id`; comma-joined values return HTTP 422
+  /// ("must be an array"). `filter[property_types][]=2` → 286 villas,
+  /// matching the website's type-menu count.
   static const String propertyTypes = 'filter[property_types]';
+  static const String propertyTypesArray = 'filter[property_types][]';
   static const String unitType = 'filter[unit_type]';
   static const String bedrooms = 'filter[bedrooms]';
   static const String bathrooms = 'filter[bathrooms]';

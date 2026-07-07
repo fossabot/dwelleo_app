@@ -36,6 +36,8 @@
 		<string>Dwelleo uses your location to show nearby properties and travel times.</string>
 		<key>NSMicrophoneUsageDescription</key>
 		<string>Dwelleo uses the microphone for AI voice search.</string>
+		<key>NSSpeechRecognitionUsageDescription</key>
+		<string>Dwelleo transcribes your voice on-device to search properties naturally.</string>
 		<key>NSPhotoLibraryUsageDescription</key>
 		<string>Dwelleo accesses your photos to attach images to property listings.</string>
 		<key>UIApplicationSceneManifest</key>

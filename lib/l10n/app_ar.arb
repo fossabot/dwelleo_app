@@ -141,5 +141,51 @@
   "expectedHandover": "التسليم المتوقع",
   "viewProperties": "عرض العقارات",
   "viewPropertiesHint": "يفتح إعلانات هذا الشريك مباشرةً",
-  "recenter": "إعادة التمركز"
+  "recenter": "إعادة التمركز",
+  "filters": "التصفية",
+  "reset": "إعادة تعيين",
+  "showResults": "عرض النتائج",
+  "savedSearches": "عمليات البحث المحفوظة",
+  "saveSearch": "احفظ هذا البحث",
+  "searchSaved": "تم حفظ البحث — تجده في التصفية.",
+  "resultsCount": "{count} نتيجة",
+  "@resultsCount": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "priceRangeSar": "السعر (ريال)",
+  "minPrice": "الأدنى",
+  "maxPrice": "الأقصى",
+  "furnishing": "التأثيث",
+  "furnishingUnfurnished": "غير مؤثثة",
+  "furnishingSemi": "شبه مؤثثة",
+  "furnishingPartially": "مؤثثة جزئيًا",
+  "contactUnavailable": "بيانات التواصل غير متاحة لهذا الإعلان.",
+  "aiWelcomeTitle": "مرحبًا بك في البحث العقاري",
+  "aiWelcomeSubtitle": "مساعدك العقاري المتطور بالذكاء الاصطناعي",
+  "aiWelcomeBody": "ابحث عن عقارك بصوتك أو بالكتابة، ودويليو يساعدك لتجد بيت أحلامك بسهولة.",
+  "aiWelcomeTip": "تلميح: يمكنك كتابة طلبك أو استخدام زر الميكروفون للتحدث بشكل طبيعي",
+  "aiTryAsking": "جرب أن تسألني:",
+  "aiSuggestion1": "شقق 3 غرف نوم في الرياض",
+  "aiSuggestion2": "أرخص الفلل للإيجار",
+  "aiSuggestion3": "عقارات بمسبح وصالة رياضية",
+  "aiSuggestion4": "مساحات مكتبية في حي الملك عبدالله المالي",
+  "aiSuggestion5": "بنتهاوس فاخر بأكثر من 10 مليون",
+  "aiSuggestion6": "شقق مفروشة في الرياض",
+  "aiComposerHint": "صف العقار الذي تبحث عنه…",
+  "aiListening": "جارٍ الاستماع…",
+  "aiThinking": "نبحث في الإعلانات المباشرة…",
+  "aiUnderstoodIntro": "هذا ما فهمته منك:",
+  "aiNoSignal": "لم أتعرّف على مدينة أو نوع عقار أو غرف أو سعر. جرّب صياغة مثل الاقتراحات أدناه.",
+  "aiMicUnavailable": "الإدخال الصوتي غير متاح على هذا الجهاز — يمكنك الكتابة.",
+  "aiViewAllResults": "عرض كل النتائج ({count})",
+  "aiFromPrice": "من {price}",
+  "aiUpToPrice": "حتى {price}",
+  "aiReplyFound": "وجدت {count} عقارًا مطابقًا — إليك أفضل الخيارات.",
+  "aiReplyNone": "لم أجد نتائج مطابقة. جرّب تعديل المدينة أو النوع أو الميزانية.",
+  "aiAskListing": "هل تبحث عن الإيجار أم الشراء؟",
+  "aiVoiceReplies": "الردود الصوتية"
 }

@@ -847,6 +847,240 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Recenter'**
   String get recenter;
+
+  /// No description provided for @filters.
+  ///
+  /// In en, this message translates to:
+  /// **'Filters'**
+  String get filters;
+
+  /// No description provided for @reset.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset'**
+  String get reset;
+
+  /// No description provided for @showResults.
+  ///
+  /// In en, this message translates to:
+  /// **'Show Results'**
+  String get showResults;
+
+  /// No description provided for @savedSearches.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved searches'**
+  String get savedSearches;
+
+  /// No description provided for @saveSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Save this search'**
+  String get saveSearch;
+
+  /// No description provided for @searchSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Search saved — find it in Filters.'**
+  String get searchSaved;
+
+  /// No description provided for @resultsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} results'**
+  String resultsCount(String count);
+
+  /// No description provided for @priceRangeSar.
+  ///
+  /// In en, this message translates to:
+  /// **'Price (SAR)'**
+  String get priceRangeSar;
+
+  /// No description provided for @minPrice.
+  ///
+  /// In en, this message translates to:
+  /// **'Min'**
+  String get minPrice;
+
+  /// No description provided for @maxPrice.
+  ///
+  /// In en, this message translates to:
+  /// **'Max'**
+  String get maxPrice;
+
+  /// No description provided for @furnishing.
+  ///
+  /// In en, this message translates to:
+  /// **'Furnishing'**
+  String get furnishing;
+
+  /// No description provided for @furnishingUnfurnished.
+  ///
+  /// In en, this message translates to:
+  /// **'Unfurnished'**
+  String get furnishingUnfurnished;
+
+  /// No description provided for @furnishingSemi.
+  ///
+  /// In en, this message translates to:
+  /// **'Semi-furnished'**
+  String get furnishingSemi;
+
+  /// No description provided for @furnishingPartially.
+  ///
+  /// In en, this message translates to:
+  /// **'Partially furnished'**
+  String get furnishingPartially;
+
+  /// No description provided for @contactUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact details are not available for this listing.'**
+  String get contactUnavailable;
+
+  /// No description provided for @aiWelcomeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome to Property Search'**
+  String get aiWelcomeTitle;
+
+  /// No description provided for @aiWelcomeSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your AI-powered real estate assistant'**
+  String get aiWelcomeSubtitle;
+
+  /// No description provided for @aiWelcomeBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Search for properties by voice or text, and Dwelleo helps you find your dream home with ease.'**
+  String get aiWelcomeBody;
+
+  /// No description provided for @aiWelcomeTip.
+  ///
+  /// In en, this message translates to:
+  /// **'Tip: You can type your query or use the microphone button to speak naturally'**
+  String get aiWelcomeTip;
+
+  /// No description provided for @aiTryAsking.
+  ///
+  /// In en, this message translates to:
+  /// **'Try asking me:'**
+  String get aiTryAsking;
+
+  /// No description provided for @aiSuggestion1.
+  ///
+  /// In en, this message translates to:
+  /// **'3 bedroom apartments in Riyadh'**
+  String get aiSuggestion1;
+
+  /// No description provided for @aiSuggestion2.
+  ///
+  /// In en, this message translates to:
+  /// **'Cheapest villas for rent'**
+  String get aiSuggestion2;
+
+  /// No description provided for @aiSuggestion3.
+  ///
+  /// In en, this message translates to:
+  /// **'Properties with pool and gym'**
+  String get aiSuggestion3;
+
+  /// No description provided for @aiSuggestion4.
+  ///
+  /// In en, this message translates to:
+  /// **'Office space in King Abdullah Financial District'**
+  String get aiSuggestion4;
+
+  /// No description provided for @aiSuggestion5.
+  ///
+  /// In en, this message translates to:
+  /// **'Luxury penthouse above 10 million'**
+  String get aiSuggestion5;
+
+  /// No description provided for @aiSuggestion6.
+  ///
+  /// In en, this message translates to:
+  /// **'Furnished apartments in Riyadh'**
+  String get aiSuggestion6;
+
+  /// No description provided for @aiComposerHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Describe the property you\'re looking for…'**
+  String get aiComposerHint;
+
+  /// No description provided for @aiListening.
+  ///
+  /// In en, this message translates to:
+  /// **'Listening…'**
+  String get aiListening;
+
+  /// No description provided for @aiThinking.
+  ///
+  /// In en, this message translates to:
+  /// **'Searching live listings…'**
+  String get aiThinking;
+
+  /// No description provided for @aiUnderstoodIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'Here\'s what I understood:'**
+  String get aiUnderstoodIntro;
+
+  /// No description provided for @aiNoSignal.
+  ///
+  /// In en, this message translates to:
+  /// **'I didn\'t catch a city, property type, bedrooms or price in that. Try something like the suggestions below.'**
+  String get aiNoSignal;
+
+  /// No description provided for @aiMicUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Voice input isn\'t available on this device — you can still type.'**
+  String get aiMicUnavailable;
+
+  /// No description provided for @aiViewAllResults.
+  ///
+  /// In en, this message translates to:
+  /// **'View all {count} results'**
+  String aiViewAllResults(String count);
+
+  /// No description provided for @aiFromPrice.
+  ///
+  /// In en, this message translates to:
+  /// **'From {price}'**
+  String aiFromPrice(String price);
+
+  /// No description provided for @aiUpToPrice.
+  ///
+  /// In en, this message translates to:
+  /// **'Up to {price}'**
+  String aiUpToPrice(String price);
+
+  /// No description provided for @aiReplyFound.
+  ///
+  /// In en, this message translates to:
+  /// **'I found {count} matching properties — here are my top picks.'**
+  String aiReplyFound(String count);
+
+  /// No description provided for @aiReplyNone.
+  ///
+  /// In en, this message translates to:
+  /// **'I couldn\'t find matches for that. Try adjusting the city, type or budget.'**
+  String get aiReplyNone;
+
+  /// No description provided for @aiAskListing.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you looking to rent or buy?'**
+  String get aiAskListing;
+
+  /// No description provided for @aiVoiceReplies.
+  ///
+  /// In en, this message translates to:
+  /// **'Voice replies'**
+  String get aiVoiceReplies;
 }
 
 class _AppLocalizationsDelegate

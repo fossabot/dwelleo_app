@@ -189,7 +189,7 @@ class _PartnersTab extends StatelessWidget {
   }
 }
 
-/// Site-style partner card: white logo plate, name, lime divider and the
+///// Site-style partner card: white logo plate, name, lime divider and the
 /// circular arrow. Tapping opens the partner sheet whose CTA lists the
 /// partner's real properties (`filter[developer_id]`).
 class _PartnerCard extends StatelessWidget {
@@ -200,7 +200,6 @@ class _PartnerCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    final brightness = Theme.of(context).brightness;
     void open() => showPartnerDetailsSheet(context, partner);
 
     return Material(
@@ -269,26 +268,41 @@ class _PartnerCard extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 8),
-              // Site's circular FORWARD-arrow (→), tinted with the theme accent
-              // (lime in dark, purple in light) with a readable arrow on top.
-              Material(
-                color: AppColors.accentFor(brightness),
-                shape: const CircleBorder(),
-                child: InkWell(
-                  onTap: open,
-                  customBorder: const CircleBorder(),
-                  child: SizedBox(
-                    width: 34,
-                    height: 34,
-                    child: Icon(
-                      Icons.arrow_forward,
-                      size: 18,
-                      color: AppColors.onAccentFor(brightness),
-                    ),
-                  ),
-                ),
-              ),
+              // Site's circular forward-arrow, accent-tinted and RTL-aware.
+              _PartnerArrow(onTap: open),
             ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Site-exact partner-card arrow: solid accent disc (lime in dark, purple
+/// in light) with a forward arrow that mirrors in RTL.
+class _PartnerArrow extends StatelessWidget {
+  final VoidCallback onTap;
+
+  const _PartnerArrow({required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    final rtl = Directionality.of(context) == TextDirection.rtl;
+    final brightness = Theme.of(context).brightness;
+
+    return Material(
+      color: AppColors.accentFor(brightness),
+      shape: const CircleBorder(),
+      child: InkWell(
+        onTap: onTap,
+        customBorder: const CircleBorder(),
+        child: SizedBox(
+          width: 34,
+          height: 34,
+          child: Icon(
+            rtl ? Icons.arrow_back_rounded : Icons.arrow_forward_rounded,
+            size: 18,
+            color: AppColors.onAccentFor(brightness),
           ),
         ),
       ),

@@ -4,6 +4,7 @@ import '../../../../core/errors/api_result.dart';
 import '../../../../core/errors/failure.dart';
 import '../../../../core/network/dio_client.dart';
 import '../../domain/entities/property.dart';
+import '../../domain/entities/property_page.dart';
 import '../../domain/entities/property_query.dart';
 import '../../domain/repositories/property_repository.dart';
 import '../datasources/property_remote_data_source.dart';
@@ -17,6 +18,11 @@ class PropertyRepositoryImpl implements PropertyRepository {
   @override
   Future<ApiResult<List<Property>>> getProperties({PropertyQuery? query}) {
     return _guard(() => _remote.getProperties(query: query));
+  }
+
+  @override
+  Future<ApiResult<PropertyPage>> searchProperties(PropertyQuery query) {
+    return _guard(() => _remote.searchProperties(query));
   }
 
   @override

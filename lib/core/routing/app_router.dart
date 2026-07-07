@@ -15,6 +15,7 @@ import '../../features/home/presentation/screens/home_screen.dart';
 import '../../features/onboarding/presentation/screens/language_selection_screen.dart';
 import '../../features/onboarding/presentation/screens/onboarding_screen.dart';
 import '../../features/profile/presentation/screens/profile_screen.dart';
+import '../../features/properties/domain/entities/property_query.dart';
 import '../../features/properties/presentation/screens/properties_list_screen.dart';
 import '../../features/properties/presentation/screens/property_detail_screen.dart';
 import '../../features/properties/presentation/screens/saved_properties_screen.dart';
@@ -164,18 +165,22 @@ class AppRouter {
       GoRoute(
         path: RoutePaths.propertySearch,
         name: RoutePaths.propertySearch,
-        builder: (context, state) => PropertiesListScreen(
-          listingType: state.uri.queryParameters['type'],
-          cityId: int.tryParse(state.uri.queryParameters['city'] ?? ''),
-          propertyTypeId: int.tryParse(
-            state.uri.queryParameters['ptype'] ?? '',
-          ),
-          developerId: int.tryParse(state.uri.queryParameters['dev'] ?? ''),
-          // Optional pre-localized title from the caller (e.g. Home quick
-          // actions pass "Apartments in Riyadh"; partner sheets pass the
-          // developer's name).
-          title: state.extra as String?,
-        ),
+        builder: (context, state) {
+          // `extra` union: a String pre-localized title (Home quick actions,
+          // partner sheets) OR a full PropertyQuery (AI Search hands over its
+          // interpreted query so both screens show identical results).
+          final extra = state.extra;
+          return PropertiesListScreen(
+            listingType: state.uri.queryParameters['type'],
+            cityId: int.tryParse(state.uri.queryParameters['city'] ?? ''),
+            propertyTypeId: int.tryParse(
+              state.uri.queryParameters['ptype'] ?? '',
+            ),
+            developerId: int.tryParse(state.uri.queryParameters['dev'] ?? ''),
+            title: extra is String ? extra : null,
+            initialQuery: extra is PropertyQuery ? extra : null,
+          );
+        },
       ),
       GoRoute(
         path: RoutePaths.propertyDetail,

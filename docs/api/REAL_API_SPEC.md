@@ -141,6 +141,15 @@ where observed; otherwise inferred (verify body before coding — see `@bodyPend
 `/user/ai/villa-prediction`, `/user/ai/rental-prediction`, `/user/ai/poi/categories`,
 `/user/ai/poi/nearby`, `/user/ai/voice/conversations/process`
 
+> **AI status (2026-07-07, PR-11):** all `/user/ai/*` bodies remain PENDING —
+> mobile AI Search ships with a deterministic on-device interpreter over the
+> verified `/properties` + `/lookup` contracts
+> (`features/ai_search/domain/usecases/interpret_ai_query.dart`) plus
+> on-device STT for voice. The two public `dwelleo-support-assistant` repos
+> were audited (`docs/ai/AI_REPOS_ALIGNMENT.md`): support-assistant PoCs only,
+> no `api.dwelleo.sa` contracts inside. The live `/en/ai-Sales` page now
+> confirms **BITEP** (Budget, Intent, Timeline, Eligibility, Preferences).
+
 **Leads / contact / misc:** `/leads/ingest`, `/leads/ingest/batches`, `/contact-us`,
 `/complains`, `/newsletter/subscribe`, `/subscribe`, `/upload`,
 `/listings/generate-ai-content`, `/company-brief/document-templates`,
@@ -168,11 +177,19 @@ sort[created_at]            page
 ```
 Brackets must be URL-encoded (`filter%5Blisting_type%5D`).
 
-> **Still PENDING (capture from a live call):** the exact JSON **envelope of the FILTERED/paginated
-> search** (bare `/properties` returns the non-paginated home set; adding `page`/`filter` to it
-> returned empty in a raw probe — the site issues this server-side, so capture the real request),
-> and the exact **request bodies** for all POST endpoints (Nafath, leads/ingest, contact-us,
-> complains, predictions, voice). These appear the moment you perform the action while connected.
+> **RESOLVED 2026-07-06 (live probes, PR-7):** the FILTERED/PAGINATED search is
+> `/properties` itself — sending `?page=N` switches it into search mode and the
+> response gains `data.pagination {total, count, per_page:20 (fixed),
+> current_page, total_pages}` (corpus at capture: 1,912 / 96 pages).
+> CONFIRMED filters: `filter[listing_type]`, `filter[city_id]`,
+> `filter[bedrooms]`, `filter[min_price]`, `filter[max_price]`, and
+> `filter[property_types][]` — ARRAY syntax required (repeat the key per value;
+> comma-joined returns HTTP 422 `{message, errors{field:[…]}}` localized).
+> `filter[property_types][]=2` → 286 results, matching the site's Villa count.
+> The singular `filter[property_type]` is accepted but DOES NOT FILTER — never send it.
+>
+> **Still PENDING:** exact **request bodies** for all POST endpoints (Nafath,
+> leads/ingest, contact-us, complains, predictions, voice) — capture live.
 
 ## Localization
 - Send `Accept-Language: ar` or `en`. Localized fields are delivered both as a resolved

@@ -3,6 +3,8 @@
     <!-- Location (geolocator + "Use current location" on the map picker). -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <!-- AI Search voice input (speech_to_text, on-device STT). -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
     <application
         android:label="@string/app_name"
         android:name="${applicationName}"
@@ -51,6 +53,11 @@
         <intent>
             <action android:name="android.intent.action.PROCESS_TEXT"/>
             <data android:mimeType="text/plain"/>
+        </intent>
+        <!-- Required on targetSdk 30+ so speech_to_text can bind the
+             platform speech recognizer. -->
+        <intent>
+            <action android:name="android.speech.RecognitionService"/>
         </intent>
     </queries>
 </manifest>

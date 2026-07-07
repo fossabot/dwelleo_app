@@ -395,4 +395,138 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get recenter => 'Recenter';
+
+  @override
+  String get filters => 'Filters';
+
+  @override
+  String get reset => 'Reset';
+
+  @override
+  String get showResults => 'Show Results';
+
+  @override
+  String get savedSearches => 'Saved searches';
+
+  @override
+  String get saveSearch => 'Save this search';
+
+  @override
+  String get searchSaved => 'Search saved — find it in Filters.';
+
+  @override
+  String resultsCount(String count) {
+    return '$count results';
+  }
+
+  @override
+  String get priceRangeSar => 'Price (SAR)';
+
+  @override
+  String get minPrice => 'Min';
+
+  @override
+  String get maxPrice => 'Max';
+
+  @override
+  String get furnishing => 'Furnishing';
+
+  @override
+  String get furnishingUnfurnished => 'Unfurnished';
+
+  @override
+  String get furnishingSemi => 'Semi-furnished';
+
+  @override
+  String get furnishingPartially => 'Partially furnished';
+
+  @override
+  String get contactUnavailable =>
+      'Contact details are not available for this listing.';
+
+  @override
+  String get aiWelcomeTitle => 'Welcome to Property Search';
+
+  @override
+  String get aiWelcomeSubtitle => 'Your AI-powered real estate assistant';
+
+  @override
+  String get aiWelcomeBody =>
+      'Search for properties by voice or text, and Dwelleo helps you find your dream home with ease.';
+
+  @override
+  String get aiWelcomeTip =>
+      'Tip: You can type your query or use the microphone button to speak naturally';
+
+  @override
+  String get aiTryAsking => 'Try asking me:';
+
+  @override
+  String get aiSuggestion1 => '3 bedroom apartments in Riyadh';
+
+  @override
+  String get aiSuggestion2 => 'Cheapest villas for rent';
+
+  @override
+  String get aiSuggestion3 => 'Properties with pool and gym';
+
+  @override
+  String get aiSuggestion4 =>
+      'Office space in King Abdullah Financial District';
+
+  @override
+  String get aiSuggestion5 => 'Luxury penthouse above 10 million';
+
+  @override
+  String get aiSuggestion6 => 'Furnished apartments in Riyadh';
+
+  @override
+  String get aiComposerHint => 'Describe the property you\'re looking for…';
+
+  @override
+  String get aiListening => 'Listening…';
+
+  @override
+  String get aiThinking => 'Searching live listings…';
+
+  @override
+  String get aiUnderstoodIntro => 'Here\'s what I understood:';
+
+  @override
+  String get aiNoSignal =>
+      'I didn\'t catch a city, property type, bedrooms or price in that. Try something like the suggestions below.';
+
+  @override
+  String get aiMicUnavailable =>
+      'Voice input isn\'t available on this device — you can still type.';
+
+  @override
+  String aiViewAllResults(String count) {
+    return 'View all $count results';
+  }
+
+  @override
+  String aiFromPrice(String price) {
+    return 'From $price';
+  }
+
+  @override
+  String aiUpToPrice(String price) {
+    return 'Up to $price';
+  }
+
+  @override
+  String aiReplyFound(String count) {
+    return 'I found $count matching properties — here are my top picks.';
+  }
+
+  @override
+  String get aiReplyNone =>
+      'I couldn\'t find matches for that. Try adjusting the city, type or budget.';
+
+  @override
+  String get aiAskListing => 'Are you looking to rent or buy?';
+
+  @override
+  String get aiVoiceReplies => 'Voice replies';
 }

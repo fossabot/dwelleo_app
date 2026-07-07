@@ -394,4 +394,136 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get recenter => 'إعادة التمركز';
+
+  @override
+  String get filters => 'التصفية';
+
+  @override
+  String get reset => 'إعادة تعيين';
+
+  @override
+  String get showResults => 'عرض النتائج';
+
+  @override
+  String get savedSearches => 'عمليات البحث المحفوظة';
+
+  @override
+  String get saveSearch => 'احفظ هذا البحث';
+
+  @override
+  String get searchSaved => 'تم حفظ البحث — تجده في التصفية.';
+
+  @override
+  String resultsCount(String count) {
+    return '$count نتيجة';
+  }
+
+  @override
+  String get priceRangeSar => 'السعر (ريال)';
+
+  @override
+  String get minPrice => 'الأدنى';
+
+  @override
+  String get maxPrice => 'الأقصى';
+
+  @override
+  String get furnishing => 'التأثيث';
+
+  @override
+  String get furnishingUnfurnished => 'غير مؤثثة';
+
+  @override
+  String get furnishingSemi => 'شبه مؤثثة';
+
+  @override
+  String get furnishingPartially => 'مؤثثة جزئيًا';
+
+  @override
+  String get contactUnavailable => 'بيانات التواصل غير متاحة لهذا الإعلان.';
+
+  @override
+  String get aiWelcomeTitle => 'مرحبًا بك في البحث العقاري';
+
+  @override
+  String get aiWelcomeSubtitle => 'مساعدك العقاري المتطور بالذكاء الاصطناعي';
+
+  @override
+  String get aiWelcomeBody =>
+      'ابحث عن عقارك بصوتك أو بالكتابة، ودويليو يساعدك لتجد بيت أحلامك بسهولة.';
+
+  @override
+  String get aiWelcomeTip =>
+      'تلميح: يمكنك كتابة طلبك أو استخدام زر الميكروفون للتحدث بشكل طبيعي';
+
+  @override
+  String get aiTryAsking => 'جرب أن تسألني:';
+
+  @override
+  String get aiSuggestion1 => 'شقق 3 غرف نوم في الرياض';
+
+  @override
+  String get aiSuggestion2 => 'أرخص الفلل للإيجار';
+
+  @override
+  String get aiSuggestion3 => 'عقارات بمسبح وصالة رياضية';
+
+  @override
+  String get aiSuggestion4 => 'مساحات مكتبية في حي الملك عبدالله المالي';
+
+  @override
+  String get aiSuggestion5 => 'بنتهاوس فاخر بأكثر من 10 مليون';
+
+  @override
+  String get aiSuggestion6 => 'شقق مفروشة في الرياض';
+
+  @override
+  String get aiComposerHint => 'صف العقار الذي تبحث عنه…';
+
+  @override
+  String get aiListening => 'جارٍ الاستماع…';
+
+  @override
+  String get aiThinking => 'نبحث في الإعلانات المباشرة…';
+
+  @override
+  String get aiUnderstoodIntro => 'هذا ما فهمته منك:';
+
+  @override
+  String get aiNoSignal =>
+      'لم أتعرّف على مدينة أو نوع عقار أو غرف أو سعر. جرّب صياغة مثل الاقتراحات أدناه.';
+
+  @override
+  String get aiMicUnavailable =>
+      'الإدخال الصوتي غير متاح على هذا الجهاز — يمكنك الكتابة.';
+
+  @override
+  String aiViewAllResults(String count) {
+    return 'عرض كل النتائج ($count)';
+  }
+
+  @override
+  String aiFromPrice(String price) {
+    return 'من $price';
+  }
+
+  @override
+  String aiUpToPrice(String price) {
+    return 'حتى $price';
+  }
+
+  @override
+  String aiReplyFound(String count) {
+    return 'وجدت $count عقارًا مطابقًا — إليك أفضل الخيارات.';
+  }
+
+  @override
+  String get aiReplyNone =>
+      'لم أجد نتائج مطابقة. جرّب تعديل المدينة أو النوع أو الميزانية.';
+
+  @override
+  String get aiAskListing => 'هل تبحث عن الإيجار أم الشراء؟';
+
+  @override
+  String get aiVoiceReplies => 'الردود الصوتية';
 }
