@@ -443,4 +443,75 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get contactUnavailable =>
       'Contact details are not available for this listing.';
+
+  @override
+  String get aiWelcomeTitle => 'Welcome to Property Search';
+
+  @override
+  String get aiWelcomeSubtitle => 'Your AI-powered real estate assistant';
+
+  @override
+  String get aiWelcomeBody =>
+      'Search for properties by voice or text, and Dwelleo helps you find your dream home with ease.';
+
+  @override
+  String get aiWelcomeTip =>
+      'Tip: You can type your query or use the microphone button to speak naturally';
+
+  @override
+  String get aiTryAsking => 'Try asking me:';
+
+  @override
+  String get aiSuggestion1 => '3 bedroom apartments in Riyadh';
+
+  @override
+  String get aiSuggestion2 => 'Cheapest villas for rent';
+
+  @override
+  String get aiSuggestion3 => 'Properties with pool and gym';
+
+  @override
+  String get aiSuggestion4 =>
+      'Office space in King Abdullah Financial District';
+
+  @override
+  String get aiSuggestion5 => 'Luxury penthouse above 10 million';
+
+  @override
+  String get aiSuggestion6 => 'Furnished apartments in Riyadh';
+
+  @override
+  String get aiComposerHint => 'Describe the property you\'re looking for…';
+
+  @override
+  String get aiListening => 'Listening…';
+
+  @override
+  String get aiThinking => 'Searching live listings…';
+
+  @override
+  String get aiUnderstoodIntro => 'Here\'s what I understood:';
+
+  @override
+  String get aiNoSignal =>
+      'I didn\'t catch a city, property type, bedrooms or price in that. Try something like the suggestions below.';
+
+  @override
+  String get aiMicUnavailable =>
+      'Voice input isn\'t available on this device — you can still type.';
+
+  @override
+  String aiViewAllResults(String count) {
+    return 'View all $count results';
+  }
+
+  @override
+  String aiFromPrice(String price) {
+    return 'From $price';
+  }
+
+  @override
+  String aiUpToPrice(String price) {
+    return 'Up to $price';
+  }
 }

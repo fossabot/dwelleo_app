@@ -26,6 +26,10 @@ class PropertiesListScreen extends StatefulWidget {
   final int? developerId;
   final String? title;
 
+  /// Full pre-built query (e.g. from AI Search). Takes precedence over the
+  /// individual path params so caller and list show identical results.
+  final PropertyQuery? initialQuery;
+
   const PropertiesListScreen({
     super.key,
     this.listingType,
@@ -33,6 +37,7 @@ class PropertiesListScreen extends StatefulWidget {
     this.propertyTypeId,
     this.developerId,
     this.title,
+    this.initialQuery,
   });
 
   @override
@@ -49,14 +54,16 @@ class _PropertiesListScreenState extends State<PropertiesListScreen> {
     _scroll = ScrollController()..addListener(_onScroll);
     _cubit = sl<PropertiesCubit>()
       ..load(
-        query: PropertyQuery(
-          listingType: widget.listingType,
-          cityId: widget.cityId,
-          propertyTypeIds: [
-            if (widget.propertyTypeId != null) widget.propertyTypeId!,
-          ],
-          developerId: widget.developerId,
-        ),
+        query:
+            widget.initialQuery ??
+            PropertyQuery(
+              listingType: widget.listingType,
+              cityId: widget.cityId,
+              propertyTypeIds: [
+                if (widget.propertyTypeId != null) widget.propertyTypeId!,
+              ],
+              developerId: widget.developerId,
+            ),
       );
   }
 
@@ -130,7 +137,7 @@ class _PropertiesListScreenState extends State<PropertiesListScreen> {
 
   String _titleOf(AppLocalizations l10n) =>
       widget.title ??
-      switch (widget.listingType) {
+      switch (widget.initialQuery?.listingType ?? widget.listingType) {
         'for-rent' => l10n.propertiesForRent,
         'for-sale' => l10n.propertiesForSale,
         _ => l10n.properties,

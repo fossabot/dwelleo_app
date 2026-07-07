@@ -163,5 +163,46 @@
   "furnishingUnfurnished": "Unfurnished",
   "furnishingSemi": "Semi-furnished",
   "furnishingPartially": "Partially furnished",
-  "contactUnavailable": "Contact details are not available for this listing."
+  "contactUnavailable": "Contact details are not available for this listing.",
+  "aiWelcomeTitle": "Welcome to Property Search",
+  "aiWelcomeSubtitle": "Your AI-powered real estate assistant",
+  "aiWelcomeBody": "Search for properties by voice or text, and Dwelleo helps you find your dream home with ease.",
+  "aiWelcomeTip": "Tip: You can type your query or use the microphone button to speak naturally",
+  "aiTryAsking": "Try asking me:",
+  "aiSuggestion1": "3 bedroom apartments in Riyadh",
+  "aiSuggestion2": "Cheapest villas for rent",
+  "aiSuggestion3": "Properties with pool and gym",
+  "aiSuggestion4": "Office space in King Abdullah Financial District",
+  "aiSuggestion5": "Luxury penthouse above 10 million",
+  "aiSuggestion6": "Furnished apartments in Riyadh",
+  "aiComposerHint": "Describe the property you're looking for…",
+  "aiListening": "Listening…",
+  "aiThinking": "Searching live listings…",
+  "aiUnderstoodIntro": "Here's what I understood:",
+  "aiNoSignal": "I didn't catch a city, property type, bedrooms or price in that. Try something like the suggestions below.",
+  "aiMicUnavailable": "Voice input isn't available on this device — you can still type.",
+  "aiViewAllResults": "View all {count} results",
+  "@aiViewAllResults": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "aiFromPrice": "From {price}",
+  "@aiFromPrice": {
+    "placeholders": {
+      "price": {
+        "type": "String"
+      }
+    }
+  },
+  "aiUpToPrice": "Up to {price}",
+  "@aiUpToPrice": {
+    "placeholders": {
+      "price": {
+        "type": "String"
+      }
+    }
+  }
 }

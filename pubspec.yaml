@@ -70,6 +70,13 @@ dependencies:
   # Native phone/WhatsApp actions for the property contact bar (PR-7).
   # Official flutter.dev plugin — the standard for tel:/https intents.
   url_launcher: ^6.3.1
+  # On-device speech recognition for AI Search voice input (PR-11).
+  # Verified publisher (csdcorp.com), latest stable. Interim by design:
+  # the backend voice endpoint (/user/ai/voice/conversations/process) has a
+  # PENDING contract, so voice→text runs on-device and feeds the same
+  # interpreter as typed queries. `record` stays for the future audio-upload
+  # flow once that contract is captured.
+  speech_to_text: ^7.3.0
 
 dev_dependencies:
   flutter_test:

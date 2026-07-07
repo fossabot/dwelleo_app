@@ -141,6 +141,15 @@ where observed; otherwise inferred (verify body before coding — see `@bodyPend
 `/user/ai/villa-prediction`, `/user/ai/rental-prediction`, `/user/ai/poi/categories`,
 `/user/ai/poi/nearby`, `/user/ai/voice/conversations/process`
 
+> **AI status (2026-07-07, PR-11):** all `/user/ai/*` bodies remain PENDING —
+> mobile AI Search ships with a deterministic on-device interpreter over the
+> verified `/properties` + `/lookup` contracts
+> (`features/ai_search/domain/usecases/interpret_ai_query.dart`) plus
+> on-device STT for voice. The two public `dwelleo-support-assistant` repos
+> were audited (`docs/ai/AI_REPOS_ALIGNMENT.md`): support-assistant PoCs only,
+> no `api.dwelleo.sa` contracts inside. The live `/en/ai-Sales` page now
+> confirms **BITEP** (Budget, Intent, Timeline, Eligibility, Preferences).
+
 **Leads / contact / misc:** `/leads/ingest`, `/leads/ingest/batches`, `/contact-us`,
 `/complains`, `/newsletter/subscribe`, `/subscribe`, `/upload`,
 `/listings/generate-ai-content`, `/company-brief/document-templates`,
