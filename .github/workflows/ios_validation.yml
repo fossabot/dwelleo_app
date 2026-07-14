@@ -53,6 +53,25 @@ jobs:
       - name: Flutter pub get
         run: flutter pub get
 
+      # The per-flavor GoogleService-Info plists are gitignored; the Runner
+      # "Copy Firebase config for flavor" build phase fails without them.
+      # Materialize dev + staging (the flavors this job builds) plus the Maps
+      # key from base64/plain GitHub secrets. See docs/ci/SECRETS.md.
+      - name: Materialize Firebase & Maps config
+        env:
+          GOOGLE_SERVICE_INFO_DEV: ${{ secrets.GOOGLE_SERVICE_INFO_DEV }}
+          GOOGLE_SERVICE_INFO_STAGING: ${{ secrets.GOOGLE_SERVICE_INFO_STAGING }}
+          MAPS_API_KEY: ${{ secrets.MAPS_API_KEY }}
+        run: |
+          if [ -z "$GOOGLE_SERVICE_INFO_DEV" ] || [ -z "$GOOGLE_SERVICE_INFO_STAGING" ]; then
+            echo "::error::GOOGLE_SERVICE_INFO_DEV/STAGING secrets are not set (see docs/ci/SECRETS.md)."
+            exit 1
+          fi
+          mkdir -p ios/config
+          echo "$GOOGLE_SERVICE_INFO_DEV" | openssl base64 -d -A > ios/config/GoogleService-Info-dev.plist
+          echo "$GOOGLE_SERVICE_INFO_STAGING" | openssl base64 -d -A > ios/config/GoogleService-Info-staging.plist
+          printf 'MAPS_API_KEY=%s\n' "$MAPS_API_KEY" > ios/Flutter/Secrets.xcconfig
+
       - name: CocoaPods install
         working-directory: ios
         run: pod install --repo-update

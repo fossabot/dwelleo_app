@@ -63,11 +63,7 @@ class PropertiesCubit extends Cubit<PropertiesState> {
           ...page.properties.where((p) => seen.add(p.id)),
         ];
         emit(
-          PropertiesLoaded(
-            appended,
-            pageInfo: page.pageInfo,
-            query: _query,
-          ),
+          PropertiesLoaded(appended, pageInfo: page.pageInfo, query: _query),
         );
       },
       // Keep what the user has; just stop the footer spinner. Pull-to-

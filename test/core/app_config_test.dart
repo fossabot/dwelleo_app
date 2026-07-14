@@ -3,19 +3,22 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('AppConfig', () {
-    test('dev uses canonical dev labels and explicitly known production API risk', () {
-      AppConfig.init(Flavor.dev);
+    test(
+      'dev uses canonical dev labels and explicitly known production API risk',
+      () {
+        AppConfig.init(Flavor.dev);
 
-      final config = AppConfig.instance;
+        final config = AppConfig.instance;
 
-      expect(config.flavorName, 'dev');
-      expect(config.displayName, 'Dwelleo Dev');
-      expect(config.apiBaseUrl, 'https://api.dwelleo.sa');
-      expect(config.analyticsEnvironment, 'dev');
-      expect(config.logLevel, AppLogLevel.verbose);
-      expect(config.usesProductionApi, isTrue);
-      expect(config.backendStatus, contains('development backend'));
-    });
+        expect(config.flavorName, 'dev');
+        expect(config.displayName, 'Dwelleo Dev');
+        expect(config.apiBaseUrl, 'https://api.dwelleo.sa');
+        expect(config.analyticsEnvironment, 'dev');
+        expect(config.logLevel, AppLogLevel.verbose);
+        expect(config.usesProductionApi, isTrue);
+        expect(config.backendStatus, contains('development backend'));
+      },
+    );
 
     test('staging uses reduced logging and pending backend status', () {
       AppConfig.init(Flavor.staging);

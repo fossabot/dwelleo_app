@@ -50,6 +50,22 @@ jobs:
       - name: Flutter pub get
         run: flutter pub get
 
+      # Firebase + Maps config are gitignored (they carry project keys), so a
+      # clean CI checkout lacks them and the google-services Gradle plugin would
+      # fail. Materialize them from base64/plain GitHub secrets. See
+      # docs/ci/SECRETS.md for how to produce each value.
+      - name: Materialize Firebase & Maps config
+        env:
+          GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
+          MAPS_API_KEY: ${{ secrets.MAPS_API_KEY }}
+        run: |
+          if [ -z "$GOOGLE_SERVICES_JSON" ]; then
+            echo "::error::GOOGLE_SERVICES_JSON secret is not set (see docs/ci/SECRETS.md)."
+            exit 1
+          fi
+          echo "$GOOGLE_SERVICES_JSON" | openssl base64 -d -A > android/app/google-services.json
+          printf 'MAPS_API_KEY=%s\n' "$MAPS_API_KEY" > android/secrets.properties
+
       - name: Build dev debug APK
         run: flutter build apk --debug --flavor dev -t lib/main_dev.dart
 

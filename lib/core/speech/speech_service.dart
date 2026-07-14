@@ -11,7 +11,8 @@ import 'package:speech_to_text/speech_to_text.dart' as stt;
 class SpeechService {
   final stt.SpeechToText _stt;
 
-  SpeechService([stt.SpeechToText? engine]) : _stt = engine ?? stt.SpeechToText();
+  SpeechService([stt.SpeechToText? engine])
+    : _stt = engine ?? stt.SpeechToText();
 
   bool _initialized = false;
   bool _available = false;

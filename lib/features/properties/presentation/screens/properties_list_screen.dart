@@ -96,8 +96,7 @@ class _PropertiesListScreenState extends State<PropertiesListScreen> {
       final state = _cubit.state;
       sl<AnalyticsService>().searchApplied(
         filterCount: result.activeFilterCount,
-        resultsTotal:
-            state is PropertiesLoaded ? state.pageInfo?.total : null,
+        resultsTotal: state is PropertiesLoaded ? state.pageInfo?.total : null,
       );
     }
   }
@@ -129,9 +128,9 @@ class _PropertiesListScreenState extends State<PropertiesListScreen> {
     );
     sl<AnalyticsService>().savedSearchCreated();
     if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l10n.searchSaved)),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(l10n.searchSaved)));
     }
   }
 
@@ -164,17 +163,15 @@ class _PropertiesListScreenState extends State<PropertiesListScreen> {
           builder: (context, state) {
             return Column(
               children: [
-                _ResultsBar(
-                  state: state,
-                  onFilters: _openFilters,
-                ),
-                if (state case PropertiesLoaded(:final query)
-                    when query.activeFilterCount > 0)
+                _ResultsBar(state: state, onFilters: _openFilters),
+                if (state case PropertiesLoaded(
+                  :final query,
+                ) when query.activeFilterCount > 0)
                   _ActiveFilterChips(query: query),
                 Expanded(
                   child: switch (state) {
-                    PropertiesInitial() || PropertiesLoading() =>
-                      const _Loading(),
+                    PropertiesInitial() ||
+                    PropertiesLoading() => const _Loading(),
                     PropertiesError(:final message) => _ErrorView(
                       message: message,
                       onRetry: () => context.read<PropertiesCubit>().refresh(),
@@ -210,9 +207,7 @@ class _ResultsBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final scheme = Theme.of(context).colorScheme;
-    final loaded = state is PropertiesLoaded
-        ? state as PropertiesLoaded
-        : null;
+    final loaded = state is PropertiesLoaded ? state as PropertiesLoaded : null;
     final total = loaded?.pageInfo?.total;
     final filterCount = loaded?.query.activeFilterCount ?? 0;
 
@@ -222,9 +217,7 @@ class _ResultsBar extends StatelessWidget {
         children: [
           Expanded(
             child: Text(
-              total == null
-                  ? ''
-                  : l10n.resultsCount(Formatters.count(total)),
+              total == null ? '' : l10n.resultsCount(Formatters.count(total)),
               style: TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.w700,
@@ -302,7 +295,10 @@ class _ActiveFilterChips extends StatelessWidget {
           () => cubit.applyFilters(query.copyWith(propertyTypeIds: const [])),
         ),
       if (query.cityId != null)
-        (l10n.city, () => cubit.applyFilters(query.copyWith(cityId: () => null))),
+        (
+          l10n.city,
+          () => cubit.applyFilters(query.copyWith(cityId: () => null)),
+        ),
       if (query.minBedrooms != null)
         (
           '${query.minBedrooms}+ ${l10n.beds}',
@@ -411,7 +407,11 @@ class _EmptyView extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Icon(Icons.search_off, size: 48, color: AppColors.textSecondary),
+          const Icon(
+            Icons.search_off,
+            size: 48,
+            color: AppColors.textSecondary,
+          ),
           const SizedBox(height: 12),
           Text(
             l10n.noResults,

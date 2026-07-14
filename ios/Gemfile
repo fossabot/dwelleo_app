@@ -1,0 +1,13 @@
+source "https://rubygems.org"
+
+# Fastlane drives iOS release automation: build the production IPA + upload to
+# TestFlight (ios/fastlane/Fastfile, lane `ios beta`). Pin the minor band to
+# avoid surprise major-version breakage. The lane stays dormant until a paid
+# Apple Developer Program membership is active — see docs/ci/IOS_TESTFLIGHT.md.
+gem "fastlane", "~> 2.220"
+
+# Plugin discovery — Fastlane writes plugins into fastlane/Pluginfile via
+# `bundle exec fastlane add_plugin <name>`. The block below pulls those
+# entries into Bundler's dependency graph so `bundle install` fetches them.
+plugins_path = File.join(File.dirname(__FILE__), "fastlane", "Pluginfile")
+eval_gemfile(plugins_path) if File.exist?(plugins_path)

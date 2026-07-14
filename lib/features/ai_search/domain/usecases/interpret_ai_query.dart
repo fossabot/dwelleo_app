@@ -149,8 +149,30 @@ class InterpretAiQuery {
   // "above/أكثر من" → min; "under/أقل من" → max; a bare amount with a
   // million/thousand unit (or ≥ 50k raw) is treated as a budget → max,
   // matching the handoff spec's `budget` semantics.
-  static const _aboveWords = ['above', 'over', 'more than', 'at least', 'from', 'فوق', 'اكثر من', 'باكثر من', 'بحد ادني'];
-  static const _belowWords = ['under', 'below', 'less than', 'up to', 'max', 'within', 'اقل من', 'تحت', 'حتي', 'باقل من', 'بحد اقصي'];
+  static const _aboveWords = [
+    'above',
+    'over',
+    'more than',
+    'at least',
+    'from',
+    'فوق',
+    'اكثر من',
+    'باكثر من',
+    'بحد ادني',
+  ];
+  static const _belowWords = [
+    'under',
+    'below',
+    'less than',
+    'up to',
+    'max',
+    'within',
+    'اقل من',
+    'تحت',
+    'حتي',
+    'باقل من',
+    'بحد اقصي',
+  ];
 
   static final _amountRe = RegExp(
     r'(\d[\d,]*(?:\.\d+)?)\s*(million|m|mil|k|thousand|مليون|ملايين|الف|ريال|sar|riyal)?',
@@ -167,14 +189,17 @@ class InterpretAiQuery {
     }
     if (min) return null;
     // Bare budget (no direction marker anywhere in the text).
-    final directed = [..._aboveWords, ..._belowWords]
-        .any((w) => text.contains(' ${_normalize(w).trim()} '));
+    final directed = [
+      ..._aboveWords,
+      ..._belowWords,
+    ].any((w) => text.contains(' ${_normalize(w).trim()} '));
     if (directed) return null;
     for (final m in _amountRe.allMatches(text)) {
       final unit = m.group(2);
       final v = _amount(m.group(1)!, unit);
       if (v == null) continue;
-      final hasUnit = unit != null && unit != 'ريال' && unit != 'sar' && unit != 'riyal';
+      final hasUnit =
+          unit != null && unit != 'ريال' && unit != 'sar' && unit != 'riyal';
       if (hasUnit || v >= 50000) return v;
     }
     return null;
@@ -196,7 +221,12 @@ class InterpretAiQuery {
     if (_hasAny(text, ['unfurnished', 'غير مفروش', 'غير مفروشه', 'بدون فرش'])) {
       return 'unfurnished';
     }
-    if (_hasAny(text, ['semi furnished', 'semi-furnished', 'شبه مفروش', 'شبه مفروشه'])) {
+    if (_hasAny(text, [
+      'semi furnished',
+      'semi-furnished',
+      'شبه مفروش',
+      'شبه مفروشه',
+    ])) {
       return 'semi-furnished';
     }
     if (_hasAny(text, ['partially furnished', 'مفروش جزييا', 'مفروشه جزييا'])) {
@@ -206,10 +236,27 @@ class InterpretAiQuery {
   }
 
   static String? _listingType(String text) {
-    if (_hasAny(text, ['rent', 'rental', 'lease', 'renting', 'ايجار', 'للايجار', 'استيجار'])) {
+    if (_hasAny(text, [
+      'rent',
+      'rental',
+      'lease',
+      'renting',
+      'ايجار',
+      'للايجار',
+      'استيجار',
+    ])) {
       return 'for-rent';
     }
-    if (_hasAny(text, ['buy', 'sale', 'purchase', 'buying', 'بيع', 'للبيع', 'شراء', 'تملك'])) {
+    if (_hasAny(text, [
+      'buy',
+      'sale',
+      'purchase',
+      'buying',
+      'بيع',
+      'للبيع',
+      'شراء',
+      'تملك',
+    ])) {
       return 'for-sale';
     }
     return null;
@@ -225,7 +272,14 @@ class InterpretAiQuery {
     'studio': ['studios', 'ستوديو', 'استوديو'],
     'farm': ['farms', 'مزرعه', 'مزارع'],
     'land': ['lands', 'plot', 'ارض', 'اراضي'],
-    'office': ['offices', 'office space', 'مكتب', 'مكاتب', 'مساحات مكتبيه', 'مساحه مكتبيه'],
+    'office': [
+      'offices',
+      'office space',
+      'مكتب',
+      'مكاتب',
+      'مساحات مكتبيه',
+      'مساحه مكتبيه',
+    ],
     'roof': ['سطح', 'اسطح'],
     'shop': ['shops', 'محل', 'محلات'],
     'building': ['buildings', 'عماره', 'مبني'],

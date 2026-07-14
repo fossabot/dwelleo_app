@@ -104,8 +104,7 @@ void main() {
       await cubit.close();
     });
 
-    test('loadMore failure keeps loaded items and stops the spinner',
-        () async {
+    test('loadMore failure keeps loaded items and stops the spinner', () async {
       final repo = _PagedRepo(failPage2: true);
       final cubit = PropertiesCubit(SearchProperties(repo));
       await cubit.load();
@@ -135,7 +134,10 @@ void main() {
   group('ContactLauncher URL building', () {
     test('normalizes Saudi numbers for wa.me', () {
       expect(ContactLauncher.normalizeMsisdn('056 7 77 7390'), '966567777390');
-      expect(ContactLauncher.normalizeMsisdn('+966 56 777 7390'), '966567777390');
+      expect(
+        ContactLauncher.normalizeMsisdn('+966 56 777 7390'),
+        '966567777390',
+      );
       expect(ContactLauncher.normalizeMsisdn('00966567777390'), '966567777390');
     });
 

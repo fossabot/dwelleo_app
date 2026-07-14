@@ -74,7 +74,9 @@ ios/Podfile.lock.backup
 **/*.xcscheme~
 **/*.xcscheme.bak
 **/*.xcscheme.backup
-**/xcshareddata/swiftpm/configuration/
+# SwiftPM workspace state — the project builds via CocoaPods, so these
+# auto-generated package pins are orphaned artifacts. Ignore all of it.
+**/xcshareddata/swiftpm/
 
 # Firebase client config supplied per flavor by developers/CI.
 # These are client config files, not service accounts, but they require rules,
@@ -90,11 +92,32 @@ service-account.json
 *-service-account.json
 *.pem
 secrets.json
+# Firebase service-account credentials (App Distribution / supply). These are
+# LIVE credentials — never commit. Injected in CI via base64 GitHub secret and
+# referenced locally from a gitignored path.
+firebase-service-account*.json
+**/dwelleo-*service-account*.json
+dwelleo-60f38-*.json
+gha-creds-*.json
 
-# Fastlane local output/configuration
-fastlane/Appfile
-fastlane/Matchfile
-fastlane/report.xml
-fastlane/Preview.html
-fastlane/screenshots
-fastlane/test_output
+# Per-flavor --dart-define secret bundles (env/dev.json, env/production.json …).
+# Ignore the real files but keep the checked-in templates (env/*.example.json).
+# NB: ignore the contents, not the dir itself, so the negation can take effect.
+/env/*.json
+!/env/*.example.json
+
+# Stray root-level fastlane files — fastlane must be run from android/ or ios/,
+# never from the repo root. Ignore any files it creates here if run by mistake.
+/fastlane/
+/Gemfile
+/Gemfile.lock
+
+# Fastlane local output/configuration (match any platform subdir: android/, ios/)
+**/fastlane/report.xml
+**/fastlane/Preview.html
+**/fastlane/screenshots
+**/fastlane/test_output
+**/fastlane/Matchfile
+**/fastlane/.env
+**/fastlane/*.p8
+**/fastlane/*.mobileprovision
