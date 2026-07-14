@@ -155,6 +155,7 @@ abstract final class PropertyFilters {
   /// On /developers: `broker` returns the brokers list (the website's
   /// "Top Real Estate Brokers" tab). CAPTURED live 2026-07-02.
   static const String userType = 'filter[user_type]';
+
   /// VERIFIED NO-OP (live probe 2026-07-06): the backend accepts this key
   /// but does not filter by it. Kept only as documentation — do not send.
   static const String propertyType = 'filter[property_type]';

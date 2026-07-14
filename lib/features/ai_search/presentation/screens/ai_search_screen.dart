@@ -252,9 +252,7 @@ class _WelcomeView extends StatelessWidget {
                         ]
                       : [AppColors.accentLight, AppColors.accent],
                 ),
-                border: Border.all(
-                  color: Colors.white.withValues(alpha: 0.25),
-                ),
+                border: Border.all(color: Colors.white.withValues(alpha: 0.25)),
               ),
               child: SvgPicture.asset(
                 AppSvg.aiVoice,
@@ -725,8 +723,7 @@ class _AnswerBody extends StatelessWidget {
       if (i.maxPrice != null) l10n.aiUpToPrice(Formatters.price(i.maxPrice)),
       if (i.furnishingStatus == 'unfurnished') l10n.furnishingUnfurnished,
       if (i.furnishingStatus == 'semi-furnished') l10n.furnishingSemi,
-      if (i.furnishingStatus == 'partially_furnished')
-        l10n.furnishingPartially,
+      if (i.furnishingStatus == 'partially_furnished') l10n.furnishingPartially,
     ];
   }
 
@@ -751,10 +748,7 @@ class _AnswerBody extends StatelessWidget {
           children: [
             for (final chip in chips)
               Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 9,
-                  vertical: 4,
-                ),
+                padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
                 decoration: BoxDecoration(
                   color: accent.withValues(alpha: 0.12),
                   borderRadius: BorderRadius.circular(9),
@@ -791,10 +785,8 @@ class _AnswerBody extends StatelessWidget {
           SizedBox(
             width: double.infinity,
             child: FilledButton.icon(
-              onPressed: () => context.push(
-                RoutePaths.propertySearch,
-                extra: answer.query,
-              ),
+              onPressed: () =>
+                  context.push(RoutePaths.propertySearch, extra: answer.query),
               icon: const Icon(Icons.grid_view_rounded, size: 17),
               label: Text(
                 l10n.aiViewAllResults(Formatters.count(answer.total)),
@@ -821,8 +813,7 @@ class _ResultTile extends StatelessWidget {
       color: scheme.surface,
       borderRadius: BorderRadius.circular(12),
       child: InkWell(
-        onTap: () =>
-            context.push(RoutePaths.propertyDetailPath(property.slug)),
+        onTap: () => context.push(RoutePaths.propertyDetailPath(property.slug)),
         borderRadius: BorderRadius.circular(12),
         child: Padding(
           padding: const EdgeInsets.all(8),
@@ -952,9 +943,7 @@ class _ComposerState extends State<_Composer> {
       onResult: (text, isFinal) {
         if (!mounted) return;
         widget.input.text = text;
-        widget.input.selection = TextSelection.collapsed(
-          offset: text.length,
-        );
+        widget.input.selection = TextSelection.collapsed(offset: text.length);
         if (isFinal) {
           setState(() => _listening = false);
           if (text.trim().isNotEmpty) widget.onSend(text);

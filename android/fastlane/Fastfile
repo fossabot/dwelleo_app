@@ -1,0 +1,114 @@
+default_platform(:android)
+
+# To run a lane locally, from repo root:
+#   cd android && bundle exec fastlane <lane>
+# To run from CI: see .github/workflows/android_distribute.yml
+
+# This file lives at android/fastlane/Fastfile, so `..` is android/ and
+# `../..` is the repo root. Use the latter — Flutter outputs build
+# artifacts under <repo>/build/, and the firebase_app_distribution plugin
+# needs an absolute path so it doesn't depend on cwd.
+REPO_ROOT = File.expand_path("../..", __dir__)
+APK_OUTPUT_DIR = File.join(REPO_ROOT, "build", "app", "outputs", "flutter-apk")
+
+# Firebase App IDs for the Android apps registered in the dwelleo-60f38
+# project. Non-secret — these ship inside google-services.json and the
+# compiled APK. Mapping them here keeps lanes self-describing.
+FIREBASE_ANDROID_APP_IDS = {
+  "dev"        => "1:632117704097:android:7fbafcc96e7ec18c1087e0",
+  "staging"    => "1:632117704097:android:3f50fc12707504911087e0",
+  "production" => "1:632117704097:android:381f0e326a96f80b1087e0",
+}.freeze
+
+# ── Helpers ──────────────────────────────────────────────────────────────
+
+def flutter_build_apk(flavor, target)
+  sh("cd #{REPO_ROOT} && flutter build apk --flavor #{flavor} " \
+     "-t #{target} --release --no-tree-shake-icons")
+end
+
+def flutter_build_aab(flavor, target)
+  sh("cd #{REPO_ROOT} && flutter build appbundle --flavor #{flavor} " \
+     "-t #{target} --release --no-tree-shake-icons")
+end
+
+def head_release_notes
+  subject = `git -C #{REPO_ROOT} log -1 --pretty=%s`.strip
+  sha     = `git -C #{REPO_ROOT} log -1 --pretty=%h`.strip
+  return "Internal build via Fastlane." unless $?.success? && !subject.empty?
+
+  "#{subject} (#{sha})"
+end
+
+# Resolve the Firebase service-account JSON used to authenticate uploads.
+# `firebase login:ci` tokens are deprecated by Google, so we authenticate with
+# a service account instead. Path precedence:
+#   1. FIREBASE_SERVICE_ACCOUNT_JSON_PATH (set by CI after decoding the secret)
+#   2. android/fastlane/firebase-service-account.json (gitignored local default)
+def firebase_credentials_path
+  path = ENV["FIREBASE_SERVICE_ACCOUNT_JSON_PATH"]
+  path = File.join(REPO_ROOT, "android", "fastlane", "firebase-service-account.json") if path.nil? || path.empty?
+  unless File.exist?(path)
+    UI.user_error!("Firebase service-account JSON not found at #{path}. See docs/ci/SECRETS.md.")
+  end
+  path
+end
+
+# Upload an already-built APK to Firebase App Distribution. Accepts the
+# kwargs you'd typically tweak per-release: `groups:`, `testers:`,
+# `release_notes:`. Leave `release_notes:` unset to derive notes from the
+# head commit.
+def upload_apk_to_firebase(flavor:, apk_filename:, groups: nil, testers: nil, release_notes: nil)
+  firebase_app_distribution(
+    app: FIREBASE_ANDROID_APP_IDS.fetch(flavor),
+    service_credentials_file: firebase_credentials_path,
+    android_artifact_type: "APK",
+    android_artifact_path: File.join(APK_OUTPUT_DIR, apk_filename),
+    groups: groups,
+    testers: testers,
+    release_notes: release_notes || head_release_notes
+  )
+end
+
+platform :android do
+  # ── Build lanes (local use; CI builds inline) ──────────────────────────
+
+  desc "Assemble a dev release APK → build/app/outputs/flutter-apk/app-dev-release.apk"
+  lane :build_dev do
+    flutter_build_apk("dev", "lib/main_dev.dart")
+  end
+
+  desc "Assemble a staging release APK → build/app/outputs/flutter-apk/app-staging-release.apk"
+  lane :build_staging do
+    flutter_build_apk("staging", "lib/main_staging.dart")
+  end
+
+  desc "Assemble a production release APK → build/app/outputs/flutter-apk/app-production-release.apk"
+  lane :build_production do
+    flutter_build_apk("production", "lib/main_production.dart")
+  end
+
+  # NOTE: the release build type currently signs with the debug keystore
+  # (see android/app/build.gradle.kts). This AAB is fine for internal testing
+  # but NOT Play-Store-uploadable until a real upload keystore + release
+  # signingConfig (via android/key.properties) is wired.
+  desc "Assemble a production release AAB (debug-signed; not yet Play-ready)"
+  lane :build_production_aab do
+    flutter_build_aab("production", "lib/main_production.dart")
+  end
+
+  # ── Distribute lane (Firebase App Distribution) ────────────────────────
+
+  desc "Build the production APK and ship it to Firebase App Distribution. " \
+       "Triggered automatically on push to development; runnable locally once " \
+       "android/fastlane/firebase-service-account.json is in place."
+  lane :firebase_distribution do
+    flutter_build_apk("production", "lib/main_production.dart")
+    upload_apk_to_firebase(
+      flavor: "production",
+      apk_filename: "app-production-release.apk",
+      testers: "hakemm663@gmail.com, hakemm663@icloud.com",
+      release_notes: "Test new features and bug fixes with this internal build. Feedback welcome!"
+    )
+  end
+end

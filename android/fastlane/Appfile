@@ -1,0 +1,4 @@
+# Play Store upload is out of scope for now (Firebase App Distribution only),
+# so no json_key_file is configured here. When Play publishing lands, set:
+#   json_key_file("android/fastlane/play-service-account.json")  # gitignored
+package_name("sa.dwelleo.app") # Production package name

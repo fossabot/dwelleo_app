@@ -26,16 +26,10 @@ class AnalyticsService {
     );
   }
 
-  Future<void> searchApplied({
-    required int filterCount,
-    int? resultsTotal,
-  }) {
+  Future<void> searchApplied({required int filterCount, int? resultsTotal}) {
     return _analytics.logEvent(
       name: 'property_search_applied',
-      parameters: {
-        'filter_count': filterCount,
-        'results_total': ?resultsTotal,
-      },
+      parameters: {'filter_count': filterCount, 'results_total': ?resultsTotal},
     );
   }
 

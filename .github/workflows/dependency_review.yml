@@ -17,9 +17,16 @@ jobs:
     name: security / dependency review
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    # Non-blocking: dependency-review-action needs the GitHub Dependency Graph,
+    # which requires GitHub Advanced Security on private repos. Until that is
+    # enabled (repo Settings → Code security → Dependency graph), this job must
+    # not red-block required checks. Flip to false once the graph is on.
+    continue-on-error: true
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
       - name: Dependency review
         uses: actions/dependency-review-action@v4
+        with:
+          fail-on-severity: high

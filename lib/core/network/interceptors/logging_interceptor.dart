@@ -22,12 +22,16 @@ class LoggingInterceptor extends Interceptor {
       case AppLogLevel.verbose:
         final safeHeaders = _redactHeaders(options.headers);
         // ignore: avoid_print
-        print('[NET][${config.flavorName}] --> ${options.method} '
-            '${options.uri} headers:$safeHeaders');
+        print(
+          '[NET][${config.flavorName}] --> ${options.method} '
+          '${options.uri} headers:$safeHeaders',
+        );
       case AppLogLevel.standard:
         // ignore: avoid_print
-        print('[NET][${config.flavorName}] --> ${options.method} '
-            '${options.uri.path}');
+        print(
+          '[NET][${config.flavorName}] --> ${options.method} '
+          '${options.uri.path}',
+        );
       case AppLogLevel.minimal:
         break;
     }
@@ -40,12 +44,16 @@ class LoggingInterceptor extends Interceptor {
     switch (config.logLevel) {
       case AppLogLevel.verbose:
         // ignore: avoid_print
-        print('[NET][${config.flavorName}] <-- ${response.statusCode} '
-            '${response.requestOptions.uri}');
+        print(
+          '[NET][${config.flavorName}] <-- ${response.statusCode} '
+          '${response.requestOptions.uri}',
+        );
       case AppLogLevel.standard:
         // ignore: avoid_print
-        print('[NET][${config.flavorName}] <-- ${response.statusCode} '
-            '${response.requestOptions.path}');
+        print(
+          '[NET][${config.flavorName}] <-- ${response.statusCode} '
+          '${response.requestOptions.path}',
+        );
       case AppLogLevel.minimal:
         break;
     }
@@ -58,12 +66,16 @@ class LoggingInterceptor extends Interceptor {
     switch (config.logLevel) {
       case AppLogLevel.verbose:
         // ignore: avoid_print
-        print('[NET][${config.flavorName}] ERR ${err.response?.statusCode} '
-            '${err.requestOptions.uri}: ${err.message}');
+        print(
+          '[NET][${config.flavorName}] ERR ${err.response?.statusCode} '
+          '${err.requestOptions.uri}: ${err.message}',
+        );
       case AppLogLevel.standard:
         // ignore: avoid_print
-        print('[NET][${config.flavorName}] ERR ${err.response?.statusCode} '
-            '${err.requestOptions.path}');
+        print(
+          '[NET][${config.flavorName}] ERR ${err.response?.statusCode} '
+          '${err.requestOptions.path}',
+        );
       case AppLogLevel.minimal:
         break;
     }

@@ -1,0 +1,13 @@
+source "https://rubygems.org"
+
+# Fastlane drives Android release automation: build APK/AAB + upload to
+# Firebase App Distribution. Pin the minor band to avoid surprise major-
+# version breakage in CI. iOS Fastlane was removed pending an active
+# Apple Developer account; bring it back under ios/ when that's ready.
+gem "fastlane", "~> 2.220"
+
+# Plugin discovery — Fastlane writes plugins into fastlane/Pluginfile via
+# `bundle exec fastlane add_plugin <name>`. The block below pulls those
+# entries into Bundler's dependency graph so `bundle install` fetches them.
+plugins_path = File.join(File.dirname(__FILE__), "fastlane", "Pluginfile")
+eval_gemfile(plugins_path) if File.exist?(plugins_path)

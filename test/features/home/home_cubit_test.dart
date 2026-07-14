@@ -64,13 +64,11 @@ class _FakePropertyRepo implements PropertyRepository {
   }) async => result;
 
   @override
-  Future<ApiResult<PropertyPage>> searchProperties(
-    PropertyQuery query,
-  ) async => result.when(
-    success: (items) =>
-        ApiSuccess(PropertyPage(properties: items)),
-    error: ApiError.new,
-  );
+  Future<ApiResult<PropertyPage>> searchProperties(PropertyQuery query) async =>
+      result.when(
+        success: (items) => ApiSuccess(PropertyPage(properties: items)),
+        error: ApiError.new,
+      );
 
   @override
   Future<ApiResult<Property>> getPropertyBySlug(String slug) async =>

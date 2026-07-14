@@ -188,22 +188,24 @@ void main() {
   });
 
   group('AiSearchCubit', () {
-    test('submit → loading turn, then answer with total + capped preview',
-        () async {
-      final cubit = AiSearchCubit(
-        _FakeInterpret(),
-        SearchProperties(_StubRepo()),
-      );
-      await cubit.submit('3 bedroom apartments in Riyadh');
-      final state = cubit.state;
-      expect(state, isA<AiSearchChat>());
-      final turn = (state as AiSearchChat).turns.single;
-      expect(turn.loading, isFalse);
-      expect(turn.answer, isNotNull);
-      expect(turn.answer!.total, 43);
-      expect(turn.answer!.preview.length, 3);
-      await cubit.close();
-    });
+    test(
+      'submit → loading turn, then answer with total + capped preview',
+      () async {
+        final cubit = AiSearchCubit(
+          _FakeInterpret(),
+          SearchProperties(_StubRepo()),
+        );
+        await cubit.submit('3 bedroom apartments in Riyadh');
+        final state = cubit.state;
+        expect(state, isA<AiSearchChat>());
+        final turn = (state as AiSearchChat).turns.single;
+        expect(turn.loading, isFalse);
+        expect(turn.answer, isNotNull);
+        expect(turn.answer!.total, 43);
+        expect(turn.answer!.preview.length, 3);
+        await cubit.close();
+      },
+    );
 
     test('no-signal utterance → unrecognized turn, no search call', () async {
       final repo = _StubRepo();
@@ -229,27 +231,29 @@ void main() {
       await cubit.close();
     });
 
-    test('submitRefined appends a turn with the listing type applied',
-        () async {
-      final repo = _StubRepo();
-      final cubit = AiSearchCubit(_FakeInterpret(), SearchProperties(repo));
-      await cubit.submit('3 bedroom apartments in Riyadh');
-      expect(
-        (cubit.state as AiSearchChat).turns.last.answer!.query.listingType,
-        isNull,
-      );
+    test(
+      'submitRefined appends a turn with the listing type applied',
+      () async {
+        final repo = _StubRepo();
+        final cubit = AiSearchCubit(_FakeInterpret(), SearchProperties(repo));
+        await cubit.submit('3 bedroom apartments in Riyadh');
+        expect(
+          (cubit.state as AiSearchChat).turns.last.answer!.query.listingType,
+          isNull,
+        );
 
-      await cubit.submitRefined(label: 'Rent', listingType: 'for-rent');
-      final turns = (cubit.state as AiSearchChat).turns;
-      expect(turns.length, 2);
-      expect(turns.last.utterance, 'Rent');
-      final q = turns.last.answer!.query;
-      expect(q.listingType, 'for-rent');
-      expect(q.propertyTypeIds, [1], reason: 'keeps the prior filters');
-      expect(q.cityId, 1);
-      expect(q.minBedrooms, 3);
-      await cubit.close();
-    });
+        await cubit.submitRefined(label: 'Rent', listingType: 'for-rent');
+        final turns = (cubit.state as AiSearchChat).turns;
+        expect(turns.length, 2);
+        expect(turns.last.utterance, 'Rent');
+        final q = turns.last.answer!.query;
+        expect(q.listingType, 'for-rent');
+        expect(q.propertyTypeIds, [1], reason: 'keeps the prior filters');
+        expect(q.cityId, 1);
+        expect(q.minBedrooms, 3);
+        await cubit.close();
+      },
+    );
 
     test('retry after submitRefined preserves all original filters', () async {
       // Fail the 2nd search call (the submitRefined call) so we get a failure
@@ -274,14 +278,20 @@ void main() {
     });
 
     test('submitRefined without a prior answer is a no-op', () async {
-      final cubit = AiSearchCubit(_FakeInterpret(), SearchProperties(_StubRepo()));
+      final cubit = AiSearchCubit(
+        _FakeInterpret(),
+        SearchProperties(_StubRepo()),
+      );
       await cubit.submitRefined(label: 'Rent', listingType: 'for-rent');
       expect(cubit.state, isA<AiSearchIdle>());
       await cubit.close();
     });
 
     test('reset returns to the welcome state', () async {
-      final cubit = AiSearchCubit(_FakeInterpret(), SearchProperties(_StubRepo()));
+      final cubit = AiSearchCubit(
+        _FakeInterpret(),
+        SearchProperties(_StubRepo()),
+      );
       await cubit.submit('villas in Riyadh');
       cubit.reset();
       expect(cubit.state, isA<AiSearchIdle>());
@@ -289,7 +299,10 @@ void main() {
     });
 
     test('blank input is ignored', () async {
-      final cubit = AiSearchCubit(_FakeInterpret(), SearchProperties(_StubRepo()));
+      final cubit = AiSearchCubit(
+        _FakeInterpret(),
+        SearchProperties(_StubRepo()),
+      );
       await cubit.submit('   ');
       expect(cubit.state, isA<AiSearchIdle>());
       await cubit.close();
@@ -314,6 +327,7 @@ class _FakeLookup extends LookupService {
 
 class _StubRepo implements PropertyRepository {
   final bool failFirst;
+
   /// If set, the call at this 1-indexed position returns a failure.
   final int? failOnCall;
   int searchCalls = 0;

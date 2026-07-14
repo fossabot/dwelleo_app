@@ -46,9 +46,7 @@ String describeQuery(
   final parts = <String>[
     if (q.listingType == 'for-sale') l10n.forSale,
     if (q.listingType == 'for-rent') l10n.forRent,
-    ...types
-        .where((t) => q.propertyTypeIds.contains(t.id))
-        .map((t) => t.name),
+    ...types.where((t) => q.propertyTypeIds.contains(t.id)).map((t) => t.name),
     ...cities.where((c) => c.id == '${q.cityId}').map((c) => c.name),
     if (q.minBedrooms != null) '${q.minBedrooms}+ ${l10n.beds}',
     if (q.minBathrooms != null) '${q.minBathrooms}+ ${l10n.baths}',
@@ -135,11 +133,7 @@ class _FiltersSheetState extends State<_FiltersSheet> {
     final max = num.tryParse(_maxPrice.text.trim());
     Navigator.pop(
       context,
-      _draft.copyWith(
-        minPrice: () => min,
-        maxPrice: () => max,
-        page: 1,
-      ),
+      _draft.copyWith(minPrice: () => min, maxPrice: () => max, page: 1),
     );
   }
 
@@ -207,8 +201,9 @@ class _FiltersSheetState extends State<_FiltersSheet> {
                         label: Text(s.label, overflow: TextOverflow.ellipsis),
                         onPressed: () => _applySaved(s),
                         onDeleted: () async {
-                          final next =
-                              await widget.savedSearches.remove(s.label);
+                          final next = await widget.savedSearches.remove(
+                            s.label,
+                          );
                           if (mounted) setState(() => _saved = next);
                         },
                       ),
@@ -230,9 +225,7 @@ class _FiltersSheetState extends State<_FiltersSheet> {
                         selected: _draft.propertyTypeIds.contains(t.id),
                         onTap: () => setState(() {
                           final ids = [..._draft.propertyTypeIds];
-                          ids.contains(t.id)
-                              ? ids.remove(t.id)
-                              : ids.add(t.id);
+                          ids.contains(t.id) ? ids.remove(t.id) : ids.add(t.id);
                           _draft = _draft.copyWith(propertyTypeIds: ids);
                         }),
                       ),
@@ -373,10 +366,7 @@ class _LookupLoading extends StatelessWidget {
   Widget build(BuildContext context) {
     return const Padding(
       padding: EdgeInsets.symmetric(vertical: 6),
-      child: LinearProgressIndicator(
-        color: AppColors.primary,
-        minHeight: 3,
-      ),
+      child: LinearProgressIndicator(color: AppColors.primary, minHeight: 3),
     );
   }
 }
