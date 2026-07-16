@@ -45,6 +45,15 @@ workflows:
       - name: Flutter unit tests
         script: flutter test --reporter expanded
 
+      # The repo's gradle.properties sets -Xmx8G, which is fine locally but OOMs
+      # on Codemagic's 8GB build machine (no headroom for the OS + Kotlin daemon
+      # + workers). A later duplicate key wins in a properties file, so append a
+      # smaller heap override here — CI-only, the committed value is untouched.
+      - name: Cap Gradle heap for the CI machine
+        script: |
+          printf '\norg.gradle.jvmargs=-Xmx4G -XX:MaxMetaspaceSize=1G -XX:ReservedCodeCacheSize=512m\n' >> android/gradle.properties
+          tail -n 3 android/gradle.properties
+
       - name: Build dev debug APK
         script: flutter build apk --debug --flavor dev -t lib/main_dev.dart
 
