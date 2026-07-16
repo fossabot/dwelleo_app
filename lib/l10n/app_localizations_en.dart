@@ -529,4 +529,54 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get aiVoiceReplies => 'Voice replies';
+
+  @override
+  String get salesDisclosure =>
+      'Demo assistant powered by Google Gemini — not Dwelleo\'s production Sales Agent. It won\'t quote prices or legal terms.';
+
+  @override
+  String get salesKeyMissing =>
+      'The AI Sales Agent isn\'t enabled in this build. Run the app with --dart-define=GEMINI_API_KEY=<your key>.';
+
+  @override
+  String get salesKeyInvalid =>
+      'The AI key was rejected — check your GEMINI_API_KEY.';
+
+  @override
+  String get salesQuotaMessage =>
+      'The demo AI quota is used up — add credits in Google AI Studio, then try again.';
+
+  @override
+  String get salesThinking => 'Your agent is typing…';
+
+  @override
+  String get salesComposerHint => 'Tell your agent what you\'re looking for…';
+
+  @override
+  String get salesSuggestion1 =>
+      'I have a 2M SAR budget and want a villa in Riyadh within 3 months';
+
+  @override
+  String get salesSuggestion2 => 'Looking for an apartment to invest in Jeddah';
+
+  @override
+  String get salesSuggestion3 => 'What do I need to buy an off-plan unit?';
+
+  @override
+  String get leadProfile => 'Lead profile';
+
+  @override
+  String get leadBudget => 'Budget';
+
+  @override
+  String get leadIntent => 'Intent';
+
+  @override
+  String get leadTimeline => 'Timeline';
+
+  @override
+  String get leadEligibility => 'Eligibility';
+
+  @override
+  String get leadPreferences => 'Preferences';
 }

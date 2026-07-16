@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../di/service_locator.dart';
 import '../session/session_state.dart';
 import '../../app/app_shell.dart';
+import '../../features/ai_sales_agent/presentation/screens/ai_sales_agent_screen.dart';
 import '../../features/ai_search/presentation/screens/ai_search_screen.dart';
 import '../../features/auth/presentation/screens/forgot_password_screen.dart';
 import '../../features/auth/presentation/screens/login_screen.dart';
@@ -158,6 +159,13 @@ class AppRouter {
         path: RoutePaths.subscriptions,
         name: RoutePaths.subscriptions,
         builder: (context, state) => const SubscriptionsScreen(),
+      ),
+
+      // Its own product surface — never aliased to AI Search (review P0).
+      GoRoute(
+        path: RoutePaths.aiSalesAgent,
+        name: RoutePaths.aiSalesAgent,
+        builder: (context, state) => const AiSalesAgentScreen(),
       ),
 
       // Property list/detail push OVER the shell (full-screen, no bottom bar) —

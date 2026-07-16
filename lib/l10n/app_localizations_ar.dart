@@ -526,4 +526,54 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get aiVoiceReplies => 'الردود الصوتية';
+
+  @override
+  String get salesDisclosure =>
+      'مساعد تجريبي مدعوم من Google Gemini — ليس وكيل مبيعات دويليو الرسمي، ولا يقدّم أسعارًا أو شروطًا قانونية.';
+
+  @override
+  String get salesKeyMissing =>
+      'وكيل المبيعات الذكي غير مفعّل في هذا الإصدار. شغّل التطبيق مع ‎--dart-define=GEMINI_API_KEY.';
+
+  @override
+  String get salesKeyInvalid =>
+      'تم رفض مفتاح الذكاء الاصطناعي — تحقق من GEMINI_API_KEY.';
+
+  @override
+  String get salesQuotaMessage =>
+      'انتهت حصة الذكاء الاصطناعي التجريبية — أضف رصيدًا في Google AI Studio ثم حاول مجددًا.';
+
+  @override
+  String get salesThinking => 'وكيلك يكتب الآن…';
+
+  @override
+  String get salesComposerHint => 'قل لوكيلك ما الذي تبحث عنه…';
+
+  @override
+  String get salesSuggestion1 =>
+      'معي ميزانية ٢ مليون ريال وأبغى فيلا في الرياض خلال ٣ أشهر';
+
+  @override
+  String get salesSuggestion2 => 'أدور شقة للاستثمار في جدة';
+
+  @override
+  String get salesSuggestion3 => 'وش أحتاج لشراء وحدة على الخارطة؟';
+
+  @override
+  String get leadProfile => 'ملف العميل';
+
+  @override
+  String get leadBudget => 'الميزانية';
+
+  @override
+  String get leadIntent => 'الهدف';
+
+  @override
+  String get leadTimeline => 'الإطار الزمني';
+
+  @override
+  String get leadEligibility => 'الأهلية';
+
+  @override
+  String get leadPreferences => 'التفضيلات';
 }

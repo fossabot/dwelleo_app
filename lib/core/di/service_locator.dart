@@ -47,6 +47,11 @@ import '../../features/properties/domain/usecases/get_property_detail.dart';
 import '../../features/properties/domain/usecases/search_properties.dart';
 import '../../features/properties/presentation/cubit/properties_cubit.dart';
 import '../../features/properties/presentation/cubit/property_detail_cubit.dart';
+import '../../features/ai_sales_agent/data/datasources/gemini_sales_remote_data_source.dart';
+import '../../features/ai_sales_agent/data/repositories/sales_agent_repository_impl.dart';
+import '../../features/ai_sales_agent/domain/repositories/sales_agent_repository.dart';
+import '../../features/ai_sales_agent/domain/usecases/send_sales_message.dart';
+import '../../features/ai_sales_agent/presentation/cubit/sales_agent_cubit.dart';
 import '../../features/ai_search/domain/usecases/interpret_ai_query.dart';
 import '../../features/ai_search/presentation/cubit/ai_search_cubit.dart';
 import '../speech/speech_service.dart';
@@ -154,6 +159,19 @@ Future<void> setupServiceLocator() async {
   sl.registerFactory(
     () => AiSearchCubit(sl<InterpretAiQuery>(), sl<SearchProperties>()),
   );
+
+  // ── Feature: AI Sales Agent (demo Gemini adapter) ────────────────────────
+  // Own Dio inside the data source: Dwelleo auth/locale interceptors must
+  // never reach a third-party host. Swappable for Dwelleo's production
+  // agent behind the same SalesAgentRepository contract.
+  sl.registerLazySingleton<GeminiSalesRemoteDataSource>(
+    () => GeminiSalesRemoteDataSource(),
+  );
+  sl.registerLazySingleton<SalesAgentRepository>(
+    () => SalesAgentRepositoryImpl(sl<GeminiSalesRemoteDataSource>()),
+  );
+  sl.registerLazySingleton(() => SendSalesMessage(sl<SalesAgentRepository>()));
+  sl.registerFactory(() => SalesAgentCubit(sl<SendSalesMessage>()));
 
   // ── Feature: Home / Explore ───────────────────────────────────────────────
   sl.registerLazySingleton<HomeRemoteDataSource>(

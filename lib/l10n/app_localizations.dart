@@ -1081,6 +1081,96 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Voice replies'**
   String get aiVoiceReplies;
+
+  /// No description provided for @salesDisclosure.
+  ///
+  /// In en, this message translates to:
+  /// **'Demo assistant powered by Google Gemini — not Dwelleo\'s production Sales Agent. It won\'t quote prices or legal terms.'**
+  String get salesDisclosure;
+
+  /// No description provided for @salesKeyMissing.
+  ///
+  /// In en, this message translates to:
+  /// **'The AI Sales Agent isn\'t enabled in this build. Run the app with --dart-define=GEMINI_API_KEY=<your key>.'**
+  String get salesKeyMissing;
+
+  /// No description provided for @salesKeyInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'The AI key was rejected — check your GEMINI_API_KEY.'**
+  String get salesKeyInvalid;
+
+  /// No description provided for @salesQuotaMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'The demo AI quota is used up — add credits in Google AI Studio, then try again.'**
+  String get salesQuotaMessage;
+
+  /// No description provided for @salesThinking.
+  ///
+  /// In en, this message translates to:
+  /// **'Your agent is typing…'**
+  String get salesThinking;
+
+  /// No description provided for @salesComposerHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Tell your agent what you\'re looking for…'**
+  String get salesComposerHint;
+
+  /// No description provided for @salesSuggestion1.
+  ///
+  /// In en, this message translates to:
+  /// **'I have a 2M SAR budget and want a villa in Riyadh within 3 months'**
+  String get salesSuggestion1;
+
+  /// No description provided for @salesSuggestion2.
+  ///
+  /// In en, this message translates to:
+  /// **'Looking for an apartment to invest in Jeddah'**
+  String get salesSuggestion2;
+
+  /// No description provided for @salesSuggestion3.
+  ///
+  /// In en, this message translates to:
+  /// **'What do I need to buy an off-plan unit?'**
+  String get salesSuggestion3;
+
+  /// No description provided for @leadProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Lead profile'**
+  String get leadProfile;
+
+  /// No description provided for @leadBudget.
+  ///
+  /// In en, this message translates to:
+  /// **'Budget'**
+  String get leadBudget;
+
+  /// No description provided for @leadIntent.
+  ///
+  /// In en, this message translates to:
+  /// **'Intent'**
+  String get leadIntent;
+
+  /// No description provided for @leadTimeline.
+  ///
+  /// In en, this message translates to:
+  /// **'Timeline'**
+  String get leadTimeline;
+
+  /// No description provided for @leadEligibility.
+  ///
+  /// In en, this message translates to:
+  /// **'Eligibility'**
+  String get leadEligibility;
+
+  /// No description provided for @leadPreferences.
+  ///
+  /// In en, this message translates to:
+  /// **'Preferences'**
+  String get leadPreferences;
 }
 
 class _AppLocalizationsDelegate

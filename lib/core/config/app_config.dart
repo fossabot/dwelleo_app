@@ -73,6 +73,18 @@ class AppConfig {
     ),
   };
 
+  /// Gemini key for the DEMO AI Sales Agent provider. Injected at build/run
+  /// time — never hardcoded or committed (CLAUDE.md §A6):
+  ///   flutter run --dart-define=GEMINI_API_KEY=... \
+  ///               [--dart-define=GEMINI_MODEL=gemini-flash-latest]
+  /// Empty ⇒ the Sales Agent screen shows its "not configured" state and
+  /// makes no network calls.
+  static const String geminiApiKey = String.fromEnvironment('GEMINI_API_KEY');
+  static const String geminiModel = String.fromEnvironment(
+    'GEMINI_MODEL',
+    defaultValue: 'gemini-flash-latest',
+  );
+
   final Flavor flavor;
   final String apiBaseUrl;
   final String analyticsEnvironment;

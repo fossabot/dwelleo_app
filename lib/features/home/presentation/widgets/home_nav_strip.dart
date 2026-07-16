@@ -48,7 +48,8 @@ class HomeNavStrip extends StatelessWidget {
           _NavLink(
             label: l10n.aiSalesAgent,
             badge: l10n.newLabel,
-            onTap: () => context.go(RoutePaths.aiSearch),
+            // Its own surface — never aliased to AI Search (review P0).
+            onTap: () => context.push(RoutePaths.aiSalesAgent),
           ),
           const Padding(
             padding: EdgeInsetsDirectional.only(start: 4),
