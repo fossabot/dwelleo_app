@@ -1,0 +1,102 @@
+workflows:
+
+  # ── Android: unit tests + dev/staging debug APKs ─────────────────────────
+  android-debug:
+    name: Android — quality + dev/staging debug APKs
+    max_build_duration: 60
+    environment:
+      flutter: 3.44.4
+      java: 17
+    scripts:
+      - name: Flutter pub get
+        script: flutter pub get
+
+      - name: Dart format check
+        script: dart format --set-exit-if-changed .
+
+      - name: Flutter analyze
+        script: flutter analyze --no-fatal-infos
+
+      - name: Inject Firebase & Maps config
+        script: |
+          if [ -z "$GOOGLE_SERVICES_JSON" ]; then
+            echo "ERROR: GOOGLE_SERVICES_JSON is not set in Codemagic environment variables."
+            exit 1
+          fi
+          echo "$GOOGLE_SERVICES_JSON" | openssl base64 -d -A > android/app/google-services.json
+          printf 'MAPS_API_KEY=%s\n' "${MAPS_API_KEY:-}" > android/secrets.properties
+
+      - name: Flutter unit tests
+        script: flutter test --reporter expanded
+
+      - name: Build dev debug APK
+        script: flutter build apk --debug --flavor dev -t lib/main_dev.dart
+
+      - name: Build staging debug APK
+        script: flutter build apk --debug --flavor staging -t lib/main_staging.dart
+
+    artifacts:
+      - build/app/outputs/flutter-apk/*.apk
+
+    publishing:
+      email:
+        recipients:
+          - hakemm663@gmail.com
+        notify:
+          success: true
+          failure: true
+
+  # ── iOS: unit tests + dev/staging simulator builds ───────────────────────
+  ios-debug:
+    name: iOS — quality + dev/staging simulator builds
+    max_build_duration: 60
+    environment:
+      flutter: 3.44.4
+      xcode: latest
+      cocoapods: default
+    scripts:
+      - name: Flutter pub get
+        script: flutter pub get
+
+      - name: Inject Firebase & Maps config
+        script: |
+          if [ -z "$GOOGLE_SERVICE_INFO_DEV" ] || [ -z "$GOOGLE_SERVICE_INFO_STAGING" ]; then
+            echo "ERROR: GOOGLE_SERVICE_INFO_DEV / STAGING not set in Codemagic environment variables."
+            exit 1
+          fi
+          mkdir -p ios/config
+          echo "$GOOGLE_SERVICE_INFO_DEV"     | openssl base64 -d -A > ios/config/GoogleService-Info-dev.plist
+          echo "$GOOGLE_SERVICE_INFO_STAGING" | openssl base64 -d -A > ios/config/GoogleService-Info-staging.plist
+          printf 'MAPS_API_KEY=%s\n' "${MAPS_API_KEY:-}" > ios/Flutter/Secrets.xcconfig
+
+      - name: CocoaPods install
+        script: find . -name "Podfile" -execdir pod install \;
+
+      - name: Flutter unit tests
+        script: flutter test --reporter expanded
+
+      - name: Build dev iOS (simulator, no codesign)
+        script: |
+          flutter build ios \
+            --debug \
+            --flavor dev \
+            -t lib/main_dev.dart \
+            --no-codesign \
+            --simulator
+
+      - name: Build staging iOS (simulator, no codesign)
+        script: |
+          flutter build ios \
+            --debug \
+            --flavor staging \
+            -t lib/main_staging.dart \
+            --no-codesign \
+            --simulator
+
+    publishing:
+      email:
+        recipients:
+          - hakemm663@gmail.com
+        notify:
+          success: true
+          failure: true
