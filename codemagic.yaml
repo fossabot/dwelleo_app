@@ -55,10 +55,10 @@ workflows:
           tail -n 3 android/gradle.properties
 
       - name: Build dev debug APK
-        script: flutter build apk --debug --flavor dev -t lib/main_dev.dart
+        script: flutter build apk --debug --flavor dev -t lib/main_dev.dart --dart-define=GEMINI_API_KEY="${GEMINI_API_KEY:-}"
 
       - name: Build staging debug APK
-        script: flutter build apk --debug --flavor staging -t lib/main_staging.dart
+        script: flutter build apk --debug --flavor staging -t lib/main_staging.dart --dart-define=GEMINI_API_KEY="${GEMINI_API_KEY:-}"
 
     artifacts:
       - build/app/outputs/flutter-apk/*.apk
@@ -122,7 +122,8 @@ workflows:
             --debug \
             --flavor dev \
             -t lib/main_dev.dart \
-            --no-codesign
+            --no-codesign \
+            --dart-define=GEMINI_API_KEY="${GEMINI_API_KEY:-}"
 
       - name: Build staging iOS (no codesign)
         script: |
@@ -130,7 +131,8 @@ workflows:
             --debug \
             --flavor staging \
             -t lib/main_staging.dart \
-            --no-codesign
+            --no-codesign \
+            --dart-define=GEMINI_API_KEY="${GEMINI_API_KEY:-}"
 
     artifacts:
       - build/ios/outputs/**/*.app
