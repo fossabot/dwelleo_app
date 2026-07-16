@@ -1,3 +1,4 @@
+import com.google.firebase.perf.plugin.FirebasePerfExtension
 import java.util.Properties
 
 plugins {
@@ -75,6 +76,14 @@ android {
         }
         debug {
             isDebuggable = true
+            // Firebase Perf ASM-instruments every dependency class — including the
+            // ~200MB Flutter debug engine jars — which OOMs Gradle on 8GB CI
+            // machines and slows every local debug build. Perf data from debug
+            // builds is noise; release builds keep full instrumentation.
+            // https://firebase.google.com/docs/perf-mon/disable-sdk?platform=android
+            configure<FirebasePerfExtension> {
+                setInstrumentationEnabled(false)
+            }
         }
     }
 }
