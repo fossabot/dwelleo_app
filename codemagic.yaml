@@ -1,12 +1,26 @@
 workflows:
 
-  # ── Android: unit tests + dev/staging debug APKs ─────────────────────────
+  # ── Android: quality gate + dev/staging debug APKs ───────────────────────
   android-debug:
-    name: Android — quality + dev/staging debug APKs
+    name: Android — quality + dev & staging debug APKs
     max_build_duration: 60
     environment:
       flutter: 3.44.4
       java: 17
+    triggering:
+      events:
+        - push
+        - pull_request
+      branch_patterns:
+        - pattern: development
+          include: true
+        - pattern: feature/*
+          include: true
+        - pattern: chore/*
+          include: true
+        - pattern: fix/*
+          include: true
+      cancel_previous_builds: true
     scripts:
       - name: Flutter pub get
         script: flutter pub get
@@ -46,14 +60,28 @@ workflows:
           success: true
           failure: true
 
-  # ── iOS: unit tests + dev/staging simulator builds ───────────────────────
+  # ── iOS: quality gate + dev/staging no-codesign builds ───────────────────
   ios-debug:
-    name: iOS — quality + dev/staging simulator builds
+    name: iOS — quality + dev & staging no-codesign builds
     max_build_duration: 60
     environment:
       flutter: 3.44.4
       xcode: latest
       cocoapods: default
+    triggering:
+      events:
+        - push
+        - pull_request
+      branch_patterns:
+        - pattern: development
+          include: true
+        - pattern: feature/*
+          include: true
+        - pattern: chore/*
+          include: true
+        - pattern: fix/*
+          include: true
+      cancel_previous_builds: true
     scripts:
       - name: Flutter pub get
         script: flutter pub get
@@ -70,28 +98,29 @@ workflows:
           printf 'MAPS_API_KEY=%s\n' "${MAPS_API_KEY:-}" > ios/Flutter/Secrets.xcconfig
 
       - name: CocoaPods install
-        script: find . -name "Podfile" -execdir pod install \;
+        script: cd ios && pod install
 
       - name: Flutter unit tests
         script: flutter test --reporter expanded
 
-      - name: Build dev iOS (simulator, no codesign)
+      - name: Build dev iOS (no codesign)
         script: |
           flutter build ios \
             --debug \
             --flavor dev \
             -t lib/main_dev.dart \
-            --no-codesign \
-            --simulator
+            --no-codesign
 
-      - name: Build staging iOS (simulator, no codesign)
+      - name: Build staging iOS (no codesign)
         script: |
           flutter build ios \
             --debug \
             --flavor staging \
             -t lib/main_staging.dart \
-            --no-codesign \
-            --simulator
+            --no-codesign
+
+    artifacts:
+      - build/ios/outputs/**/*.app
 
     publishing:
       email:
