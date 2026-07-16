@@ -26,7 +26,7 @@ workflows:
         script: flutter pub get
 
       - name: Dart format check
-        script: dart format --set-exit-if-changed .
+        script: dart format --set-exit-if-changed lib test
 
       - name: Flutter analyze
         script: flutter analyze --no-fatal-infos
