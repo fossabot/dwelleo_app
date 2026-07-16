@@ -7,6 +7,8 @@ workflows:
     environment:
       flutter: 3.44.4
       java: 17
+      groups:
+        - firebase_config
     triggering:
       events:
         - push
@@ -68,6 +70,8 @@ workflows:
       flutter: 3.44.4
       xcode: latest
       cocoapods: default
+      groups:
+        - firebase_config
     triggering:
       events:
         - push
