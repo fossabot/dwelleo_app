@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/di/service_locator.dart';
@@ -11,6 +12,7 @@ import '../../../../core/utils/arabic_utils.dart';
 import '../../../../core/widgets/chat_bubbles.dart';
 import '../../../../core/widgets/motion.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../domain/entities/listing_result.dart';
 import '../../domain/entities/sales_models.dart';
 import '../../domain/usecases/send_sales_message.dart';
 import '../cubit/sales_agent_cubit.dart';
@@ -139,18 +141,21 @@ class _AiSalesAgentScreenState extends State<AiSalesAgentScreen> {
                     configured: configured,
                     onAsk: _send,
                   ),
-                  SalesAgentChat(:final turns, :final lead) => Column(
-                    children: [
-                      if (lead.hasAny) _LeadSheet(lead: lead),
-                      Expanded(
-                        child: _ThreadView(
-                          turns: turns,
-                          controller: _scroll,
-                          onRetry: _cubit.retry,
+                  SalesAgentChat(:final turns, :final lead, :final listings) =>
+                    Column(
+                      children: [
+                        if (lead.hasAny) _LeadSheet(lead: lead),
+                        Expanded(
+                          child: _ThreadView(
+                            turns: turns,
+                            controller: _scroll,
+                            onRetry: _cubit.retry,
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
+                        if (listings.isNotEmpty)
+                          _ListingsSection(listings: listings),
+                      ],
+                    ),
                 },
               ),
             ),
@@ -668,6 +673,121 @@ class _ComposerState extends State<_Composer> {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+// ----------------------------------------------------------- listing results
+
+class _ListingsSection extends StatelessWidget {
+  final List<ListingResult> listings;
+  const _ListingsSection({required this.listings});
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    final accent = AppColors.accentFor(Theme.of(context).brightness);
+    return Container(
+      decoration: BoxDecoration(
+        color: scheme.surface,
+        border: Border(
+          top: BorderSide(color: scheme.outlineVariant.withValues(alpha: 0.5)),
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsetsDirectional.fromSTEB(16, 10, 16, 6),
+            child: Row(
+              children: [
+                Icon(Icons.travel_explore_rounded, size: 14, color: accent),
+                const SizedBox(width: 6),
+                Text(
+                  'Dwelleo results',
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w700,
+                    color: accent,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          SizedBox(
+            height: 88,
+            child: ListView.separated(
+              scrollDirection: Axis.horizontal,
+              padding: const EdgeInsetsDirectional.fromSTEB(16, 0, 16, 10),
+              itemCount: listings.length,
+              separatorBuilder: (_, _) => const SizedBox(width: 8),
+              itemBuilder: (_, i) => _ListingCard(result: listings[i]),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ListingCard extends StatelessWidget {
+  final ListingResult result;
+  const _ListingCard({required this.result});
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return GestureDetector(
+      onTap: () {
+        Clipboard.setData(ClipboardData(text: result.link));
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Link copied'),
+            duration: Duration(seconds: 2),
+          ),
+        );
+      },
+      child: Container(
+        width: 190,
+        padding: const EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          color: scheme.surfaceContainerHighest.withValues(alpha: 0.6),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              result.title,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w700,
+                color: scheme.onSurface,
+              ),
+            ),
+            const SizedBox(height: 3),
+            Expanded(
+              child: Text(
+                result.snippet,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: 10.5,
+                  color: scheme.onSurfaceVariant,
+                ),
+              ),
+            ),
+            Text(
+              Uri.tryParse(result.link)?.host ?? result.link,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(fontSize: 10, color: scheme.primary),
+            ),
+          ],
+        ),
       ),
     );
   }

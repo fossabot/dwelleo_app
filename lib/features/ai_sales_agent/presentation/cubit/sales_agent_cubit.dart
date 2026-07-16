@@ -1,18 +1,20 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-// Provides the ApiResult.when extension used below.
 import '../../../../core/errors/api_result.dart';
+import '../../domain/entities/listing_result.dart';
 import '../../domain/entities/sales_models.dart';
+import '../../domain/usecases/search_listings.dart';
 import '../../domain/usecases/send_sales_message.dart';
 import 'sales_agent_state.dart';
 
-/// Drives the Sales Agent conversation. Depends ONLY on the use case; voice
+/// Drives the Sales Agent conversation. Depends ONLY on use cases; voice
 /// I/O stays in the widget layer (SpeechService/TtsService), matching the
 /// AI Search architecture.
 class SalesAgentCubit extends Cubit<SalesAgentState> {
   final SendSalesMessage _send;
+  final SearchListings _search;
 
-  SalesAgentCubit(this._send) : super(const SalesAgentIdle());
+  SalesAgentCubit(this._send, this._search) : super(const SalesAgentIdle());
 
   List<SalesTurn> get _turns => switch (state) {
     SalesAgentChat(:final turns) => turns,
@@ -24,14 +26,19 @@ class SalesAgentCubit extends Cubit<SalesAgentState> {
     SalesAgentIdle() => LeadProfile.empty,
   };
 
+  List<ListingResult> get _listings => switch (state) {
+    SalesAgentChat(:final listings) => listings,
+    SalesAgentIdle() => const [],
+  };
+
   Future<void> submit(String raw) async {
     final utterance = raw.trim();
     if (utterance.isEmpty) return;
     final current = _turns;
     if (current.isNotEmpty && current.last.loading) return;
 
-    // History = resolved exchanges only (failed turns are excluded so a
-    // retry does not replay an error into the model's context).
+    // History = resolved exchanges only (failed turns excluded so a retry
+    // does not replay an error into the model's context).
     final history = <SalesMessage>[
       for (final t in current)
         if (t.reply != null) ...[
@@ -47,6 +54,7 @@ class SalesAgentCubit extends Cubit<SalesAgentState> {
           SalesTurn(utterance: utterance, loading: true),
         ]),
         lead: _lead,
+        listings: _listings,
       ),
     );
 
@@ -63,6 +71,12 @@ class SalesAgentCubit extends Cubit<SalesAgentState> {
         lead: _lead,
       ),
     );
+
+    // Fire Serper search after a successful reply when the lead has criteria.
+    // Non-fatal: a Serper failure never surfaces to the user.
+    if (result.isSuccess && SearchListings.isConfigured && _lead.hasAny) {
+      await _triggerSearch(_lead);
+    }
   }
 
   /// Re-sends the last failed turn.
@@ -74,6 +88,7 @@ class SalesAgentCubit extends Cubit<SalesAgentState> {
       SalesAgentChat(
         List.unmodifiable(current.sublist(0, current.length - 1)),
         lead: _lead,
+        listings: _listings,
       ),
     );
     await submit(utterance);
@@ -89,7 +104,30 @@ class SalesAgentCubit extends Cubit<SalesAgentState> {
       SalesAgentChat(
         List.unmodifiable([...current.sublist(0, current.length - 1), turn]),
         lead: lead,
+        listings: _listings,
       ),
     );
+  }
+
+  Future<void> _triggerSearch(LeadProfile lead) async {
+    final query = _buildQuery(lead);
+    final result = await _search(query);
+    if (isClosed) return;
+    result.when(
+      success: (listings) {
+        final current = state;
+        if (current is SalesAgentChat) {
+          emit(SalesAgentChat(current.turns, lead: current.lead, listings: listings));
+        }
+      },
+      error: (_) {},
+    );
+  }
+
+  String _buildQuery(LeadProfile lead) {
+    final parts = <String>['site:dwelleo.sa'];
+    if (lead.preferences != null) parts.add(lead.preferences!);
+    if (lead.intent != null) parts.add(lead.intent!);
+    return parts.join(' ');
   }
 }

@@ -1,12 +1,19 @@
 import 'package:dwelleo_app/core/errors/api_result.dart';
 import 'package:dwelleo_app/core/errors/failure.dart';
 import 'package:dwelleo_app/features/ai_sales_agent/data/models/sales_reply_model.dart';
+import 'package:dwelleo_app/features/ai_sales_agent/domain/entities/listing_result.dart';
 import 'package:dwelleo_app/features/ai_sales_agent/domain/entities/sales_models.dart';
+import 'package:dwelleo_app/features/ai_sales_agent/domain/repositories/listing_search_repository.dart';
 import 'package:dwelleo_app/features/ai_sales_agent/domain/repositories/sales_agent_repository.dart';
+import 'package:dwelleo_app/features/ai_sales_agent/domain/usecases/search_listings.dart';
 import 'package:dwelleo_app/features/ai_sales_agent/domain/usecases/send_sales_message.dart';
 import 'package:dwelleo_app/features/ai_sales_agent/presentation/cubit/sales_agent_cubit.dart';
 import 'package:dwelleo_app/features/ai_sales_agent/presentation/cubit/sales_agent_state.dart';
 import 'package:flutter_test/flutter_test.dart';
+
+// SearchListings.isConfigured is false in tests (no --dart-define), so this
+// stub is never called — it exists only to satisfy the constructor signature.
+SearchListings _noopSearch() => SearchListings(const _FakeListingRepo());
 
 void main() {
   group('SalesReplyModel', () {
@@ -72,7 +79,7 @@ void main() {
   group('SalesAgentCubit', () {
     test('submit resolves a turn and accumulates the lead sheet', () async {
       final repo = _FakeRepo();
-      final cubit = SalesAgentCubit(SendSalesMessage(repo));
+      final cubit = SalesAgentCubit(SendSalesMessage(repo), _noopSearch());
 
       await cubit.submit('I have 2M SAR for a villa');
       var chat = cubit.state as SalesAgentChat;
@@ -91,7 +98,7 @@ void main() {
 
     test('failure keeps the turn and retry() recovers', () async {
       final repo = _FakeRepo(failFirst: true);
-      final cubit = SalesAgentCubit(SendSalesMessage(repo));
+      final cubit = SalesAgentCubit(SendSalesMessage(repo), _noopSearch());
       await cubit.submit('hello');
       var chat = cubit.state as SalesAgentChat;
       expect(chat.turns.single.failure, isA<ServerFailure>());
@@ -104,7 +111,7 @@ void main() {
     });
 
     test('reset returns to the welcome state and clears the lead', () async {
-      final cubit = SalesAgentCubit(SendSalesMessage(_FakeRepo()));
+      final cubit = SalesAgentCubit(SendSalesMessage(_FakeRepo()), _noopSearch());
       await cubit.submit('I have 2M SAR for a villa');
       cubit.reset();
       expect(cubit.state, isA<SalesAgentIdle>());
@@ -112,12 +119,20 @@ void main() {
     });
 
     test('blank input is ignored', () async {
-      final cubit = SalesAgentCubit(SendSalesMessage(_FakeRepo()));
+      final cubit = SalesAgentCubit(SendSalesMessage(_FakeRepo()), _noopSearch());
       await cubit.submit('   ');
       expect(cubit.state, isA<SalesAgentIdle>());
       await cubit.close();
     });
   });
+}
+
+class _FakeListingRepo implements ListingSearchRepository {
+  const _FakeListingRepo();
+
+  @override
+  Future<ApiResult<List<ListingResult>>> search(String query) async =>
+      const ApiSuccess([]);
 }
 
 class _FakeRepo implements SalesAgentRepository {

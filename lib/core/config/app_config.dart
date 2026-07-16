@@ -85,6 +85,12 @@ class AppConfig {
     defaultValue: 'gemini-flash-latest',
   );
 
+  /// Serper key for live listing search during BITEP qualification. Injected
+  /// at build/run time — never hardcoded or committed (CLAUDE.md §A6):
+  ///   --dart-define=SERPER_API_KEY=...  (or via --dart-define-from-file)
+  /// Empty ⇒ listing search is silently skipped; the agent still functions.
+  static const String serperApiKey = String.fromEnvironment('SERPER_API_KEY');
+
   final Flavor flavor;
   final String apiBaseUrl;
   final String analyticsEnvironment;

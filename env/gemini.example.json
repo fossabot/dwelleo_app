@@ -1,4 +1,5 @@
 {
-  "GEMINI_API_KEY": "PASTE-YOUR-KEY-HERE",
-  "GEMINI_MODEL": "gemini-flash-latest"
+  "GEMINI_API_KEY": "PASTE-YOUR-GEMINI-KEY-HERE",
+  "GEMINI_MODEL": "gemini-flash-latest",
+  "SERPER_API_KEY": "PASTE-YOUR-SERPER-KEY-HERE"
 }
