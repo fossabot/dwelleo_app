@@ -223,8 +223,10 @@ class _FakeListingRepo implements ListingSearchRepository {
   const _FakeListingRepo();
 
   @override
-  Future<ApiResult<List<ListingResult>>> search(String query, {String hl = ''}) async =>
-      const ApiSuccess([]);
+  Future<ApiResult<List<ListingResult>>> search(
+    String query, {
+    String hl = '',
+  }) async => const ApiSuccess([]);
 }
 
 /// In-memory chat store — verifies persistence behavior without SQLite.

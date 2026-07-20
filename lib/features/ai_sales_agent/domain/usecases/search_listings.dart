@@ -9,6 +9,8 @@ class SearchListings {
 
   static bool get isConfigured => AppConfig.serperApiKey.isNotEmpty;
 
-  Future<ApiResult<List<ListingResult>>> call(String query, {String hl = 'ar'}) =>
-      _repository.search(query, hl: hl);
+  Future<ApiResult<List<ListingResult>>> call(
+    String query, {
+    String hl = 'ar',
+  }) => _repository.search(query, hl: hl);
 }

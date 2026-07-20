@@ -159,9 +159,7 @@ class _AiSalesAgentScreenState extends State<AiSalesAgentScreen> {
                         l10n.salesOnline,
                         style: TextStyle(
                           fontSize: 10.5,
-                          color: Theme.of(
-                            context,
-                          ).colorScheme.onSurfaceVariant,
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
                         ),
                       ),
                     ],
@@ -487,10 +485,7 @@ class _LeadSheet extends StatelessWidget {
               const Spacer(),
               // Site parity: the call UI shows a live "BITEP: n/100" badge.
               Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 8,
-                  vertical: 3,
-                ),
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                 decoration: BoxDecoration(
                   color: accent.withValues(alpha: 0.14),
                   borderRadius: BorderRadius.circular(8),
@@ -804,10 +799,7 @@ class _ListingsSection extends StatelessWidget {
             ? Colors.white.withValues(alpha: 0.04)
             : scheme.surfaceContainerLowest,
         border: Border(
-          top: BorderSide(
-            color: accent.withValues(alpha: 0.22),
-            width: 0.5,
-          ),
+          top: BorderSide(color: accent.withValues(alpha: 0.22), width: 0.5),
         ),
       ),
       child: Column(

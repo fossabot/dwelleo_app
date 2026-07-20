@@ -28,7 +28,10 @@ class SerperSearchDataSource {
   //   get English-ranked results.
   // Fix #6: whereType<> instead of cast<> — one bad entry is skipped rather
   //   than aborting the entire list with a CastError.
-  Future<List<ListingResultModel>> search(String query, {String hl = 'ar'}) async {
+  Future<List<ListingResultModel>> search(
+    String query, {
+    String hl = 'ar',
+  }) async {
     final response = await _dio.post<Map<String, dynamic>>(
       _url,
       data: {'q': query, 'gl': 'sa', 'hl': hl, 'num': 5},
