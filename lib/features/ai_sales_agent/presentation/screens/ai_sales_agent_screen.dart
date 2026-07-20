@@ -13,6 +13,7 @@ import '../../../../core/speech/tts_service.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/utils/arabic_utils.dart';
 import '../../../../core/widgets/motion.dart';
+import '../../../../core/widgets/suggestion_pill.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../domain/entities/chat_history.dart';
 import '../../domain/entities/listing_result.dart';
@@ -48,6 +49,13 @@ class _AiSalesAgentScreenState extends State<AiSalesAgentScreen> {
     _cubit = sl<SalesAgentCubit>();
     _input = TextEditingController();
     _scroll = ScrollController();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Keep Serper's `hl` ranking hint in sync with the current app language.
+    _cubit.setLocale(Localizations.localeOf(context).languageCode);
   }
 
   @override
@@ -110,13 +118,13 @@ class _AiSalesAgentScreenState extends State<AiSalesAgentScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final configured = SendSalesMessage.isConfigured;
-    final dark = Theme.of(context).brightness == Brightness.dark;
 
+    // True-black dark backdrop now comes from the global theme.
     return Scaffold(
-      // Site call-UI parity: solid modern black backdrop in dark mode.
-      backgroundColor: dark ? AppColors.ink : null,
       appBar: AppBar(
-        titleSpacing: 0,
+        // Breathing room: keeps Sarah's portrait clear of the notch/edge.
+        toolbarHeight: 60,
+        titleSpacing: 16,
         title: Row(
           children: [
             const _PersonaAvatar(size: 34),
@@ -700,6 +708,7 @@ class _ComposerState extends State<_Composer> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final scheme = Theme.of(context).colorScheme;
+    final dark = Theme.of(context).brightness == Brightness.dark;
     final accent = AppColors.accentFor(Theme.of(context).brightness);
 
     final mic = IconButton(
@@ -711,12 +720,14 @@ class _ComposerState extends State<_Composer> {
       ),
     );
 
+    // Glass composer (owner direction): translucent faded grey letting the
+    // black backdrop breathe through — no opaque surface strip.
     return Container(
       padding: const EdgeInsetsDirectional.fromSTEB(12, 8, 12, 10),
       decoration: BoxDecoration(
-        color: scheme.surface,
+        color: dark ? Colors.transparent : scheme.surface,
         border: Border(
-          top: BorderSide(color: scheme.outlineVariant.withValues(alpha: 0.5)),
+          top: BorderSide(color: scheme.outlineVariant.withValues(alpha: 0.3)),
         ),
       ),
       child: Row(
@@ -735,9 +746,9 @@ class _ComposerState extends State<_Composer> {
                     : l10n.salesComposerHint,
                 isDense: true,
                 filled: true,
-                fillColor: scheme.surfaceContainerHighest.withValues(
-                  alpha: 0.5,
-                ),
+                fillColor: dark
+                    ? Colors.white.withValues(alpha: 0.06)
+                    : scheme.surfaceContainerHighest.withValues(alpha: 0.5),
                 contentPadding: const EdgeInsetsDirectional.fromSTEB(
                   14,
                   10,
@@ -781,13 +792,22 @@ class _ListingsSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final dark = Theme.of(context).brightness == Brightness.dark;
     final scheme = Theme.of(context).colorScheme;
     final accent = AppColors.accentFor(Theme.of(context).brightness);
+
     return Container(
       decoration: BoxDecoration(
-        color: scheme.surface,
+        // Dark: barely-there frosted overlay so the ink backdrop bleeds
+        // through; light: lightest surface variant for separation.
+        color: dark
+            ? Colors.white.withValues(alpha: 0.04)
+            : scheme.surfaceContainerLowest,
         border: Border(
-          top: BorderSide(color: scheme.outlineVariant.withValues(alpha: 0.5)),
+          top: BorderSide(
+            color: accent.withValues(alpha: 0.22),
+            width: 0.5,
+          ),
         ),
       ),
       child: Column(
@@ -797,21 +817,45 @@ class _ListingsSection extends StatelessWidget {
             padding: const EdgeInsetsDirectional.fromSTEB(16, 10, 16, 6),
             child: Row(
               children: [
-                Icon(Icons.travel_explore_rounded, size: 14, color: accent),
-                const SizedBox(width: 6),
-                Text(
-                  AppLocalizations.of(context).salesResults,
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w700,
-                    color: accent,
+                // Chip-style label matching the lead-sheet pill language.
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 3,
+                  ),
+                  decoration: BoxDecoration(
+                    color: accent.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(
+                      color: accent.withValues(alpha: 0.22),
+                      width: 0.5,
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.travel_explore_rounded,
+                        size: 12,
+                        color: accent,
+                      ),
+                      const SizedBox(width: 5),
+                      Text(
+                        AppLocalizations.of(context).salesResults,
+                        style: TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w700,
+                          color: accent,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],
             ),
           ),
           SizedBox(
-            height: 106,
+            height: 110,
             child: ListView.separated(
               scrollDirection: Axis.horizontal,
               padding: const EdgeInsetsDirectional.fromSTEB(16, 0, 16, 10),
@@ -841,8 +885,10 @@ class _ListingCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final dark = Theme.of(context).brightness == Brightness.dark;
     final l10n = AppLocalizations.of(context);
     final scheme = Theme.of(context).colorScheme;
+    final accent = AppColors.accentFor(Theme.of(context).brightness);
     final slug = propertySlugOf(result.link);
 
     return GestureDetector(
@@ -860,11 +906,29 @@ class _ListingCard extends StatelessWidget {
         );
       },
       child: Container(
-        width: 210,
-        padding: const EdgeInsets.all(10),
+        width: 214,
+        padding: const EdgeInsets.all(11),
         decoration: BoxDecoration(
-          color: scheme.surfaceContainerHighest.withValues(alpha: 0.6),
-          borderRadius: BorderRadius.circular(12),
+          // Dark: glass gradient (bright highlight top-left, darker
+          // bottom-right) so the ink shows through.
+          // Light: solid tinted surface.
+          gradient: dark
+              ? const LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [Color(0x16FFFFFF), Color(0x08FFFFFF)],
+                )
+              : null,
+          color: dark
+              ? null
+              : scheme.surfaceContainerHighest.withValues(alpha: 0.7),
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(
+            color: dark
+                ? Colors.white.withValues(alpha: 0.09)
+                : scheme.outlineVariant.withValues(alpha: 0.45),
+            width: 0.5,
+          ),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -903,13 +967,13 @@ class _ListingCard extends StatelessWidget {
                         : (Uri.tryParse(result.link)?.host ?? result.link),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: TextStyle(fontSize: 10, color: scheme.primary),
+                    style: TextStyle(fontSize: 10, color: accent),
                   ),
                 ),
                 Icon(
                   slug != null ? Icons.north_east_rounded : Icons.copy_rounded,
                   size: 11,
-                  color: scheme.onSurfaceVariant,
+                  color: accent.withValues(alpha: 0.7),
                 ),
               ],
             ),
@@ -1098,7 +1162,11 @@ class _CallBubble extends StatelessWidget {
   Widget build(BuildContext context) {
     final dark = Theme.of(context).brightness == Brightness.dark;
     final scheme = Theme.of(context).colorScheme;
-    final accent = agent ? AppColors.primary : AppColors.accent;
+    // Sarah = lime, but bright lime fails contrast on light grey — use the
+    // readable dark-olive lime in light mode (owner note).
+    final accent = agent
+        ? (dark ? AppColors.primary : AppColors.primaryDeep)
+        : AppColors.accent;
     final panel = dark ? const Color(0xFF1C1C1C) : const Color(0xFFECEEE6);
     final bar = BorderSide(color: accent, width: 3);
 
@@ -1164,83 +1232,40 @@ class _ActionBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final scheme = Theme.of(context).colorScheme;
 
-    return Container(
-      padding: const EdgeInsetsDirectional.fromSTEB(12, 6, 12, 6),
-      decoration: BoxDecoration(
-        color: scheme.surface,
-        border: Border(
-          top: BorderSide(color: scheme.outlineVariant.withValues(alpha: 0.4)),
-        ),
-      ),
-      child: Row(
-        children: [
-          _ActionButton(
-            icon: Icons.call_rounded,
-            label: l10n.call,
-            onTap: () => ContactLauncher.call(_dwelleoPhone),
-          ),
-          _ActionButton(
-            icon: Icons.chat_rounded,
-            label: l10n.whatsapp,
-            onTap: () => ContactLauncher.whatsApp(_dwelleoPhone),
-          ),
-          _ActionButton(
-            icon: Icons.event_available_rounded,
-            label: l10n.visit,
-            onTap: () => onAsk(l10n.salesVisitPrompt),
-          ),
-          _ActionButton(
-            icon: Icons.description_outlined,
-            label: l10n.docs,
-            onTap: () => onAsk(l10n.salesDocsPrompt),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _ActionButton extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  final VoidCallback onTap;
-
-  const _ActionButton({
-    required this.icon,
-    required this.label,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
-    final accent = AppColors.accentFor(Theme.of(context).brightness);
-
-    return Expanded(
-      child: InkResponse(
-        onTap: onTap,
-        radius: 34,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 5),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(icon, size: 20, color: accent),
-              const SizedBox(height: 2),
-              Text(
-                label,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  fontSize: 10.5,
-                  fontWeight: FontWeight.w600,
-                  color: scheme.onSurfaceVariant,
-                ),
-              ),
-            ],
-          ),
+    // Quick-action PILLS, deliberately styled as conversation suggestions
+    // (icon beside label, start-aligned, scrollable) — never full-width
+    // icon-over-label items that read as a second nav bar.
+    return Padding(
+      padding: const EdgeInsetsDirectional.fromSTEB(12, 8, 12, 4),
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          children: [
+            SuggestionPill(
+              icon: Icons.call_rounded,
+              label: l10n.call,
+              onTap: () => ContactLauncher.call(_dwelleoPhone),
+            ),
+            const SizedBox(width: 8),
+            SuggestionPill(
+              icon: Icons.chat_rounded,
+              label: l10n.whatsapp,
+              onTap: () => ContactLauncher.whatsApp(_dwelleoPhone),
+            ),
+            const SizedBox(width: 8),
+            SuggestionPill(
+              icon: Icons.event_available_rounded,
+              label: l10n.visit,
+              onTap: () => onAsk(l10n.salesVisitPrompt),
+            ),
+            const SizedBox(width: 8),
+            SuggestionPill(
+              icon: Icons.description_outlined,
+              label: l10n.docs,
+              onTap: () => onAsk(l10n.salesDocsPrompt),
+            ),
+          ],
         ),
       ),
     );

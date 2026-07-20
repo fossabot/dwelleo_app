@@ -2,5 +2,5 @@ import '../../../../core/errors/api_result.dart';
 import '../entities/listing_result.dart';
 
 abstract class ListingSearchRepository {
-  Future<ApiResult<List<ListingResult>>> search(String query);
+  Future<ApiResult<List<ListingResult>>> search(String query, {String hl = 'ar'});
 }

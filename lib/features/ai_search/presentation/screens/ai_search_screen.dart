@@ -17,6 +17,7 @@ import '../../../../core/utils/formatters.dart';
 import '../../../../core/widgets/chat_bubbles.dart';
 import '../../../../core/widgets/dwelleo_app_bar.dart';
 import '../../../../core/widgets/motion.dart';
+import '../../../../core/widgets/suggestion_pill.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../l10n/app_localizations_ar.dart';
 import '../../../../l10n/app_localizations_en.dart';
@@ -551,21 +552,12 @@ class _AssistantEntry extends StatelessWidget {
                   (replyL10n.buy, 'for-sale'),
                   (replyL10n.rent, 'for-rent'),
                 ])
-                  ActionChip(
-                    avatar: Icon(
-                      key == 'for-sale'
-                          ? Icons.sell_outlined
-                          : Icons.key_outlined,
-                      size: 15,
-                    ),
-                    label: Text(
-                      label,
-                      style: const TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    onPressed: () => onRefine(label, key),
+                  SuggestionPill(
+                    icon: key == 'for-sale'
+                        ? Icons.sell_outlined
+                        : Icons.key_outlined,
+                    label: label,
+                    onTap: () => onRefine(label, key),
                   ),
               ],
             ),
@@ -881,6 +873,7 @@ class _ComposerState extends State<_Composer> {
     final l10n = AppLocalizations.of(context);
     final scheme = Theme.of(context).colorScheme;
     final brightness = Theme.of(context).brightness;
+    final dark = brightness == Brightness.dark;
     final accent = AppColors.accentFor(brightness);
 
     final mic = IconButton(
@@ -895,9 +888,11 @@ class _ComposerState extends State<_Composer> {
     return Container(
       padding: const EdgeInsetsDirectional.fromSTEB(12, 8, 12, 10),
       decoration: BoxDecoration(
-        color: scheme.surface,
+        // Glass composer: transparent over the true-black backdrop in dark
+        // mode (matches the Sales Agent screen).
+        color: dark ? Colors.transparent : scheme.surface,
         border: Border(
-          top: BorderSide(color: scheme.outlineVariant.withValues(alpha: 0.5)),
+          top: BorderSide(color: scheme.outlineVariant.withValues(alpha: 0.3)),
         ),
       ),
       child: Row(
@@ -914,9 +909,9 @@ class _ComposerState extends State<_Composer> {
                 hintText: _listening ? l10n.aiListening : l10n.aiComposerHint,
                 isDense: true,
                 filled: true,
-                fillColor: scheme.surfaceContainerHighest.withValues(
-                  alpha: 0.5,
-                ),
+                fillColor: dark
+                    ? Colors.white.withValues(alpha: 0.06)
+                    : scheme.surfaceContainerHighest.withValues(alpha: 0.5),
                 contentPadding: const EdgeInsetsDirectional.fromSTEB(
                   14,
                   10,

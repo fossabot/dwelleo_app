@@ -113,23 +113,23 @@ class AppRouter {
               ),
             ],
           ),
-          // Agent-first IA: the AI Sales Agent owns a tab (the app's main
-          // feature); Explore (projects) moved to a pushed route below.
-          StatefulShellBranch(
-            routes: [
-              GoRoute(
-                path: RoutePaths.aiSalesAgent,
-                name: RoutePaths.aiSalesAgent,
-                builder: (context, state) => const AiSalesAgentScreen(),
-              ),
-            ],
-          ),
           StatefulShellBranch(
             routes: [
               GoRoute(
                 path: RoutePaths.aiSearch,
                 name: RoutePaths.aiSearch,
                 builder: (context, state) => const AiSearchScreen(),
+              ),
+            ],
+          ),
+          // Agent-first IA: the AI Sales Agent — the app's flagship — owns
+          // the glowing CENTER tab; Explore moved to a pushed route below.
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: RoutePaths.aiSalesAgent,
+                name: RoutePaths.aiSalesAgent,
+                builder: (context, state) => const AiSalesAgentScreen(),
               ),
             ],
           ),

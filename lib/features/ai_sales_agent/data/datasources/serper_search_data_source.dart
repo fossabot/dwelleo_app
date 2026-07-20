@@ -24,10 +24,14 @@ class SerperSearchDataSource {
 
   static const _url = 'https://google.serper.dev/search';
 
-  Future<List<ListingResultModel>> search(String query) async {
+  // Fix #3: hl is now a parameter (not hardcoded 'ar') so English sessions
+  //   get English-ranked results.
+  // Fix #6: whereType<> instead of cast<> — one bad entry is skipped rather
+  //   than aborting the entire list with a CastError.
+  Future<List<ListingResultModel>> search(String query, {String hl = 'ar'}) async {
     final response = await _dio.post<Map<String, dynamic>>(
       _url,
-      data: {'q': query, 'gl': 'sa', 'hl': 'ar', 'num': 5},
+      data: {'q': query, 'gl': 'sa', 'hl': hl, 'num': 5},
       options: Options(
         headers: {
           'X-API-KEY': AppConfig.serperApiKey,
@@ -37,7 +41,7 @@ class SerperSearchDataSource {
     );
     final organic = (response.data?['organic'] as List<dynamic>?) ?? [];
     return organic
-        .cast<Map<String, dynamic>>()
+        .whereType<Map<String, dynamic>>()
         .map(ListingResultModel.fromJson)
         .toList();
   }

@@ -48,14 +48,16 @@ class DwelleoNavBar extends StatelessWidget {
                   index: 1,
                   currentIndex: currentIndex,
                   onTap: onTap,
-                  icon: Icons.support_agent_outlined,
-                  activeIcon: Icons.support_agent,
-                  label: l10n.salesTabLabel,
+                  icon: Icons.auto_awesome_outlined,
+                  activeIcon: Icons.auto_awesome,
+                  label: l10n.aiSearchShort,
                 ),
+                // The glowing center spot belongs to the app's flagship —
+                // the AI Sales Agent (owner decision).
                 _AiNavItem(
                   selected: currentIndex == 2,
                   onTap: () => onTap(2),
-                  label: l10n.aiSearchShort,
+                  label: l10n.salesTabLabel,
                 ),
                 _NavItem(
                   index: 3,
@@ -184,8 +186,8 @@ class _AiNavItem extends StatelessWidget {
                       ),
                     ),
                     child: const Icon(
-                      Icons.auto_awesome,
-                      size: 22,
+                      Icons.support_agent_rounded,
+                      size: 23,
                       color: AppColors.ink,
                     ),
                   ),

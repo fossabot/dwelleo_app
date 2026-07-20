@@ -29,6 +29,14 @@ class SalesAgentCubit extends Cubit<SalesAgentState> {
   /// (created lazily on the first successful exchange).
   int? _conversationId;
 
+  /// Last Serper query string — skip the API call when unchanged so we don't
+  /// burn credits on every reply when the lead criteria hasn't moved.
+  String? _lastSearchQuery;
+
+  /// Current app language code ('ar' / 'en') forwarded by the widget via
+  /// [setLocale]; Serper passes it as the `hl` ranking hint.
+  String _locale = 'ar';
+
   List<SalesTurn> get _turns => switch (state) {
     SalesAgentChat(:final turns) => turns,
     SalesAgentIdle() => const [],
@@ -121,10 +129,17 @@ class SalesAgentCubit extends Cubit<SalesAgentState> {
     await submit(utterance);
   }
 
+  /// Forwarded by the widget so Serper results are ranked in the current
+  /// language (Arabic 'ar' or English 'en').
+  void setLocale(String languageCode) {
+    _locale = languageCode == 'ar' ? 'ar' : 'en';
+  }
+
   /// New conversation (welcome view, lead sheet cleared). The previous chat
   /// stays in history.
   void reset() {
     _conversationId = null;
+    _lastSearchQuery = null;
     emit(const SalesAgentIdle());
   }
 
@@ -168,34 +183,47 @@ class SalesAgentCubit extends Cubit<SalesAgentState> {
     LeadProfile lead,
   ) async {
     var id = _conversationId;
-    if (id == null) {
+    final isNew = id == null;
+    if (isNew) {
       final created = await _history.create(
         title: titleFrom(userText),
         lead: lead,
       );
       if (created is! ApiSuccess<int>) return;
       id = created.data;
-      _conversationId = id;
+      // Do NOT set _conversationId yet — wait until messages are written.
+      // If appendMessage fails the conversation row is orphaned, so delete it.
     } else {
       await _history.saveLead(conversationId: id, lead: lead);
     }
-    await _history.appendMessage(
+    final userOk = await _history.appendMessage(
       conversationId: id,
       role: SalesRole.user,
       text: userText,
     );
-    await _history.appendMessage(
+    final agentOk = await _history.appendMessage(
       conversationId: id,
       role: SalesRole.agent,
       text: agentText,
     );
+    if (isNew) {
+      if (userOk is ApiSuccess && agentOk is ApiSuccess) {
+        _conversationId = id;
+      } else {
+        await _history.delete(id);
+      }
+    }
   }
 
   /// Conversation title = the first utterance, whitespace-collapsed and
-  /// capped at 42 chars (public for tests).
+  /// capped at 42 Unicode code points (public for tests).
   static String titleFrom(String utterance) {
     final clean = utterance.trim().replaceAll(RegExp(r'\s+'), ' ');
-    return clean.length <= 42 ? clean : '${clean.substring(0, 41)}…';
+    // Use Runes (code points) not .length (UTF-16 code units) to avoid
+    // splitting a surrogate pair mid-emoji or mid-Arabic glyph.
+    final runes = clean.runes;
+    if (runes.length <= 42) return clean;
+    return '${String.fromCharCodes(runes.take(41))}…';
   }
 
   void _replaceLast(SalesTurn turn, {required LeadProfile lead}) {
@@ -212,7 +240,11 @@ class SalesAgentCubit extends Cubit<SalesAgentState> {
 
   Future<void> _triggerSearch(LeadProfile lead) async {
     final query = _buildQuery(lead);
-    final result = await _search(query);
+    // Skip the API call when the query hasn't changed — avoids burning a
+    // Serper credit on every reply when the lead criteria are the same.
+    if (query == _lastSearchQuery) return;
+    _lastSearchQuery = query;
+    final result = await _search(query, hl: _locale);
     if (isClosed) return;
     result.when(
       success: (listings) {

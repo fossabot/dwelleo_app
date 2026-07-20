@@ -6,14 +6,14 @@
       "request": "launch",
       "type": "dart",
       "program": "lib/main_dev.dart",
-      "args": ["--flavor", "dev", "--dart-define-from-file=env/gemini.json"]
+      "args": ["--flavor", "dev", "--dart-define-from-file=env/ai.json"]
     },
     {
       "name": "Dwelleo Staging",
       "request": "launch",
       "type": "dart",
       "program": "lib/main_staging.dart",
-      "args": ["--flavor", "staging", "--dart-define-from-file=env/gemini.json"]
+      "args": ["--flavor", "staging", "--dart-define-from-file=env/ai.json"]
     },
     {
       "name": "Dwelleo Production",
@@ -23,7 +23,7 @@
       "args": [
         "--flavor",
         "production",
-        "--dart-define-from-file=env/gemini.json"
+        "--dart-define-from-file=env/ai.json"
       ]
     }
   ]

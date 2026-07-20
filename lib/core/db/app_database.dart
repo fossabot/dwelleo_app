@@ -5,11 +5,13 @@ import 'package:sqflite/sqflite.dart';
 /// Today it holds the AI Sales Agent chat history; future tables (drafts,
 /// offline cache…) join here with a version bump + migration in [_onUpgrade].
 class AppDatabase {
-  Database? _database;
+  // Cache the Future, not the Database — prevents two concurrent callers both
+  // running _open() before the first one finishes (race on the ??= read).
+  Future<Database>? _opening;
 
   static const _version = 1;
 
-  Future<Database> get database async => _database ??= await _open();
+  Future<Database> get database => _opening ??= _open();
 
   Future<Database> _open() async {
     final path = '${await getDatabasesPath()}/dwelleo.db';
@@ -53,7 +55,8 @@ class AppDatabase {
   }
 
   Future<void> close() async {
-    await _database?.close();
-    _database = null;
+    final db = await _opening;
+    _opening = null;
+    await db?.close();
   }
 }

@@ -11,9 +11,9 @@ class ListingSearchRepositoryImpl implements ListingSearchRepository {
   const ListingSearchRepositoryImpl(this._dataSource);
 
   @override
-  Future<ApiResult<List<ListingResult>>> search(String query) async {
+  Future<ApiResult<List<ListingResult>>> search(String query, {String hl = 'ar'}) async {
     try {
-      final results = await _dataSource.search(query);
+      final results = await _dataSource.search(query, hl: hl);
       return ApiSuccess(results);
     } on DioException catch (e) {
       return ApiError(

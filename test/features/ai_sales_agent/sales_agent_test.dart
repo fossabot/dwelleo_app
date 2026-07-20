@@ -91,31 +91,33 @@ void main() {
       await cubit.close();
     });
 
-    test('persists the conversation: create once, then append + save lead',
-        () async {
-      final store = _MemChatRepo();
-      final cubit = SalesAgentCubit(
-        SendSalesMessage(_FakeRepo()),
-        _noopSearch(),
-        ChatHistory(store),
-      );
+    test(
+      'persists the conversation: create once, then append + save lead',
+      () async {
+        final store = _MemChatRepo();
+        final cubit = SalesAgentCubit(
+          SendSalesMessage(_FakeRepo()),
+          _noopSearch(),
+          ChatHistory(store),
+        );
 
-      await cubit.submit('I have 2M SAR for a villa');
-      expect(store.createCalls, 1);
-      expect(store.messages[1], hasLength(2), reason: 'user + agent rows');
-      expect(store.messages[1]!.first.$1, SalesRole.user);
+        await cubit.submit('I have 2M SAR for a villa');
+        expect(store.createCalls, 1);
+        expect(store.messages[1], hasLength(2), reason: 'user + agent rows');
+        expect(store.messages[1]!.first.$1, SalesRole.user);
 
-      await cubit.submit('within 3 months');
-      expect(store.createCalls, 1, reason: 'same conversation row reused');
-      expect(store.messages[1], hasLength(4));
-      expect(store.leads[1]?.timeline, '3 months');
-      expect(
-        store.titles[1],
-        'I have 2M SAR for a villa',
-        reason: 'title = first utterance',
-      );
-      await cubit.close();
-    });
+        await cubit.submit('within 3 months');
+        expect(store.createCalls, 1, reason: 'same conversation row reused');
+        expect(store.messages[1], hasLength(4));
+        expect(store.leads[1]?.timeline, '3 months');
+        expect(
+          store.titles[1],
+          'I have 2M SAR for a villa',
+          reason: 'title = first utterance',
+        );
+        await cubit.close();
+      },
+    );
 
     test('long first utterance is truncated into the title', () {
       final title = SalesAgentCubit.titleFrom(
@@ -221,7 +223,7 @@ class _FakeListingRepo implements ListingSearchRepository {
   const _FakeListingRepo();
 
   @override
-  Future<ApiResult<List<ListingResult>>> search(String query) async =>
+  Future<ApiResult<List<ListingResult>>> search(String query, {String hl = ''}) async =>
       const ApiSuccess([]);
 }
 
@@ -253,7 +255,12 @@ class _MemChatRepo implements SalesChatRepository {
       if (role == SalesRole.user) {
         pending = text;
       } else if (pending != null) {
-        turns.add(SalesTurn(utterance: pending, reply: SalesReply(text: text)));
+        turns.add(
+          SalesTurn(
+            utterance: pending,
+            reply: SalesReply(text: text),
+          ),
+        );
         pending = null;
       }
     }

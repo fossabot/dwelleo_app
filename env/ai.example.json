@@ -1,5 +1,5 @@
 {
-  "GEMINI_API_KEY": "PASTE-YOUR-GEMINI-KEY-HERE",
-  "GEMINI_MODEL": "gemini-flash-latest",
-  "SERPER_API_KEY": "PASTE-YOUR-SERPER-KEY-HERE"
+  "GROQ_API_KEY": "PASTE-YOUR-GROQ-KEY-HERE",
+  "GROQ_MODEL": "llama-3.3-70b-versatile",
+  "GROQ_API_URL": "https://console.groq.com"
 }
