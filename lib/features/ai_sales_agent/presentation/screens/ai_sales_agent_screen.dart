@@ -8,10 +8,10 @@ import '../../../../core/errors/failure.dart';
 import '../../../../core/localization/failure_l10n.dart';
 import '../../../../core/routing/route_paths.dart';
 import '../../../../core/speech/speech_service.dart';
+import '../../../../core/utils/contact_launcher.dart';
 import '../../../../core/speech/tts_service.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/utils/arabic_utils.dart';
-import '../../../../core/widgets/chat_bubbles.dart';
 import '../../../../core/widgets/motion.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../domain/entities/chat_history.dart';
@@ -110,10 +110,59 @@ class _AiSalesAgentScreenState extends State<AiSalesAgentScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final configured = SendSalesMessage.isConfigured;
+    final dark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
+      // Site call-UI parity: solid modern black backdrop in dark mode.
+      backgroundColor: dark ? AppColors.ink : null,
       appBar: AppBar(
-        title: Text(l10n.aiSalesAgent),
+        titleSpacing: 0,
+        title: Row(
+          children: [
+            const _PersonaAvatar(size: 34),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    '${l10n.salesPersonaName} — ${l10n.aiSalesAgent}',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      fontSize: 14.5,
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Row(
+                    children: [
+                      Container(
+                        width: 7,
+                        height: 7,
+                        decoration: const BoxDecoration(
+                          color: Color(0xFF3DBE5B),
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        l10n.salesOnline,
+                        style: TextStyle(
+                          fontSize: 10.5,
+                          color: Theme.of(
+                            context,
+                          ).colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
         actions: [
           IconButton(
             tooltip: l10n.salesHistory,
@@ -171,6 +220,8 @@ class _AiSalesAgentScreenState extends State<AiSalesAgentScreen> {
                         ),
                         if (listings.isNotEmpty)
                           _ListingsSection(listings: listings),
+                        // Site call-UI parity: Call · WhatsApp · Visit · Docs.
+                        _ActionBar(onAsk: _send),
                       ],
                     ),
                 },
@@ -216,29 +267,20 @@ class _WelcomeView extends StatelessWidget {
           child: Builder(
             builder: (context) {
               // Brand rule (like every accent in the app): LIME in dark
-              // mode, PURPLE in light mode.
+              // mode, PURPLE in light mode — as the ring/glow around
+              // Sarah's portrait.
               final dark = Theme.of(context).brightness == Brightness.dark;
+              final ring = dark ? AppColors.primary : AppColors.accent;
               return PulseGlow(
                 glowColor: dark ? AppColors.primary : AppColors.accentLight,
                 strength: 1.2,
                 child: Container(
-                  width: 88,
-                  height: 88,
+                  padding: const EdgeInsets.all(3),
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: dark
-                          ? const [AppColors.primaryLight, AppColors.primary]
-                          : const [AppColors.accentLight, AppColors.accent],
-                    ),
+                    border: Border.all(color: ring, width: 2.5),
                   ),
-                  child: Icon(
-                    Icons.support_agent_rounded,
-                    size: 40,
-                    color: dark ? AppColors.ink : Colors.white,
-                  ),
+                  child: const _PersonaAvatar(size: 88),
                 ),
               );
             },
@@ -515,7 +557,14 @@ class _ThreadView extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              UserChatBubble(text: turn.utterance),
+              _CallBubble(
+                agent: false,
+                // TODO(profile): use the signed-in user's real name once the
+                // session exposes the profile (his note: "customer name will
+                // be added from user name").
+                label: AppLocalizations.of(context).you,
+                child: Text(turn.utterance),
+              ),
               const SizedBox(height: 10),
               _AgentEntry(turn: turn, onRetry: onRetry),
             ],
@@ -553,7 +602,9 @@ class _AgentEntry extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        AgentChatBubble(
+        _CallBubble(
+          agent: true,
+          label: '${l10n.salesPersonaName} — ${l10n.aiSalesAgent}',
           child: turn.loading
               ? Row(
                   mainAxisSize: MainAxisSize.min,
@@ -988,6 +1039,208 @@ class _HistorySheetState extends State<_HistorySheet> {
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+// ------------------------------------------------------------- persona/call
+
+/// Sarah's portrait. Drop the approved photo at
+/// `assets/images/brand/sales_agent.png` (folder already registered in
+/// pubspec) — until then a themed headset disc renders as fallback.
+class _PersonaAvatar extends StatelessWidget {
+  final double size;
+
+  const _PersonaAvatar({required this.size});
+
+  static const _asset = 'assets/images/brand/sales_agent.png';
+
+  @override
+  Widget build(BuildContext context) {
+    final dark = Theme.of(context).brightness == Brightness.dark;
+    return ClipOval(
+      child: SizedBox(
+        width: size,
+        height: size,
+        child: Image.asset(
+          _asset,
+          fit: BoxFit.cover,
+          errorBuilder: (context, error, stack) => ColoredBox(
+            color: dark ? AppColors.primary : AppColors.accent,
+            child: Icon(
+              Icons.support_agent_rounded,
+              size: size * 0.55,
+              color: dark ? AppColors.ink : Colors.white,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// dwelleo.sa call-UI bubble: grey panel with a small-caps speaker label and
+/// a colored edge bar — LIME for Sarah, PURPLE for the customer.
+class _CallBubble extends StatelessWidget {
+  final bool agent;
+  final String label;
+  final Widget child;
+
+  const _CallBubble({
+    required this.agent,
+    required this.label,
+    required this.child,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final dark = Theme.of(context).brightness == Brightness.dark;
+    final scheme = Theme.of(context).colorScheme;
+    final accent = agent ? AppColors.primary : AppColors.accent;
+    final panel = dark ? const Color(0xFF1C1C1C) : const Color(0xFFECEEE6);
+    final bar = BorderSide(color: accent, width: 3);
+
+    return Align(
+      alignment: agent
+          ? AlignmentDirectional.centerStart
+          : AlignmentDirectional.centerEnd,
+      child: Container(
+        constraints: const BoxConstraints(maxWidth: 320),
+        padding: const EdgeInsetsDirectional.fromSTEB(12, 9, 12, 10),
+        decoration: BoxDecoration(
+          color: panel,
+          borderRadius: BorderRadius.circular(12),
+          border: BorderDirectional(
+            start: agent ? bar : BorderSide.none,
+            end: agent ? BorderSide.none : bar,
+          ),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              label.toUpperCase(),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                fontSize: 9.5,
+                fontWeight: FontWeight.w800,
+                letterSpacing: 0.6,
+                color: accent,
+              ),
+            ),
+            const SizedBox(height: 4),
+            DefaultTextStyle(
+              style: TextStyle(
+                fontSize: 13.5,
+                height: 1.45,
+                fontWeight: FontWeight.w500,
+                color: scheme.onSurface,
+              ),
+              child: child,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// The call UI's action strip: Call · WhatsApp · Visit · Docs.
+/// Call/WhatsApp reach Dwelleo's PUBLIC contact number (site header,
+/// tel:+966567777390) via the verified ContactLauncher; Visit/Docs feed the
+/// conversation — Sarah collects the visit slot / explains the paperwork
+/// (the booking/leads APIs remain PENDING, so no fake submissions).
+class _ActionBar extends StatelessWidget {
+  final ValueChanged<String> onAsk;
+
+  const _ActionBar({required this.onAsk});
+
+  static const _dwelleoPhone = '+966567777390';
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final scheme = Theme.of(context).colorScheme;
+
+    return Container(
+      padding: const EdgeInsetsDirectional.fromSTEB(12, 6, 12, 6),
+      decoration: BoxDecoration(
+        color: scheme.surface,
+        border: Border(
+          top: BorderSide(color: scheme.outlineVariant.withValues(alpha: 0.4)),
+        ),
+      ),
+      child: Row(
+        children: [
+          _ActionButton(
+            icon: Icons.call_rounded,
+            label: l10n.call,
+            onTap: () => ContactLauncher.call(_dwelleoPhone),
+          ),
+          _ActionButton(
+            icon: Icons.chat_rounded,
+            label: l10n.whatsapp,
+            onTap: () => ContactLauncher.whatsApp(_dwelleoPhone),
+          ),
+          _ActionButton(
+            icon: Icons.event_available_rounded,
+            label: l10n.visit,
+            onTap: () => onAsk(l10n.salesVisitPrompt),
+          ),
+          _ActionButton(
+            icon: Icons.description_outlined,
+            label: l10n.docs,
+            onTap: () => onAsk(l10n.salesDocsPrompt),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ActionButton extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final VoidCallback onTap;
+
+  const _ActionButton({
+    required this.icon,
+    required this.label,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    final accent = AppColors.accentFor(Theme.of(context).brightness);
+
+    return Expanded(
+      child: InkResponse(
+        onTap: onTap,
+        radius: 34,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 5),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(icon, size: 20, color: accent),
+              const SizedBox(height: 2),
+              Text(
+                label,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: 10.5,
+                  fontWeight: FontWeight.w600,
+                  color: scheme.onSurfaceVariant,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

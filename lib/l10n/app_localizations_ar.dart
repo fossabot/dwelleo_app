@@ -575,6 +575,30 @@ class AppLocalizationsAr extends AppLocalizations {
   String get salesTabLabel => 'وكيل المبيعات';
 
   @override
+  String get salesPersonaName => 'سارة';
+
+  @override
+  String get salesOnline => 'متصلة · ترد على مدار الساعة';
+
+  @override
+  String get you => 'أنت';
+
+  @override
+  String get call => 'اتصال';
+
+  @override
+  String get visit => 'زيارة';
+
+  @override
+  String get docs => 'المستندات';
+
+  @override
+  String get salesVisitPrompt => 'أبغى أحجز زيارة للموقع';
+
+  @override
+  String get salesDocsPrompt => 'وش المستندات المطلوبة لإتمام الإجراءات؟';
+
+  @override
   String get salesHistoryEmpty =>
       'لا توجد محادثات محفوظة بعد — ستظهر محادثاتك مع الوكيل هنا.';
 

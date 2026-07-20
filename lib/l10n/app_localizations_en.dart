@@ -578,6 +578,30 @@ class AppLocalizationsEn extends AppLocalizations {
   String get salesTabLabel => 'Sales Agent';
 
   @override
+  String get salesPersonaName => 'Sarah';
+
+  @override
+  String get salesOnline => 'Online · replies 24/7';
+
+  @override
+  String get you => 'You';
+
+  @override
+  String get call => 'Call';
+
+  @override
+  String get visit => 'Visit';
+
+  @override
+  String get docs => 'Docs';
+
+  @override
+  String get salesVisitPrompt => 'I\'d like to book a site visit';
+
+  @override
+  String get salesDocsPrompt => 'What documents do I need to proceed?';
+
+  @override
   String get salesHistoryEmpty =>
       'No saved conversations yet — your chats with the agent will appear here.';
 

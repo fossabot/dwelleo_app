@@ -1166,6 +1166,54 @@ abstract class AppLocalizations {
   /// **'Sales Agent'**
   String get salesTabLabel;
 
+  /// No description provided for @salesPersonaName.
+  ///
+  /// In en, this message translates to:
+  /// **'Sarah'**
+  String get salesPersonaName;
+
+  /// No description provided for @salesOnline.
+  ///
+  /// In en, this message translates to:
+  /// **'Online · replies 24/7'**
+  String get salesOnline;
+
+  /// No description provided for @you.
+  ///
+  /// In en, this message translates to:
+  /// **'You'**
+  String get you;
+
+  /// No description provided for @call.
+  ///
+  /// In en, this message translates to:
+  /// **'Call'**
+  String get call;
+
+  /// No description provided for @visit.
+  ///
+  /// In en, this message translates to:
+  /// **'Visit'**
+  String get visit;
+
+  /// No description provided for @docs.
+  ///
+  /// In en, this message translates to:
+  /// **'Docs'**
+  String get docs;
+
+  /// No description provided for @salesVisitPrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'I\'d like to book a site visit'**
+  String get salesVisitPrompt;
+
+  /// No description provided for @salesDocsPrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'What documents do I need to proceed?'**
+  String get salesDocsPrompt;
+
   /// No description provided for @salesHistoryEmpty.
   ///
   /// In en, this message translates to:
