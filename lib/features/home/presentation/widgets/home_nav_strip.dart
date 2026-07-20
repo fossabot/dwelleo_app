@@ -49,7 +49,7 @@ class HomeNavStrip extends StatelessWidget {
             label: l10n.aiSalesAgent,
             badge: l10n.newLabel,
             // Its own surface — never aliased to AI Search (review P0).
-            onTap: () => context.push(RoutePaths.aiSalesAgent),
+            onTap: () => context.go(RoutePaths.aiSalesAgent),
           ),
           const Padding(
             padding: EdgeInsetsDirectional.only(start: 4),
@@ -81,7 +81,7 @@ class HomeNavStrip extends StatelessWidget {
               label: l10n.projects,
               onTap: () {
                 Navigator.pop(sheetContext);
-                context.go(RoutePaths.explore);
+                context.push(RoutePaths.explore);
               },
             ),
             _SheetItem(

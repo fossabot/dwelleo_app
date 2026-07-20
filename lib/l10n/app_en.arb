@@ -229,6 +229,7 @@
   "salesOpensInApp": "Opens in app",
   "salesLinkCopied": "Link copied — this page opens on the website.",
   "salesHistory": "Conversations",
+  "salesTabLabel": "Sales Agent",
   "salesHistoryEmpty": "No saved conversations yet — your chats with the agent will appear here.",
   "delete": "Delete",
   "leadProfile": "Lead profile",

@@ -575,6 +575,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get salesHistory => 'Conversations';
 
   @override
+  String get salesTabLabel => 'Sales Agent';
+
+  @override
   String get salesHistoryEmpty =>
       'No saved conversations yet — your chats with the agent will appear here.';
 

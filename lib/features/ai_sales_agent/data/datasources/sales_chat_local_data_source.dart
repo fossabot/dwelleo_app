@@ -56,7 +56,10 @@ class SalesChatLocalDataSource {
         pendingUser = text;
       } else if (pendingUser != null) {
         turns.add(
-          SalesTurn(utterance: pendingUser, reply: SalesReply(text: text)),
+          SalesTurn(
+            utterance: pendingUser,
+            reply: SalesReply(text: text),
+          ),
         );
         pendingUser = null;
       }
@@ -138,8 +141,7 @@ class SalesChatLocalDataSource {
     try {
       final m = jsonDecode(raw);
       if (m is! Map) return LeadProfile.empty;
-      String? f(Object? v) =>
-          (v is String && v.trim().isNotEmpty) ? v : null;
+      String? f(Object? v) => (v is String && v.trim().isNotEmpty) ? v : null;
       return LeadProfile(
         budget: f(m['budget']),
         intent: f(m['intent']),

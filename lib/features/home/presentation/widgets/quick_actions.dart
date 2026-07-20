@@ -80,7 +80,7 @@ class QuickActions extends StatelessWidget {
                   icon: Icons.layers_rounded,
                   tint: const Color(0xFF8B5CF6),
                   label: l10n.quickOffPlanProjects,
-                  onTap: () => context.go(RoutePaths.explore),
+                  onTap: () => context.push(RoutePaths.explore),
                 ),
               ),
             ],

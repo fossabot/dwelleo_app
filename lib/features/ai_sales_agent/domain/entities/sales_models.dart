@@ -38,6 +38,19 @@ class LeadProfile {
       eligibility != null ||
       preferences != null;
 
+  /// Site parity ("Scored 0–100"): a transparent composite — 20 points per
+  /// captured BITEP dimension. Dwelleo's real scoring model stays PENDING;
+  /// this is honest qualification progress, not ML.
+  int get bitepScore =>
+      20 *
+      [
+        budget,
+        intent,
+        timeline,
+        eligibility,
+        preferences,
+      ].whereType<String>().length;
+
   /// Cumulative lead sheet: newer non-empty values win, older ones persist.
   LeadProfile merge(LeadProfile other) => LeadProfile(
     budget: _pick(other.budget, budget),

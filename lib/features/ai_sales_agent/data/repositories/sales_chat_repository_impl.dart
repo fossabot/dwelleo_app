@@ -44,7 +44,8 @@ class SalesChatRepositoryImpl implements SalesChatRepository {
   Future<ApiResult<void>> saveLead({
     required int conversationId,
     required LeadProfile lead,
-  }) => _guard(() => _local.saveLead(conversationId: conversationId, lead: lead));
+  }) =>
+      _guard(() => _local.saveLead(conversationId: conversationId, lead: lead));
 
   @override
   Future<ApiResult<void>> delete(int conversationId) =>

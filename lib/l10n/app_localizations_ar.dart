@@ -572,6 +572,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get salesHistory => 'المحادثات';
 
   @override
+  String get salesTabLabel => 'وكيل المبيعات';
+
+  @override
   String get salesHistoryEmpty =>
       'لا توجد محادثات محفوظة بعد — ستظهر محادثاتك مع الوكيل هنا.';
 

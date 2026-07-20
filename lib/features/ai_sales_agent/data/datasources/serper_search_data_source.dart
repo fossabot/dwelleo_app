@@ -13,13 +13,14 @@ class SerperSearchDataSource {
   final Dio _dio;
 
   SerperSearchDataSource([Dio? dio])
-      : _dio = dio ??
-            Dio(
-              BaseOptions(
-                connectTimeout: const Duration(seconds: 10),
-                receiveTimeout: const Duration(seconds: 20),
-              ),
-            );
+    : _dio =
+          dio ??
+          Dio(
+            BaseOptions(
+              connectTimeout: const Duration(seconds: 10),
+              receiveTimeout: const Duration(seconds: 20),
+            ),
+          );
 
   static const _url = 'https://google.serper.dev/search';
 

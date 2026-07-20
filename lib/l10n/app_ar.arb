@@ -201,6 +201,7 @@
   "salesOpensInApp": "يُفتح داخل التطبيق",
   "salesLinkCopied": "تم نسخ الرابط — هذه الصفحة تُفتح على الموقع.",
   "salesHistory": "المحادثات",
+  "salesTabLabel": "وكيل المبيعات",
   "salesHistoryEmpty": "لا توجد محادثات محفوظة بعد — ستظهر محادثاتك مع الوكيل هنا.",
   "delete": "حذف",
   "leadProfile": "ملف العميل",

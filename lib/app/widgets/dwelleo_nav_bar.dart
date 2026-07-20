@@ -5,7 +5,7 @@ import '../../core/widgets/motion.dart';
 import '../../l10n/app_localizations.dart';
 
 /// Bottom navigation for the main shell — the mobile answer to dwelleo.sa's
-/// header/user-menu: Home, Explore (projects), a raised lime AI Search action
+/// header/user-menu: Home, AI Sales Agent, a raised lime AI Search action
 /// (the brand's signature CTA), Saved and Profile.
 ///
 /// RTL-safe: a plain [Row] mirrors automatically with text direction.
@@ -48,9 +48,9 @@ class DwelleoNavBar extends StatelessWidget {
                   index: 1,
                   currentIndex: currentIndex,
                   onTap: onTap,
-                  icon: Icons.apartment_outlined,
-                  activeIcon: Icons.apartment_rounded,
-                  label: l10n.explore,
+                  icon: Icons.support_agent_outlined,
+                  activeIcon: Icons.support_agent,
+                  label: l10n.salesTabLabel,
                 ),
                 _AiNavItem(
                   selected: currentIndex == 2,

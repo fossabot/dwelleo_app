@@ -1160,6 +1160,12 @@ abstract class AppLocalizations {
   /// **'Conversations'**
   String get salesHistory;
 
+  /// No description provided for @salesTabLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Sales Agent'**
+  String get salesTabLabel;
+
   /// No description provided for @salesHistoryEmpty.
   ///
   /// In en, this message translates to:

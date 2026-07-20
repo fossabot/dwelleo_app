@@ -113,15 +113,14 @@ class AppRouter {
               ),
             ],
           ),
+          // Agent-first IA: the AI Sales Agent owns a tab (the app's main
+          // feature); Explore (projects) moved to a pushed route below.
           StatefulShellBranch(
             routes: [
               GoRoute(
-                path: RoutePaths.explore,
-                name: RoutePaths.explore,
-                // Optional pre-selected city chip (e.g. the search card's
-                // Off-Plan tab passes the typed city).
-                builder: (context, state) =>
-                    ExploreScreen(initialCity: state.extra as String?),
+                path: RoutePaths.aiSalesAgent,
+                name: RoutePaths.aiSalesAgent,
+                builder: (context, state) => const AiSalesAgentScreen(),
               ),
             ],
           ),
@@ -161,11 +160,13 @@ class AppRouter {
         builder: (context, state) => const SubscriptionsScreen(),
       ),
 
-      // Its own product surface — never aliased to AI Search (review P0).
+      // Projects browser — pushed over the shell now that the Sales Agent
+      // owns its former tab. Optional pre-selected city via `extra`.
       GoRoute(
-        path: RoutePaths.aiSalesAgent,
-        name: RoutePaths.aiSalesAgent,
-        builder: (context, state) => const AiSalesAgentScreen(),
+        path: RoutePaths.explore,
+        name: RoutePaths.explore,
+        builder: (context, state) =>
+            ExploreScreen(initialCity: state.extra as String?),
       ),
 
       // Property list/detail push OVER the shell (full-screen, no bottom bar) —

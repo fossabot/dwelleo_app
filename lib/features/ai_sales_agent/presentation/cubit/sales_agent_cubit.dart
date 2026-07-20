@@ -218,7 +218,13 @@ class SalesAgentCubit extends Cubit<SalesAgentState> {
       success: (listings) {
         final current = state;
         if (current is SalesAgentChat) {
-          emit(SalesAgentChat(current.turns, lead: current.lead, listings: listings));
+          emit(
+            SalesAgentChat(
+              current.turns,
+              lead: current.lead,
+              listings: listings,
+            ),
+          );
         }
       },
       error: (_) {},

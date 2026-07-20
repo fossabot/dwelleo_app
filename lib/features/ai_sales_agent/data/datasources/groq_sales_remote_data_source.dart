@@ -15,13 +15,14 @@ class GroqSalesRemoteDataSource implements SalesRemoteDataSource {
   final Dio _dio;
 
   GroqSalesRemoteDataSource([Dio? dio])
-      : _dio = dio ??
-            Dio(
-              BaseOptions(
-                connectTimeout: const Duration(seconds: 15),
-                receiveTimeout: const Duration(seconds: 45),
-              ),
-            );
+    : _dio =
+          dio ??
+          Dio(
+            BaseOptions(
+              connectTimeout: const Duration(seconds: 15),
+              receiveTimeout: const Duration(seconds: 45),
+            ),
+          );
 
   static const _url = 'https://api.groq.com/openai/v1/chat/completions';
 

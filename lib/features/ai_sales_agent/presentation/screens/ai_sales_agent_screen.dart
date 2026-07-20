@@ -213,26 +213,35 @@ class _WelcomeView extends StatelessWidget {
       padding: const EdgeInsetsDirectional.fromSTEB(24, 20, 24, 16),
       children: [
         Center(
-          child: PulseGlow(
-            glowColor: AppColors.accentLight,
-            strength: 1.2,
-            child: Container(
-              width: 88,
-              height: 88,
-              decoration: const BoxDecoration(
-                shape: BoxShape.circle,
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [AppColors.accentLight, AppColors.accent],
+          child: Builder(
+            builder: (context) {
+              // Brand rule (like every accent in the app): LIME in dark
+              // mode, PURPLE in light mode.
+              final dark = Theme.of(context).brightness == Brightness.dark;
+              return PulseGlow(
+                glowColor: dark ? AppColors.primary : AppColors.accentLight,
+                strength: 1.2,
+                child: Container(
+                  width: 88,
+                  height: 88,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: dark
+                          ? const [AppColors.primaryLight, AppColors.primary]
+                          : const [AppColors.accentLight, AppColors.accent],
+                    ),
+                  ),
+                  child: Icon(
+                    Icons.support_agent_rounded,
+                    size: 40,
+                    color: dark ? AppColors.ink : Colors.white,
+                  ),
                 ),
-              ),
-              child: const Icon(
-                Icons.support_agent_rounded,
-                size: 40,
-                color: Colors.white,
-              ),
-            ),
+              );
+            },
           ),
         ),
         const SizedBox(height: 18),
@@ -290,9 +299,7 @@ class _WelcomeView extends StatelessWidget {
               child: FadeSlideIn(
                 delay: Duration(milliseconds: 40 * i),
                 child: Material(
-                  color: scheme.surfaceContainerHighest.withValues(
-                    alpha: 0.55,
-                  ),
+                  color: scheme.surfaceContainerHighest.withValues(alpha: 0.55),
                   borderRadius: BorderRadius.circular(14),
                   child: InkWell(
                     onTap: () => onAsk(starters[i]),
@@ -425,6 +432,26 @@ class _LeadSheet extends StatelessWidget {
                   fontWeight: FontWeight.w800,
                   letterSpacing: 0.3,
                   color: accent,
+                ),
+              ),
+              const Spacer(),
+              // Site parity: the call UI shows a live "BITEP: n/100" badge.
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 8,
+                  vertical: 3,
+                ),
+                decoration: BoxDecoration(
+                  color: accent.withValues(alpha: 0.14),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Text(
+                  'BITEP: ${lead.bitepScore}/100',
+                  style: TextStyle(
+                    fontSize: 10.5,
+                    fontWeight: FontWeight.w800,
+                    color: accent,
+                  ),
                 ),
               ),
             ],
@@ -829,9 +856,7 @@ class _ListingCard extends StatelessWidget {
                   ),
                 ),
                 Icon(
-                  slug != null
-                      ? Icons.north_east_rounded
-                      : Icons.copy_rounded,
+                  slug != null ? Icons.north_east_rounded : Icons.copy_rounded,
                   size: 11,
                   color: scheme.onSurfaceVariant,
                 ),
@@ -943,7 +968,10 @@ class _HistorySheetState extends State<_HistorySheet> {
                         ),
                         trailing: IconButton(
                           tooltip: l10n.delete,
-                          icon: const Icon(Icons.delete_outline_rounded, size: 20),
+                          icon: const Icon(
+                            Icons.delete_outline_rounded,
+                            size: 20,
+                          ),
                           onPressed: () async {
                             await widget.cubit.deleteConversation(chat.id);
                             if (mounted) _reload();

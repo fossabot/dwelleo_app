@@ -29,7 +29,7 @@ class AiAgentBanner extends StatelessWidget {
             ),
           ),
           child: InkWell(
-            onTap: () => context.push(RoutePaths.aiSalesAgent),
+            onTap: () => context.go(RoutePaths.aiSalesAgent),
             child: Padding(
               padding: const EdgeInsets.all(14),
               child: Row(
