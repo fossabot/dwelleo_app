@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../core/di/service_locator.dart';
 import '../../../../core/errors/failure.dart';
 import '../../../../core/localization/failure_l10n.dart';
+import '../../../../core/routing/route_paths.dart';
 import '../../../../core/speech/speech_service.dart';
 import '../../../../core/speech/tts_service.dart';
 import '../../../../core/theme/app_colors.dart';
@@ -12,6 +14,7 @@ import '../../../../core/utils/arabic_utils.dart';
 import '../../../../core/widgets/chat_bubbles.dart';
 import '../../../../core/widgets/motion.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../domain/entities/chat_history.dart';
 import '../../domain/entities/listing_result.dart';
 import '../../domain/entities/sales_models.dart';
 import '../../domain/usecases/send_sales_message.dart';
@@ -21,7 +24,7 @@ import '../cubit/sales_agent_state.dart';
 /// AI Sales Agent — its OWN product surface (distinct from AI Search, per
 /// dwelleo.sa's taxonomy): a BITEP-qualifying sales conversation with a live
 /// lead sheet, bilingual text + voice, spoken replies, and an honest
-/// disclosure that this build runs on a demo Gemini adapter until Dwelleo's
+/// disclosure that this build runs on a demo AI adapter until Dwelleo's
 /// production agent contract is captured.
 class AiSalesAgentScreen extends StatefulWidget {
   const AiSalesAgentScreen({super.key});
@@ -61,6 +64,15 @@ class _AiSalesAgentScreenState extends State<AiSalesAgentScreen> {
     if (value.isEmpty) return;
     _input.clear();
     _cubit.submit(value);
+  }
+
+  /// Claude-app-style history: saved conversations, reopen or delete.
+  void _openHistory(BuildContext context) {
+    showModalBottomSheet<void>(
+      context: context,
+      showDragHandle: true,
+      builder: (sheetContext) => _HistorySheet(cubit: _cubit),
+    );
   }
 
   void _scrollToEnd() {
@@ -103,6 +115,11 @@ class _AiSalesAgentScreenState extends State<AiSalesAgentScreen> {
       appBar: AppBar(
         title: Text(l10n.aiSalesAgent),
         actions: [
+          IconButton(
+            tooltip: l10n.salesHistory,
+            onPressed: () => _openHistory(context),
+            icon: const Icon(Icons.history_rounded),
+          ),
           IconButton(
             tooltip: l10n.aiVoiceReplies,
             onPressed: () => setState(() {
@@ -705,7 +722,7 @@ class _ListingsSection extends StatelessWidget {
                 Icon(Icons.travel_explore_rounded, size: 14, color: accent),
                 const SizedBox(width: 6),
                 Text(
-                  'Dwelleo results',
+                  AppLocalizations.of(context).salesResults,
                   style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w700,
@@ -716,7 +733,7 @@ class _ListingsSection extends StatelessWidget {
             ),
           ),
           SizedBox(
-            height: 88,
+            height: 106,
             child: ListView.separated(
               scrollDirection: Axis.horizontal,
               padding: const EdgeInsetsDirectional.fromSTEB(16, 0, 16, 10),
@@ -735,21 +752,37 @@ class _ListingCard extends StatelessWidget {
   final ListingResult result;
   const _ListingCard({required this.result});
 
+  /// dwelleo.sa property URLs carry the same slug the live API's
+  /// `/properties/{slug}` detail endpoint expects — so property results
+  /// open IN-APP. Anything else falls back to copy-link.
+  static String? propertySlugOf(String link) {
+    final match = RegExp(r'/properties/([^/?#]+)').firstMatch(link);
+    final slug = match?.group(1);
+    return (slug == null || slug.isEmpty || slug.contains(':')) ? null : slug;
+  }
+
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final scheme = Theme.of(context).colorScheme;
+    final slug = propertySlugOf(result.link);
+
     return GestureDetector(
       onTap: () {
+        if (slug != null) {
+          context.push(RoutePaths.propertyDetailPath(slug));
+          return;
+        }
         Clipboard.setData(ClipboardData(text: result.link));
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Link copied'),
-            duration: Duration(seconds: 2),
+          SnackBar(
+            content: Text(l10n.salesLinkCopied),
+            duration: const Duration(seconds: 2),
           ),
         );
       },
       child: Container(
-        width: 190,
+        width: 210,
         padding: const EdgeInsets.all(10),
         decoration: BoxDecoration(
           color: scheme.surfaceContainerHighest.withValues(alpha: 0.6),
@@ -765,6 +798,7 @@ class _ListingCard extends StatelessWidget {
               style: TextStyle(
                 fontSize: 12,
                 fontWeight: FontWeight.w700,
+                height: 1.25,
                 color: scheme.onSurface,
               ),
             ),
@@ -776,15 +810,154 @@ class _ListingCard extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
                   fontSize: 10.5,
+                  height: 1.3,
                   color: scheme.onSurfaceVariant,
                 ),
               ),
             ),
+            const SizedBox(height: 4),
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    slug != null
+                        ? l10n.salesOpensInApp
+                        : (Uri.tryParse(result.link)?.host ?? result.link),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(fontSize: 10, color: scheme.primary),
+                  ),
+                ),
+                Icon(
+                  slug != null
+                      ? Icons.north_east_rounded
+                      : Icons.copy_rounded,
+                  size: 11,
+                  color: scheme.onSurfaceVariant,
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ------------------------------------------------------------ history sheet
+
+/// Saved conversations (Claude-app journey): newest first, tap to reopen,
+/// trash to delete. Reads through the cubit so the widget stays dumb.
+class _HistorySheet extends StatefulWidget {
+  final SalesAgentCubit cubit;
+
+  const _HistorySheet({required this.cubit});
+
+  @override
+  State<_HistorySheet> createState() => _HistorySheetState();
+}
+
+class _HistorySheetState extends State<_HistorySheet> {
+  late Future<List<ConversationSummary>> _future;
+
+  @override
+  void initState() {
+    super.initState();
+    _future = widget.cubit.conversations();
+  }
+
+  void _reload() => setState(() => _future = widget.cubit.conversations());
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final scheme = Theme.of(context).colorScheme;
+
+    return SafeArea(
+      child: Padding(
+        padding: const EdgeInsetsDirectional.fromSTEB(16, 0, 16, 12),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
             Text(
-              Uri.tryParse(result.link)?.host ?? result.link,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(fontSize: 10, color: scheme.primary),
+              l10n.salesHistory,
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w800,
+                color: scheme.onSurface,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Flexible(
+              child: FutureBuilder<List<ConversationSummary>>(
+                future: _future,
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) {
+                    return const Padding(
+                      padding: EdgeInsets.all(24),
+                      child: Center(
+                        child: SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        ),
+                      ),
+                    );
+                  }
+                  final chats = snapshot.data!;
+                  if (chats.isEmpty) {
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 24),
+                      child: Text(
+                        l10n.salesHistoryEmpty,
+                        style: TextStyle(
+                          fontSize: 13,
+                          color: scheme.onSurfaceVariant,
+                        ),
+                      ),
+                    );
+                  }
+                  return ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: chats.length,
+                    itemBuilder: (context, index) {
+                      final chat = chats[index];
+                      return ListTile(
+                        contentPadding: EdgeInsetsDirectional.zero,
+                        leading: const Icon(Icons.chat_bubble_outline_rounded),
+                        title: Text(
+                          chat.title,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            fontSize: 13.5,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        subtitle: Text(
+                          MaterialLocalizations.of(
+                            context,
+                          ).formatShortDate(chat.updatedAt),
+                          style: const TextStyle(fontSize: 11),
+                        ),
+                        trailing: IconButton(
+                          tooltip: l10n.delete,
+                          icon: const Icon(Icons.delete_outline_rounded, size: 20),
+                          onPressed: () async {
+                            await widget.cubit.deleteConversation(chat.id);
+                            if (mounted) _reload();
+                          },
+                        ),
+                        onTap: () {
+                          Navigator.pop(context);
+                          widget.cubit.openConversation(chat.id);
+                        },
+                      );
+                    },
+                  );
+                },
+              ),
             ),
           ],
         ),

@@ -532,19 +532,19 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get salesDisclosure =>
-      'Demo assistant powered by Google Gemini — not Dwelleo\'s production Sales Agent. It won\'t quote prices or legal terms.';
+      'Demo assistant powered by a third-party AI model — not Dwelleo\'s production Sales Agent. It won\'t quote prices or legal terms.';
 
   @override
   String get salesKeyMissing =>
-      'The AI Sales Agent isn\'t enabled in this build. Run the app with --dart-define=GEMINI_API_KEY=<your key>.';
+      'The AI Sales Agent isn\'t enabled in this build. Run the app with --dart-define=GROQ_API_KEY=<your key>.';
 
   @override
   String get salesKeyInvalid =>
-      'The AI key was rejected — check your GEMINI_API_KEY.';
+      'The AI key was rejected — check your GROQ_API_KEY.';
 
   @override
   String get salesQuotaMessage =>
-      'The demo AI quota is used up — add credits in Google AI Studio, then try again.';
+      'The demo AI rate limit was hit — wait a moment, then try again.';
 
   @override
   String get salesThinking => 'Your agent is typing…';
@@ -561,6 +561,25 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get salesSuggestion3 => 'What do I need to buy an off-plan unit?';
+
+  @override
+  String get salesResults => 'Dwelleo results';
+
+  @override
+  String get salesOpensInApp => 'Opens in app';
+
+  @override
+  String get salesLinkCopied => 'Link copied — this page opens on the website.';
+
+  @override
+  String get salesHistory => 'Conversations';
+
+  @override
+  String get salesHistoryEmpty =>
+      'No saved conversations yet — your chats with the agent will appear here.';
+
+  @override
+  String get delete => 'Delete';
 
   @override
   String get leadProfile => 'Lead profile';

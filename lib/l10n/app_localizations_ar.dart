@@ -529,19 +529,19 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get salesDisclosure =>
-      'مساعد تجريبي مدعوم من Google Gemini — ليس وكيل مبيعات دويليو الرسمي، ولا يقدّم أسعارًا أو شروطًا قانونية.';
+      'مساعد تجريبي مدعوم بنموذج ذكاء اصطناعي خارجي — ليس وكيل مبيعات دويليو الرسمي، ولا يقدّم أسعارًا أو شروطًا قانونية.';
 
   @override
   String get salesKeyMissing =>
-      'وكيل المبيعات الذكي غير مفعّل في هذا الإصدار. شغّل التطبيق مع ‎--dart-define=GEMINI_API_KEY.';
+      'وكيل المبيعات الذكي غير مفعّل في هذا الإصدار. شغّل التطبيق مع ‎--dart-define=GROQ_API_KEY.';
 
   @override
   String get salesKeyInvalid =>
-      'تم رفض مفتاح الذكاء الاصطناعي — تحقق من GEMINI_API_KEY.';
+      'تم رفض مفتاح الذكاء الاصطناعي — تحقق من GROQ_API_KEY.';
 
   @override
   String get salesQuotaMessage =>
-      'انتهت حصة الذكاء الاصطناعي التجريبية — أضف رصيدًا في Google AI Studio ثم حاول مجددًا.';
+      'تم بلوغ حد الاستخدام المؤقت للذكاء الاصطناعي — انتظر قليلًا ثم حاول مجددًا.';
 
   @override
   String get salesThinking => 'وكيلك يكتب الآن…';
@@ -558,6 +558,25 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get salesSuggestion3 => 'وش أحتاج لشراء وحدة على الخارطة؟';
+
+  @override
+  String get salesResults => 'نتائج دويليو';
+
+  @override
+  String get salesOpensInApp => 'يُفتح داخل التطبيق';
+
+  @override
+  String get salesLinkCopied => 'تم نسخ الرابط — هذه الصفحة تُفتح على الموقع.';
+
+  @override
+  String get salesHistory => 'المحادثات';
+
+  @override
+  String get salesHistoryEmpty =>
+      'لا توجد محادثات محفوظة بعد — ستظهر محادثاتك مع الوكيل هنا.';
+
+  @override
+  String get delete => 'حذف';
 
   @override
   String get leadProfile => 'ملف العميل';

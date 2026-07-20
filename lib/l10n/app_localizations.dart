@@ -1085,25 +1085,25 @@ abstract class AppLocalizations {
   /// No description provided for @salesDisclosure.
   ///
   /// In en, this message translates to:
-  /// **'Demo assistant powered by Google Gemini — not Dwelleo\'s production Sales Agent. It won\'t quote prices or legal terms.'**
+  /// **'Demo assistant powered by a third-party AI model — not Dwelleo\'s production Sales Agent. It won\'t quote prices or legal terms.'**
   String get salesDisclosure;
 
   /// No description provided for @salesKeyMissing.
   ///
   /// In en, this message translates to:
-  /// **'The AI Sales Agent isn\'t enabled in this build. Run the app with --dart-define=GEMINI_API_KEY=<your key>.'**
+  /// **'The AI Sales Agent isn\'t enabled in this build. Run the app with --dart-define=GROQ_API_KEY=<your key>.'**
   String get salesKeyMissing;
 
   /// No description provided for @salesKeyInvalid.
   ///
   /// In en, this message translates to:
-  /// **'The AI key was rejected — check your GEMINI_API_KEY.'**
+  /// **'The AI key was rejected — check your GROQ_API_KEY.'**
   String get salesKeyInvalid;
 
   /// No description provided for @salesQuotaMessage.
   ///
   /// In en, this message translates to:
-  /// **'The demo AI quota is used up — add credits in Google AI Studio, then try again.'**
+  /// **'The demo AI rate limit was hit — wait a moment, then try again.'**
   String get salesQuotaMessage;
 
   /// No description provided for @salesThinking.
@@ -1135,6 +1135,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'What do I need to buy an off-plan unit?'**
   String get salesSuggestion3;
+
+  /// No description provided for @salesResults.
+  ///
+  /// In en, this message translates to:
+  /// **'Dwelleo results'**
+  String get salesResults;
+
+  /// No description provided for @salesOpensInApp.
+  ///
+  /// In en, this message translates to:
+  /// **'Opens in app'**
+  String get salesOpensInApp;
+
+  /// No description provided for @salesLinkCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Link copied — this page opens on the website.'**
+  String get salesLinkCopied;
+
+  /// No description provided for @salesHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'Conversations'**
+  String get salesHistory;
+
+  /// No description provided for @salesHistoryEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No saved conversations yet — your chats with the agent will appear here.'**
+  String get salesHistoryEmpty;
+
+  /// No description provided for @delete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get delete;
 
   /// No description provided for @leadProfile.
   ///

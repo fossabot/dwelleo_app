@@ -2,30 +2,12 @@ import 'dart:convert';
 
 import '../../domain/entities/sales_models.dart';
 
-/// Parses a Gemini `generateContent` response envelope into a [SalesReply].
+/// Parses the model's raw text into a [SalesReply].
 ///
-/// Contract (documented public API, transport verified live 2026-07-16):
-/// `{candidates:[{content:{parts:[{text}]}, finishReason}], usageMetadata}`.
 /// The model is instructed to emit JSON `{reply, lead{...}}`; this parser is
 /// deliberately tolerant — if the model returns prose or fenced JSON, the
 /// user still gets the text and the lead sheet simply doesn't advance.
 abstract final class SalesReplyModel {
-  static SalesReply fromEnvelope(Map<String, dynamic> envelope) {
-    final candidates = envelope['candidates'];
-    final content = (candidates is List && candidates.isNotEmpty)
-        ? (candidates.first as Map)['content']
-        : null;
-    final parts = content is Map ? content['parts'] : null;
-    final raw = parts is List
-        ? parts
-              .whereType<Map>()
-              .map((p) => '${p['text'] ?? ''}')
-              .join()
-              .trim()
-        : '';
-    return fromModelText(raw);
-  }
-
   static SalesReply fromModelText(String raw) {
     final jsonText = _extractJson(raw);
     if (jsonText != null) {

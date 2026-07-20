@@ -1,8 +1,10 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/errors/api_result.dart';
+import '../../domain/entities/chat_history.dart';
 import '../../domain/entities/listing_result.dart';
 import '../../domain/entities/sales_models.dart';
+import '../../domain/usecases/chat_history.dart';
 import '../../domain/usecases/search_listings.dart';
 import '../../domain/usecases/send_sales_message.dart';
 import 'sales_agent_state.dart';
@@ -10,11 +12,22 @@ import 'sales_agent_state.dart';
 /// Drives the Sales Agent conversation. Depends ONLY on use cases; voice
 /// I/O stays in the widget layer (SpeechService/TtsService), matching the
 /// AI Search architecture.
+///
+/// Every resolved exchange is persisted through [ChatHistory] (SQLite) —
+/// the Claude-app journey: conversations survive restarts, reopen from the
+/// history sheet, and can be deleted. Persistence failures are NON-FATAL:
+/// the live conversation always wins over the database.
 class SalesAgentCubit extends Cubit<SalesAgentState> {
   final SendSalesMessage _send;
   final SearchListings _search;
+  final ChatHistory _history;
 
-  SalesAgentCubit(this._send, this._search) : super(const SalesAgentIdle());
+  SalesAgentCubit(this._send, this._search, this._history)
+    : super(const SalesAgentIdle());
+
+  /// Row id of the persisted conversation backing the current chat
+  /// (created lazily on the first successful exchange).
+  int? _conversationId;
 
   List<SalesTurn> get _turns => switch (state) {
     SalesAgentChat(:final turns) => turns,
@@ -61,16 +74,30 @@ class SalesAgentCubit extends Cubit<SalesAgentState> {
     final result = await _send(history: history, message: utterance);
     if (isClosed) return;
 
+    SalesReply? resolved;
+    LeadProfile? resolvedLead;
     result.when(
-      success: (reply) => _replaceLast(
-        SalesTurn(utterance: utterance, reply: reply),
-        lead: _lead.merge(reply.lead),
-      ),
+      success: (reply) {
+        final merged = _lead.merge(reply.lead);
+        _replaceLast(
+          SalesTurn(utterance: utterance, reply: reply),
+          lead: merged,
+        );
+        resolved = reply;
+        resolvedLead = merged;
+      },
       error: (failure) => _replaceLast(
         SalesTurn(utterance: utterance, failure: failure),
         lead: _lead,
       ),
     );
+
+    // Persist AFTER emitting (UI never waits on disk), but awaited so the
+    // write order is deterministic — required by tests and by history
+    // opened immediately after a reply.
+    if (resolved != null) {
+      await _persistExchange(utterance, resolved!.text, resolvedLead!);
+    }
 
     // Fire Serper search after a successful reply when the lead has criteria.
     // Non-fatal: a Serper failure never surfaces to the user.
@@ -94,8 +121,82 @@ class SalesAgentCubit extends Cubit<SalesAgentState> {
     await submit(utterance);
   }
 
-  /// New conversation (welcome view, lead sheet cleared).
-  void reset() => emit(const SalesAgentIdle());
+  /// New conversation (welcome view, lead sheet cleared). The previous chat
+  /// stays in history.
+  void reset() {
+    _conversationId = null;
+    emit(const SalesAgentIdle());
+  }
+
+  // ------------------------------------------------------------- history
+
+  /// Saved conversations, newest first ([] when the store fails — the
+  /// history sheet simply shows its empty state).
+  Future<List<ConversationSummary>> conversations() async {
+    final result = await _history.conversations();
+    return switch (result) {
+      ApiSuccess(:final data) => data,
+      ApiError() => const [],
+    };
+  }
+
+  /// Reopens a saved conversation (turns + lead sheet; listings are
+  /// ephemeral and start empty).
+  Future<void> openConversation(int id) async {
+    final result = await _history.load(id);
+    if (isClosed) return;
+    result.when(
+      success: (snapshot) {
+        _conversationId = id;
+        emit(SalesAgentChat(snapshot.turns, lead: snapshot.lead));
+      },
+      error: (_) {},
+    );
+  }
+
+  Future<void> deleteConversation(int id) async {
+    await _history.delete(id);
+    if (isClosed) return;
+    if (id == _conversationId) reset();
+  }
+
+  /// Fire-and-forget persistence of a resolved exchange. All ApiErrors are
+  /// intentionally swallowed — chat must never break because SQLite did.
+  Future<void> _persistExchange(
+    String userText,
+    String agentText,
+    LeadProfile lead,
+  ) async {
+    var id = _conversationId;
+    if (id == null) {
+      final created = await _history.create(
+        title: titleFrom(userText),
+        lead: lead,
+      );
+      if (created is! ApiSuccess<int>) return;
+      id = created.data;
+      _conversationId = id;
+    } else {
+      await _history.saveLead(conversationId: id, lead: lead);
+    }
+    await _history.appendMessage(
+      conversationId: id,
+      role: SalesRole.user,
+      text: userText,
+    );
+    await _history.appendMessage(
+      conversationId: id,
+      role: SalesRole.agent,
+      text: agentText,
+    );
+  }
+
+  /// Conversation title = the first utterance, whitespace-collapsed and
+  /// capped at 42 chars (public for tests).
+  static String titleFrom(String utterance) {
+    final clean = utterance.trim().replaceAll(RegExp(r'\s+'), ' ');
+    return clean.length <= 42 ? clean : '${clean.substring(0, 41)}…';
+  }
 
   void _replaceLast(SalesTurn turn, {required LeadProfile lead}) {
     final current = _turns;

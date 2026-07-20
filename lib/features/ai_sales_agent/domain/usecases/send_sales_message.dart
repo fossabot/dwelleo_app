@@ -34,16 +34,16 @@ null for anything not yet known; values are short (max 6 words) and written
 in the user's language.
 ''';
 
-/// UI → Cubit → this → [SalesAgentRepository] (Gemini demo adapter today,
+/// UI → Cubit → this → [SalesAgentRepository] (Groq demo adapter today,
 /// Dwelleo's production agent later — same contract).
 class SendSalesMessage {
   final SalesAgentRepository _repository;
 
   const SendSalesMessage(this._repository);
 
-  /// False when the build carries no GEMINI_API_KEY — the screen then shows
+  /// False when the build carries no GROQ_API_KEY — the screen then shows
   /// its "not configured" state and no network call is ever made.
-  static bool get isConfigured => AppConfig.geminiApiKey.isNotEmpty;
+  static bool get isConfigured => AppConfig.groqApiKey.isNotEmpty;
 
   Future<ApiResult<SalesReply>> call({
     required List<SalesMessage> history,
