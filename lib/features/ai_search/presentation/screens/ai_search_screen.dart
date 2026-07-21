@@ -14,8 +14,10 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../core/utils/arabic_utils.dart';
 import '../../../../core/utils/dwelleo_images.dart';
 import '../../../../core/utils/formatters.dart';
+import '../../../../core/widgets/chat_bubbles.dart';
 import '../../../../core/widgets/dwelleo_app_bar.dart';
 import '../../../../core/widgets/motion.dart';
+import '../../../../core/widgets/suggestion_pill.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../l10n/app_localizations_ar.dart';
 import '../../../../l10n/app_localizations_en.dart';
@@ -445,7 +447,7 @@ class _ThreadView extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              _UserBubble(text: turn.utterance),
+              UserChatBubble(text: turn.utterance),
               const SizedBox(height: 10),
               _AssistantEntry(
                 turn: turn,
@@ -461,85 +463,8 @@ class _ThreadView extends StatelessWidget {
   }
 }
 
-class _UserBubble extends StatelessWidget {
-  final String text;
-
-  const _UserBubble({required this.text});
-
-  @override
-  Widget build(BuildContext context) {
-    // Site parity: user bubble is lime in dark mode, PURPLE in light mode.
-    final dark = Theme.of(context).brightness == Brightness.dark;
-    return Align(
-      alignment: AlignmentDirectional.centerEnd,
-      child: Container(
-        constraints: const BoxConstraints(maxWidth: 300),
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-        decoration: BoxDecoration(
-          color: dark ? AppColors.primary : AppColors.accent,
-          borderRadius: const BorderRadiusDirectional.only(
-            topStart: Radius.circular(16),
-            topEnd: Radius.circular(16),
-            bottomStart: Radius.circular(16),
-            bottomEnd: Radius.circular(4),
-          ),
-        ),
-        child: Text(
-          text,
-          style: TextStyle(
-            fontSize: 13.5,
-            height: 1.35,
-            fontWeight: FontWeight.w600,
-            color: dark ? AppColors.ink : Colors.white,
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-/// The agent's speech bubble — theme-aware: a dark surface with white text in
-/// dark mode, and a light grey surface with dark text in light mode (a pure
-/// black bubble in light mode reads as a bug).
-class _AgentBubble extends StatelessWidget {
-  final Widget child;
-
-  const _AgentBubble({required this.child});
-
-  @override
-  Widget build(BuildContext context) {
-    final dark = Theme.of(context).brightness == Brightness.dark;
-    final scheme = Theme.of(context).colorScheme;
-    final bubble = dark ? AppColors.cardDark : const Color(0xFFEFF1EA);
-    final onBubble = dark ? Colors.white : AppColors.textPrimary;
-    return Align(
-      alignment: AlignmentDirectional.centerStart,
-      child: Container(
-        constraints: const BoxConstraints(maxWidth: 320),
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
-        decoration: BoxDecoration(
-          color: bubble,
-          borderRadius: const BorderRadiusDirectional.only(
-            topStart: Radius.circular(4),
-            topEnd: Radius.circular(16),
-            bottomStart: Radius.circular(16),
-            bottomEnd: Radius.circular(16),
-          ),
-          border: Border.all(color: scheme.outline),
-        ),
-        child: DefaultTextStyle(
-          style: TextStyle(
-            fontSize: 13.5,
-            height: 1.45,
-            fontWeight: FontWeight.w500,
-            color: onBubble,
-          ),
-          child: child,
-        ),
-      ),
-    );
-  }
-}
+// User/agent bubbles moved to core/widgets/chat_bubbles.dart — they are now
+// shared with the AI Sales Agent feature.
 
 class _AssistantEntry extends StatelessWidget {
   final AiSearchTurn turn;
@@ -569,7 +494,7 @@ class _AssistantEntry extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _AgentBubble(
+        AgentChatBubble(
           child: turn.loading
               ? Row(
                   mainAxisSize: MainAxisSize.min,
@@ -627,21 +552,12 @@ class _AssistantEntry extends StatelessWidget {
                   (replyL10n.buy, 'for-sale'),
                   (replyL10n.rent, 'for-rent'),
                 ])
-                  ActionChip(
-                    avatar: Icon(
-                      key == 'for-sale'
-                          ? Icons.sell_outlined
-                          : Icons.key_outlined,
-                      size: 15,
-                    ),
-                    label: Text(
-                      label,
-                      style: const TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    onPressed: () => onRefine(label, key),
+                  SuggestionPill(
+                    icon: key == 'for-sale'
+                        ? Icons.sell_outlined
+                        : Icons.key_outlined,
+                    label: label,
+                    onTap: () => onRefine(label, key),
                   ),
               ],
             ),
@@ -957,6 +873,7 @@ class _ComposerState extends State<_Composer> {
     final l10n = AppLocalizations.of(context);
     final scheme = Theme.of(context).colorScheme;
     final brightness = Theme.of(context).brightness;
+    final dark = brightness == Brightness.dark;
     final accent = AppColors.accentFor(brightness);
 
     final mic = IconButton(
@@ -971,9 +888,11 @@ class _ComposerState extends State<_Composer> {
     return Container(
       padding: const EdgeInsetsDirectional.fromSTEB(12, 8, 12, 10),
       decoration: BoxDecoration(
-        color: scheme.surface,
+        // Glass composer: transparent over the true-black backdrop in dark
+        // mode (matches the Sales Agent screen).
+        color: dark ? Colors.transparent : scheme.surface,
         border: Border(
-          top: BorderSide(color: scheme.outlineVariant.withValues(alpha: 0.5)),
+          top: BorderSide(color: scheme.outlineVariant.withValues(alpha: 0.3)),
         ),
       ),
       child: Row(
@@ -990,9 +909,9 @@ class _ComposerState extends State<_Composer> {
                 hintText: _listening ? l10n.aiListening : l10n.aiComposerHint,
                 isDense: true,
                 filled: true,
-                fillColor: scheme.surfaceContainerHighest.withValues(
-                  alpha: 0.5,
-                ),
+                fillColor: dark
+                    ? Colors.white.withValues(alpha: 0.06)
+                    : scheme.surfaceContainerHighest.withValues(alpha: 0.5),
                 contentPadding: const EdgeInsetsDirectional.fromSTEB(
                   14,
                   10,

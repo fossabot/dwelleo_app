@@ -43,6 +43,10 @@ abstract final class RoutePaths {
   /// currently empty, see REAL_API_SPEC §5).
   static const String subscriptions = '/subscriptions';
 
+  /// AI Sales Agent — its own surface, DISTINCT from AI Search (review P0:
+  /// dwelleo.sa positions them as separate products).
+  static const String aiSalesAgent = '/ai-sales-agent';
+
   static const String propertySearch = '/properties';
   static const String propertyDetail = '/properties/:slug';
 

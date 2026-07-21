@@ -41,7 +41,9 @@ abstract final class AppTheme {
   static ThemeData _build(Brightness b) {
     final isDark = b == Brightness.dark;
     final scheme = _scheme(b);
-    final bg = isDark ? AppColors.backgroundDark : AppColors.background;
+    // Owner direction: TRUE-BLACK dark mode across the app (modern look;
+    // surfaces/cards keep their tonal ladder for contrast).
+    final bg = isDark ? AppColors.ink : AppColors.background;
     final card = isDark ? AppColors.cardDark : AppColors.surface;
 
     return ThemeData(

@@ -80,17 +80,20 @@ dependencies:
   # Agent voice replies for AI Search (site parity: the assistant SPEAKS its
   # answers in AR/EN). On-device TTS, verified publisher, latest stable.
   flutter_tts: ^4.2.5
+  # Local relational store for AI Sales Agent chat history (conversations ↔
+  # messages ↔ lead sheet). Chosen over drift/Isar because CLAUDE.md bans
+  # codegen; sqflite is the no-codegen SQLite standard (verified publisher).
+  sqflite: ^2.4.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-
-  # The "flutter_lints" package below contains a set of recommended lints to
-  # encourage good coding practices. The lint set provided by the package is
-  # activated in the `analysis_options.yaml` file located at the root of your
-  # package. See that file for information about deactivating specific lint
-  # rules and activating additional ones.
   flutter_lints: ^6.0.0
+  integration_test:
+    sdk: flutter
+    
+
+
   flutter_launcher_icons: ^0.14.4
   flutter_native_splash: ^2.4.7
   mocktail: ^1.0.5

@@ -9,9 +9,8 @@ import '../theme/theme_cubit.dart';
 /// The single, reusable app bar for the whole app — mirrors the dwelleo.sa
 /// header. It always shows:
 ///   • the brand wordmark (theme-aware), leading;
-///   • a language switch that shows the language you can switch TO, with its
-///     flag (Saudi flag + العربية while in English; UK flag + English while in
-///     Arabic) — so the control communicates the action, like the website;
+///   • a language switch showing the CURRENT language + flag (site parity;
+///     tap to flip EN <-> AR);
 ///   • a sun/moon pill switch for light/dark.
 ///
 /// Screens pass [actions] for extra trailing controls (e.g. a Skip button).
@@ -38,12 +37,16 @@ class DwelleoAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final isArabic = context.watch<LocaleCubit>().state.languageCode == 'ar';
+    // ModalRoute.of is reactive to route changes (rebuilds when canPop changes);
+    // Navigator.of(context).canPop() is not and misses mid-stack transitions.
+    final canPop = ModalRoute.of(context)?.canPop ?? false;
     return AppBar(
       automaticallyImplyLeading: false,
+      leading: canPop ? const BackButton() : null,
       backgroundColor: transparent ? Colors.transparent : null,
       elevation: 0,
       scrolledUnderElevation: 0,
-      titleSpacing: 16,
+      titleSpacing: canPop ? 0 : 16,
       title: Image.asset(
         // Logo switches with BOTH language (EN/AR) and theme (light/dark),
         // exactly like the dwelleo.sa header.
@@ -72,23 +75,23 @@ class DwelleoAppBar extends StatelessWidget implements PreferredSizeWidget {
   }
 }
 
-/// Flag + label of the language the user can switch TO (not the current one),
-/// matching the dwelleo.sa header. Tapping flips EN <-> AR (and RTL/LTR).
+/// Flag + label of the CURRENT language (owner decision, matching the live
+/// site: English + EN flag while in English, العربية + Saudi flag while in
+/// Arabic). Tapping flips EN <-> AR (and RTL/LTR).
 class LanguageToggle extends StatelessWidget {
   const LanguageToggle({super.key});
 
   @override
   Widget build(BuildContext context) {
     final isArabic = context.watch<LocaleCubit>().state.languageCode == 'ar';
-    final targetArabic = !isArabic;
-    final flag = targetArabic ? AppImage.flagAr : AppImage.flagEn;
-    final label = targetArabic ? 'العربية' : 'English';
+    final flag = isArabic ? AppImage.flagAr : AppImage.flagEn;
+    final label = isArabic ? 'العربية' : 'English';
     final fg = Theme.of(context).colorScheme.onSurface;
 
     return InkWell(
       borderRadius: BorderRadius.circular(20),
       onTap: () =>
-          context.read<LocaleCubit>().setLocale(targetArabic ? 'ar' : 'en'),
+          context.read<LocaleCubit>().setLocale(isArabic ? 'en' : 'ar'),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
         child: Row(
@@ -155,8 +158,10 @@ class ThemeSwitch extends StatelessWidget {
           child: Container(
             width: 24,
             height: 24,
-            decoration: const BoxDecoration(
-              color: AppColors.primary,
+            decoration: BoxDecoration(
+              // Site parity: lime thumb w/ sun in light, WHITE thumb w/
+              // moon in dark (matches dwelleo.sa's header toggle).
+              color: isDark ? Colors.white : AppColors.primary,
               shape: BoxShape.circle,
             ),
             child: Icon(

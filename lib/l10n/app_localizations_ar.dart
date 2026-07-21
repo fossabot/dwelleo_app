@@ -526,4 +526,100 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get aiVoiceReplies => 'الردود الصوتية';
+
+  @override
+  String get salesDisclosure =>
+      'مساعد تجريبي مدعوم بنموذج ذكاء اصطناعي خارجي — ليس وكيل مبيعات دويليو الرسمي، ولا يقدّم أسعارًا أو شروطًا قانونية.';
+
+  @override
+  String get salesKeyMissing =>
+      'وكيل المبيعات الذكي غير مفعّل في هذا الإصدار. شغّل التطبيق مع ‎--dart-define=GROQ_API_KEY.';
+
+  @override
+  String get salesKeyInvalid =>
+      'تم رفض مفتاح الذكاء الاصطناعي — تحقق من GROQ_API_KEY.';
+
+  @override
+  String get salesQuotaMessage =>
+      'تم بلوغ حد الاستخدام المؤقت للذكاء الاصطناعي — انتظر قليلًا ثم حاول مجددًا.';
+
+  @override
+  String get salesThinking => 'وكيلك يكتب الآن…';
+
+  @override
+  String get salesComposerHint => 'قل لوكيلك ما الذي تبحث عنه…';
+
+  @override
+  String get salesSuggestion1 =>
+      'معي ميزانية ٢ مليون ريال وأبغى فيلا في الرياض خلال ٣ أشهر';
+
+  @override
+  String get salesSuggestion2 => 'أدور شقة للاستثمار في جدة';
+
+  @override
+  String get salesSuggestion3 => 'وش أحتاج لشراء وحدة على الخارطة؟';
+
+  @override
+  String get salesResults => 'نتائج دويليو';
+
+  @override
+  String get salesOpensInApp => 'يُفتح داخل التطبيق';
+
+  @override
+  String get salesLinkCopied => 'تم نسخ الرابط — هذه الصفحة تُفتح على الموقع.';
+
+  @override
+  String get salesHistory => 'المحادثات';
+
+  @override
+  String get salesTabLabel => 'وكيل المبيعات';
+
+  @override
+  String get salesPersonaName => 'سارة';
+
+  @override
+  String get salesOnline => 'متصلة · ترد على مدار الساعة';
+
+  @override
+  String get you => 'أنت';
+
+  @override
+  String get call => 'اتصال';
+
+  @override
+  String get visit => 'زيارة';
+
+  @override
+  String get docs => 'المستندات';
+
+  @override
+  String get salesVisitPrompt => 'أبغى أحجز زيارة للموقع';
+
+  @override
+  String get salesDocsPrompt => 'وش المستندات المطلوبة لإتمام الإجراءات؟';
+
+  @override
+  String get salesHistoryEmpty =>
+      'لا توجد محادثات محفوظة بعد — ستظهر محادثاتك مع الوكيل هنا.';
+
+  @override
+  String get delete => 'حذف';
+
+  @override
+  String get leadProfile => 'ملف العميل';
+
+  @override
+  String get leadBudget => 'الميزانية';
+
+  @override
+  String get leadIntent => 'الهدف';
+
+  @override
+  String get leadTimeline => 'الإطار الزمني';
+
+  @override
+  String get leadEligibility => 'الأهلية';
+
+  @override
+  String get leadPreferences => 'التفضيلات';
 }

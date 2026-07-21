@@ -44,7 +44,7 @@ class _ProjectsSectionState extends State<ProjectsSection> {
               accent: l10n.exploreProjectsAccent,
               subtitle: l10n.exploreProjectsSubtitle,
               actionLabel: l10n.viewAll,
-              onAction: () => context.go(RoutePaths.explore),
+              onAction: () => context.push(RoutePaths.explore),
             ),
             switch (section) {
               SectionLoading<List<Project>>() => const RailSkeleton(

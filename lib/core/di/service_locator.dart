@@ -47,6 +47,21 @@ import '../../features/properties/domain/usecases/get_property_detail.dart';
 import '../../features/properties/domain/usecases/search_properties.dart';
 import '../../features/properties/presentation/cubit/properties_cubit.dart';
 import '../../features/properties/presentation/cubit/property_detail_cubit.dart';
+import '../../features/ai_sales_agent/data/datasources/groq_sales_remote_data_source.dart';
+import '../../features/ai_sales_agent/data/datasources/sales_chat_local_data_source.dart';
+import '../../features/ai_sales_agent/data/datasources/sales_remote_data_source.dart';
+import '../../features/ai_sales_agent/data/datasources/serper_search_data_source.dart';
+import '../../features/ai_sales_agent/data/repositories/listing_search_repository_impl.dart';
+import '../../features/ai_sales_agent/data/repositories/sales_agent_repository_impl.dart';
+import '../../features/ai_sales_agent/data/repositories/sales_chat_repository_impl.dart';
+import '../../features/ai_sales_agent/domain/repositories/listing_search_repository.dart';
+import '../../features/ai_sales_agent/domain/repositories/sales_agent_repository.dart';
+import '../../features/ai_sales_agent/domain/repositories/sales_chat_repository.dart';
+import '../../features/ai_sales_agent/domain/usecases/chat_history.dart';
+import '../../features/ai_sales_agent/domain/usecases/search_listings.dart';
+import '../../features/ai_sales_agent/domain/usecases/send_sales_message.dart';
+import '../../features/ai_sales_agent/presentation/cubit/sales_agent_cubit.dart';
+import '../db/app_database.dart';
 import '../../features/ai_search/domain/usecases/interpret_ai_query.dart';
 import '../../features/ai_search/presentation/cubit/ai_search_cubit.dart';
 import '../speech/speech_service.dart';
@@ -153,6 +168,40 @@ Future<void> setupServiceLocator() async {
   sl.registerLazySingleton<TtsService>(() => TtsService());
   sl.registerFactory(
     () => AiSearchCubit(sl<InterpretAiQuery>(), sl<SearchProperties>()),
+  );
+
+  // ── Feature: AI Sales Agent (Groq free-tier + Serper listing search) ─────
+  // All data sources use their own Dio instances — Dwelleo auth/locale
+  // interceptors must never reach third-party hosts.
+  sl.registerLazySingleton<SalesRemoteDataSource>(
+    () => GroqSalesRemoteDataSource(),
+  );
+  sl.registerLazySingleton<SalesAgentRepository>(
+    () => SalesAgentRepositoryImpl(sl<SalesRemoteDataSource>()),
+  );
+  sl.registerLazySingleton(() => SendSalesMessage(sl<SalesAgentRepository>()));
+  sl.registerLazySingleton<SerperSearchDataSource>(
+    () => SerperSearchDataSource(),
+  );
+  sl.registerLazySingleton<ListingSearchRepository>(
+    () => ListingSearchRepositoryImpl(sl<SerperSearchDataSource>()),
+  );
+  sl.registerLazySingleton(() => SearchListings(sl<ListingSearchRepository>()));
+  // Chat history: local SQLite (core/db), Claude-app-style persistence.
+  sl.registerLazySingleton<AppDatabase>(() => AppDatabase());
+  sl.registerLazySingleton<SalesChatLocalDataSource>(
+    () => SalesChatLocalDataSource(sl<AppDatabase>()),
+  );
+  sl.registerLazySingleton<SalesChatRepository>(
+    () => SalesChatRepositoryImpl(sl<SalesChatLocalDataSource>()),
+  );
+  sl.registerLazySingleton(() => ChatHistory(sl<SalesChatRepository>()));
+  sl.registerFactory(
+    () => SalesAgentCubit(
+      sl<SendSalesMessage>(),
+      sl<SearchListings>(),
+      sl<ChatHistory>(),
+    ),
   );
 
   // ── Feature: Home / Explore ───────────────────────────────────────────────

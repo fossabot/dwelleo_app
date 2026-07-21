@@ -67,7 +67,7 @@ class _SearchCardState extends State<SearchCard> {
       case SearchTab.offPlan:
         // Off-plan = the projects browser; carry the typed city as the
         // pre-selected chip when it matches one.
-        context.go(RoutePaths.explore, extra: query.isEmpty ? null : query);
+        context.push(RoutePaths.explore, extra: query.isEmpty ? null : query);
       case SearchTab.commercial:
         // The commercial slug's filter params are not yet captured from
         // live traffic (@bodyPending discipline) — navigate with the

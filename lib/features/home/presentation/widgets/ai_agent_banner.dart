@@ -6,7 +6,8 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../l10n/app_localizations.dart';
 
 /// The purple "Meet the AI Sales Agent" promo strip from dwelleo.sa,
-/// condensed for mobile. Leads to the AI Search tab.
+/// condensed for mobile. Leads to the AI Sales Agent surface (its own
+/// product — never aliased to AI Search).
 class AiAgentBanner extends StatelessWidget {
   const AiAgentBanner({super.key});
 
@@ -28,7 +29,7 @@ class AiAgentBanner extends StatelessWidget {
             ),
           ),
           child: InkWell(
-            onTap: () => context.go(RoutePaths.aiSearch),
+            onTap: () => context.go(RoutePaths.aiSalesAgent),
             child: Padding(
               padding: const EdgeInsets.all(14),
               child: Row(

@@ -9,6 +9,11 @@ abstract final class AppColors {
   static const Color primaryDark = Color(0xFFB5D62E);
   static const Color primaryLight = Color(0xFFE2FF6E);
 
+  /// Readable lime for LIGHT surfaces (labels/edge bars): bright lime fails
+  /// contrast on light grey, this dark-olive lime passes while keeping the
+  /// brand hue.
+  static const Color primaryDeep = Color(0xFF5E6B07);
+
   /// Purple accent (List Property / AI pill).
   static const Color accent = Color(0xFF6B4FA0);
   static const Color accentLight = Color(0xFF9B7FD4);
@@ -39,6 +44,10 @@ abstract final class AppColors {
   // ── Dark surfaces — sampled from dwelleo.sa: the page is a NEUTRAL #1B1B1B
   //     grey (not near-black, no green tint). Cards sit a touch lighter, like
   //     the site's translucent white panels reading over the grey page. ───────
+  //
+  // NOTE: the app's dark Scaffold background is now AppColors.ink (#0A0A0A)
+  //   (true-black per owner spec). backgroundDark is kept for component
+  //   use (sheets, overlays, hover states) that want the lighter grey.
   static const Color backgroundDark = Color(0xFF1B1B1B);
   static const Color surfaceDark = Color(0xFF1F1F20);
   static const Color cardDark = Color(0xFF242427);
