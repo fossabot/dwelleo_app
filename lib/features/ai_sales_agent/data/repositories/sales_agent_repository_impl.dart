@@ -20,10 +20,19 @@ class SalesAgentRepositoryImpl implements SalesAgentRepository {
   Future<ApiResult<SalesReply>> send({
     required List<SalesMessage> history,
     required String message,
+    String? buyerContext,
   }) async {
     try {
+      // Factual app-side context (e.g. the buyer's saved listings) rides on
+      // the system prompt so Sarah references REAL user actions, not memory.
+      final prompt = buyerContext == null
+          ? salesAgentSystemPrompt
+          : '$salesAgentSystemPrompt\n'
+                'BUYER CONTEXT (factual, from the app - the buyer SAVED these '
+                'listings; reference them when relevant, never invent more):\n'
+                '$buyerContext';
       final text = await _remote.generateText(
-        systemPrompt: salesAgentSystemPrompt,
+        systemPrompt: prompt,
         history: history,
         message: message,
       );

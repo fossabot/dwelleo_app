@@ -1,4 +1,6 @@
 import 'package:dio/dio.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:dwelleo_app/core/storage/secure_storage.dart';
 import 'package:dwelleo_app/core/errors/api_result.dart';
 import 'package:dwelleo_app/core/errors/failure.dart';
 import 'package:dwelleo_app/core/lookup/lookup_service.dart';
@@ -316,7 +318,7 @@ class _FakeInterpret extends InterpretAiQuery {
 }
 
 class _FakeLookup extends LookupService {
-  _FakeLookup() : super(Dio());
+  _FakeLookup() : super(Dio(), SecureStorage(const FlutterSecureStorage()));
 
   @override
   Future<List<CityOption>> cities() async => _citiesEn;

@@ -80,6 +80,9 @@ dependencies:
   # Agent voice replies for AI Search (site parity: the assistant SPEAKS its
   # answers in AR/EN). On-device TTS, verified publisher, latest stable.
   flutter_tts: ^4.2.5
+  # Native share sheet for listing links (site parity: Share on property
+  # page). Flutter Community verified publisher.
+  share_plus: ^13.2.1
   # Local relational store for AI Sales Agent chat history (conversations ↔
   # messages ↔ lead sheet). Chosen over drift/Isar because CLAUDE.md bans
   # codegen; sqflite is the no-codegen SQLite standard (verified publisher).

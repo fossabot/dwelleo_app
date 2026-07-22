@@ -11,5 +11,6 @@ abstract class SalesAgentRepository {
   Future<ApiResult<SalesReply>> send({
     required List<SalesMessage> history,
     required String message,
+    String? buyerContext,
   });
 }

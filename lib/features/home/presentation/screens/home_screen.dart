@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../core/di/service_locator.dart';
+import '../../../../core/routing/route_paths.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/widgets/dwelleo_app_bar.dart';
 import '../../../../core/widgets/motion.dart';
@@ -63,17 +65,6 @@ class _HomeScreenState extends State<HomeScreen> {
     super.dispose();
   }
 
-  void _scrollTo(GlobalKey key) {
-    final ctx = key.currentContext;
-    if (ctx == null) return;
-    Scrollable.ensureVisible(
-      ctx,
-      duration: const Duration(milliseconds: 500),
-      curve: Curves.easeOutCubic,
-      alignment: 0.05,
-    );
-  }
-
   Future<void> _refresh() {
     return Future.wait([
       _homeCubit.refresh(),
@@ -103,7 +94,8 @@ class _HomeScreenState extends State<HomeScreen> {
               // in as they're built on scroll (ListView laziness = free).
               FadeSlideIn(
                 child: HomeNavStrip(
-                  onDevelopers: () => _scrollTo(_partnersKey),
+                  onDevelopers: () =>
+                      context.push(RoutePaths.developersDirectory),
                 ),
               ),
               const FadeSlideIn(
@@ -120,7 +112,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               FadeSlideIn(
                 delay: const Duration(milliseconds: 240),
-                child: QuickActions(onPriceStats: () => _scrollTo(_marketKey)),
+                child: const QuickActions(),
               ),
               const FadeSlideIn(child: FeaturedPropertiesSection()),
               const FadeSlideIn(child: ProjectsSection()),

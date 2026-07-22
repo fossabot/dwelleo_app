@@ -16,12 +16,18 @@ import '../models/project_model.dart';
 abstract interface class HomeRemoteDataSource {
   Future<List<Project>> getProjects();
 
+  /// VERIFIED: GET /projects/{id} returns the full project incl.
+  /// key_features/overview/gallery.
+  Future<Project?> getProject(int id);
+
   /// First page (server-fixed 20/page). The featured-in-home business rule
   /// lives in the GetFeaturedDevelopers use case, not here.
   Future<List<Developer>> getDevelopers();
 
   /// Brokerages via `filter[user_type]=broker`.
   Future<List<Developer>> getBrokers();
+
+  Future<List<Developer>> getAgents();
 
   Future<List<CityMarketStat>> getCityMarketStats(MarketQuery query);
 
@@ -35,6 +41,14 @@ class HomeRemoteDataSourceImpl implements HomeRemoteDataSource {
   final Dio _dio;
 
   const HomeRemoteDataSourceImpl(this._dio);
+
+  @override
+  Future<Project?> getProject(int id) async {
+    final res = await _dio.get<dynamic>('${ApiEndpoints.projects}/$id');
+    final body = res.data;
+    if (body is! Map) return null;
+    return ProjectModel.detailFromEnvelope(Map<String, dynamic>.from(body));
+  }
 
   @override
   Future<List<Project>> getProjects() async {
@@ -55,6 +69,16 @@ class HomeRemoteDataSourceImpl implements HomeRemoteDataSource {
     final res = await _dio.get<dynamic>(
       ApiEndpoints.developers,
       queryParameters: {PropertyFilters.userType: 'broker'},
+    );
+    final body = JsonParse.asMap(res.data);
+    return body == null ? const [] : DeveloperModel.listFromEnvelope(body);
+  }
+
+  @override
+  Future<List<Developer>> getAgents() async {
+    final res = await _dio.get<dynamic>(
+      ApiEndpoints.developers,
+      queryParameters: {PropertyFilters.userType: 'agent'},
     );
     final body = JsonParse.asMap(res.data);
     return body == null ? const [] : DeveloperModel.listFromEnvelope(body);

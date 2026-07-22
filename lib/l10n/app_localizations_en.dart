@@ -625,4 +625,446 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get leadPreferences => 'Preferences';
+
+  @override
+  String get insightsAiPricePrediction => 'AI Price Prediction';
+
+  @override
+  String get insightsPredictedPrice => 'predicted price';
+
+  @override
+  String get insightsRange => 'Predicted range';
+
+  @override
+  String get insightsInvestmentScore => 'Investment Score';
+
+  @override
+  String get insightsLifestyleScore => 'Lifestyle Score';
+
+  @override
+  String get insightsSimilar => 'Similar Properties';
+
+  @override
+  String get tierExcellent => 'Excellent';
+
+  @override
+  String get tierGood => 'Good';
+
+  @override
+  String get tierFair => 'Fair';
+
+  @override
+  String get tierWeak => 'Weak';
+
+  @override
+  String get factorValue => 'Value vs market';
+
+  @override
+  String get factorIncome => 'Income return';
+
+  @override
+  String get factorLocation => 'Location quality';
+
+  @override
+  String get factorSaturation => 'Market saturation';
+
+  @override
+  String get lifeWalkability => 'Walkability';
+
+  @override
+  String get lifeActivity => 'Area activity';
+
+  @override
+  String get lifeWellness => 'Wellness';
+
+  @override
+  String get lifeNoise => 'Noise level';
+
+  @override
+  String get lifeBike => 'Bikeability';
+
+  @override
+  String get lifeTransport => 'Transport';
+
+  @override
+  String get brokers => 'Brokers';
+
+  @override
+  String get share => 'Share';
+
+  @override
+  String get view => 'View';
+
+  @override
+  String get compare => 'Compare';
+
+  @override
+  String get compareTitle => 'Compare properties';
+
+  @override
+  String get compareEmpty =>
+      'Pick two properties to compare — tap the compare icon on any property page.';
+
+  @override
+  String get compareAdded => 'Added to compare';
+
+  @override
+  String get compareRemoved => 'Removed from compare';
+
+  @override
+  String get launchDate => 'Launch date';
+
+  @override
+  String get keyFeatures => 'Key features';
+
+  @override
+  String get overview => 'Overview';
+
+  @override
+  String get amenities => 'Amenities';
+
+  @override
+  String get searchDevelopersHint => 'Search developers or brokers';
+
+  @override
+  String get searchProjectsHint => 'Search projects by name or city';
+
+  @override
+  String get searchPropertiesHint => 'Search by city or district';
+
+  @override
+  String get sar => 'SAR';
+
+  @override
+  String get sqm => 'm²';
+
+  @override
+  String get district => 'District';
+
+  @override
+  String get next => 'Next';
+
+  @override
+  String get back => 'Back';
+
+  @override
+  String get estimateProperty => 'Estimate Property';
+
+  @override
+  String estimateStepOf(int step, int total) {
+    return 'STEP $step OF $total';
+  }
+
+  @override
+  String get estimateOptional => 'OPTIONAL';
+
+  @override
+  String get estimatePurposeTitle => 'What do you want to do?';
+
+  @override
+  String get estimatePurposeSubtitle =>
+      'We tailor your estimate and next steps to your goal.';
+
+  @override
+  String get estimateSell => 'Sell my property';
+
+  @override
+  String get estimateSellHint => 'Get a suggested asking price';
+
+  @override
+  String get estimateRent => 'Rent my property';
+
+  @override
+  String get estimateRentHint => 'Expected rent & yield';
+
+  @override
+  String get estimateLocationTitle => 'Property location';
+
+  @override
+  String get estimateLocationSubtitle =>
+      'Location is the biggest price driver — pick the district precisely.';
+
+  @override
+  String get estimateGateLocation => 'Select city and district to continue';
+
+  @override
+  String get estimateTypeTitle => 'Property type';
+
+  @override
+  String get estimateTypeSubtitle => 'Pick what best matches your property.';
+
+  @override
+  String get estimateTypesComingSoon =>
+      'Penthouse · Studio · Rest house · Commercial — coming soon';
+
+  @override
+  String get estimateDetailsTitle => 'Property details';
+
+  @override
+  String get estimateDetailsSubtitle =>
+      'Each field shows how strongly it affects the estimate.';
+
+  @override
+  String get estimateGateDetails =>
+      'Add the floor area and bedrooms to continue';
+
+  @override
+  String get estimateAreaAndRooms => 'Area & rooms';
+
+  @override
+  String get estimateFloorArea => 'Floor area';
+
+  @override
+  String get estimateHighImpact => 'HIGH IMPACT';
+
+  @override
+  String get estimateLivingRooms => 'Living rooms';
+
+  @override
+  String get estimateBuilding => 'Building';
+
+  @override
+  String get estimateYearBuilt => 'Year built';
+
+  @override
+  String get estimateStreetsFacing => 'Streets facing';
+
+  @override
+  String get estimateConditionTitle => 'Interior & amenities';
+
+  @override
+  String get estimateConditionSubtitle =>
+      'Condition and fit-out move the range.';
+
+  @override
+  String get estimateInterior => 'Interior';
+
+  @override
+  String get estimateFittedKitchen => 'Fitted kitchen';
+
+  @override
+  String get estimateFurnished => 'Furnished';
+
+  @override
+  String get estimateAcInstalled => 'AC installed';
+
+  @override
+  String get estimateAcType => 'AC type';
+
+  @override
+  String get estimateAcNone => 'None';
+
+  @override
+  String get estimateAcSplit => 'Split';
+
+  @override
+  String get estimateAcCentral => 'Central';
+
+  @override
+  String get estimateAcConcealed => 'Concealed';
+
+  @override
+  String get estimateFeaturesTitle => 'Most impactful features';
+
+  @override
+  String get estimateFeaturesSubtitle =>
+      'Your estimate is ready after this step.';
+
+  @override
+  String get estimateElevator => 'Elevator';
+
+  @override
+  String get estimateParking => 'Parking';
+
+  @override
+  String get estimateStorageRoom => 'Storage room';
+
+  @override
+  String get estimateSecurity => '24/7 security';
+
+  @override
+  String get estimateBoostTitle => 'Improve your estimate\'s accuracy';
+
+  @override
+  String get estimateBoostSubtitle =>
+      'Add a few more characteristics to raise the confidence index.';
+
+  @override
+  String get estimateImproveAccuracy => 'Improve accuracy (optional)';
+
+  @override
+  String get estimateFacing => 'Facing direction';
+
+  @override
+  String get estimateNorth => 'North';
+
+  @override
+  String get estimateEast => 'East';
+
+  @override
+  String get estimateSouth => 'South';
+
+  @override
+  String get estimateWest => 'West';
+
+  @override
+  String get estimateExtras => 'Extras';
+
+  @override
+  String get estimateBalcony => 'Balcony';
+
+  @override
+  String get estimateSeeResult => 'See estimate';
+
+  @override
+  String get estimateAnalysing => 'Analysing market data…';
+
+  @override
+  String get estimateReady => 'Estimate ready';
+
+  @override
+  String get estimateRestart => 'Start over';
+
+  @override
+  String get estimateResultTitle => 'Your property\'s estimated price';
+
+  @override
+  String get estimateRentTitle => 'Your property\'s expected rent';
+
+  @override
+  String get estimatedPrice => 'Estimated price';
+
+  @override
+  String get estimateAnnualRent => 'Expected annual rent';
+
+  @override
+  String get estimateNetYield => 'Net rental yield';
+
+  @override
+  String get estimateLowRange => 'Low range';
+
+  @override
+  String get estimateHighRange => 'High range';
+
+  @override
+  String get estimateConfidence => 'Confidence index';
+
+  @override
+  String get estimateHighAccuracy =>
+      'High accuracy — advanced details completed';
+
+  @override
+  String get estimateAddDetails => 'Add more details to raise accuracy';
+
+  @override
+  String get estimateWhy => 'Why this estimate?';
+
+  @override
+  String get estimateFactorDistrict => 'District average price';
+
+  @override
+  String get estimateFactorArea => 'Floor area & rooms';
+
+  @override
+  String get estimateFactorAge => 'Building age';
+
+  @override
+  String get estimateFactorAmenities => 'Elevator, parking & amenities';
+
+  @override
+  String get estimatePositive => 'Positive';
+
+  @override
+  String get estimateNegative => 'Negative';
+
+  @override
+  String get estimateDisclaimer =>
+      'Indicative estimate based on Dwelleo market data — not an accredited valuation (Taqeem). For an official valuation, request a report from an accredited valuer.';
+
+  @override
+  String get estimateTalkToAgent => 'Discuss this with Sarah';
+
+  @override
+  String get agents => 'Agents';
+
+  @override
+  String get apply => 'Apply';
+
+  @override
+  String get marketDataDriven => 'DATA-DRIVEN INSIGHTS';
+
+  @override
+  String get marketInsightsLead => 'Real-Time Saudi';
+
+  @override
+  String get marketInsightsAccent => 'Market Insights';
+
+  @override
+  String get marketInsightsSubtitle =>
+      'Live insights into the Saudi real estate market.';
+
+  @override
+  String get marketTabTopCities => 'Commercial Growth';
+
+  @override
+  String get marketTabHighestGrowth => 'Highest Growth';
+
+  @override
+  String get marketTabRegions => 'By Region';
+
+  @override
+  String get marketOverallGrowth => 'OVERALL GROWTH';
+
+  @override
+  String get marketBaseYear => 'Base year';
+
+  @override
+  String get marketLatestYear => 'Latest year';
+
+  @override
+  String get marketUnits => 'units';
+
+  @override
+  String get marketRegion => 'Region';
+
+  @override
+  String get marketUnitType => 'Unit type';
+
+  @override
+  String get marketUnitPurpose => 'Purpose';
+
+  @override
+  String get marketTierHigh => '50%+ growth';
+
+  @override
+  String get marketTierMid => '25%+ growth';
+
+  @override
+  String get marketTierLow => '10%+ growth';
+
+  @override
+  String get marketTierFlat => '<10% growth';
+
+  @override
+  String get location => 'Location';
+
+  @override
+  String get openInMaps => 'Open in Maps';
+
+  @override
+  String get nearbyPlaces => 'Nearby places';
+
+  @override
+  String insightsAskingAbove(int pct) {
+    return 'Asking price is $pct% above the AI prediction';
+  }
+
+  @override
+  String insightsAskingBelow(int pct) {
+    return 'Asking price is $pct% below the AI prediction';
+  }
+
+  @override
+  String get insightsAskingInline =>
+      'Asking price is in line with the AI prediction';
 }

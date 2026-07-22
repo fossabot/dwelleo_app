@@ -9,12 +9,16 @@ import '../entities/project.dart';
 abstract interface class HomeRepository {
   Future<ApiResult<List<Project>>> getProjects();
 
+  Future<ApiResult<Project>> getProject(int id);
+
   /// Real-estate developers (the default /developers list).
   Future<ApiResult<List<Developer>>> getDevelopers();
 
   /// Brokerage companies — same endpoint with `filter[user_type]=broker`
   /// (captured from the website's "Top Real Estate Brokers" tab).
   Future<ApiResult<List<Developer>>> getBrokers();
+
+  Future<ApiResult<List<Developer>>> getAgents();
 
   /// Per-city market stats for the given unit type + buy/rent side.
   Future<ApiResult<List<CityMarketStat>>> getCityMarketStats(MarketQuery query);

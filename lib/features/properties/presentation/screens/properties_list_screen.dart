@@ -11,7 +11,9 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../core/utils/formatters.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../domain/entities/property_query.dart';
+import '../../domain/entities/type_count.dart';
 import '../cubit/properties_cubit.dart';
+import '../cubit/type_counts_cubit.dart';
 import '../cubit/properties_state.dart';
 import '../widgets/filters_sheet.dart';
 import '../widgets/property_card.dart';
@@ -46,6 +48,7 @@ class PropertiesListScreen extends StatefulWidget {
 
 class _PropertiesListScreenState extends State<PropertiesListScreen> {
   late final PropertiesCubit _cubit;
+  late final TypeCountsCubit _typeCounts;
   late final ScrollController _scroll;
 
   @override
@@ -65,6 +68,7 @@ class _PropertiesListScreenState extends State<PropertiesListScreen> {
               developerId: widget.developerId,
             ),
       );
+    _typeCounts = sl<TypeCountsCubit>()..load();
   }
 
   void _onScroll() {
@@ -80,8 +84,14 @@ class _PropertiesListScreenState extends State<PropertiesListScreen> {
     _scroll.removeListener(_onScroll);
     _scroll.dispose();
     _cubit.close();
+    _typeCounts.close();
     super.dispose();
   }
+
+  /// Pull-to-refresh: re-fetch the listings and force the type-count strip to
+  /// re-run its fan-out so the counts can't sit stale behind the session cache.
+  Future<void> _refresh() =>
+      Future.wait([_cubit.refresh(), _typeCounts.load(forceRefresh: true)]);
 
   Future<void> _openFilters() async {
     final lookup = sl<LookupService>();
@@ -163,6 +173,36 @@ class _PropertiesListScreenState extends State<PropertiesListScreen> {
           builder: (context, state) {
             return Column(
               children: [
+                _LocationSearchField(
+                  onResolved: (cityId, areaId) {
+                    final current = state;
+                    if (current is! PropertiesLoaded) return;
+                    context.read<PropertiesCubit>().applyFilters(
+                      current.query.copyWith(
+                        cityId: () => cityId,
+                        areaId: () => areaId,
+                      ),
+                    );
+                  },
+                ),
+                _TypeCountStrip(
+                  cubit: _typeCounts,
+                  onSelect: (typeId) {
+                    final current = state;
+                    if (current is! PropertiesLoaded) return;
+                    final already = current.query.propertyTypeIds.contains(
+                      typeId,
+                    );
+                    context.read<PropertiesCubit>().applyFilters(
+                      current.query.copyWith(
+                        propertyTypeIds: already ? const [] : [typeId],
+                      ),
+                    );
+                  },
+                  selected: state is PropertiesLoaded
+                      ? state.query.propertyTypeIds
+                      : const [],
+                ),
                 _ResultsBar(state: state, onFilters: _openFilters),
                 if (state case PropertiesLoaded(
                   :final query,
@@ -182,8 +222,7 @@ class _PropertiesListScreenState extends State<PropertiesListScreen> {
                           : _PropertiesList(
                               loaded: loaded,
                               controller: _scroll,
-                              onRefresh: () =>
-                                  context.read<PropertiesCubit>().refresh(),
+                              onRefresh: _refresh,
                             ),
                   },
                 ),
@@ -191,6 +230,199 @@ class _PropertiesListScreenState extends State<PropertiesListScreen> {
             );
           },
         ),
+      ),
+    );
+  }
+}
+
+/// The site's type-count strip ("Apartment · 2321"), backed by live totals.
+/// Tapping a chip applies the real `filter[property_types][]` filter.
+class _TypeCountStrip extends StatelessWidget {
+  final TypeCountsCubit cubit;
+  final ValueChanged<int> onSelect;
+  final List<int> selected;
+
+  const _TypeCountStrip({
+    required this.cubit,
+    required this.onSelect,
+    required this.selected,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    final accent = AppColors.accentFor(Theme.of(context).brightness);
+
+    return BlocBuilder<TypeCountsCubit, List<TypeCount>>(
+      bloc: cubit,
+      builder: (context, counts) {
+        if (counts.isEmpty) return const SizedBox.shrink();
+        return SizedBox(
+          height: 38,
+          child: ListView.separated(
+            scrollDirection: Axis.horizontal,
+            padding: const EdgeInsetsDirectional.fromSTEB(16, 8, 16, 0),
+            itemCount: counts.length,
+            separatorBuilder: (ctx, i) => const SizedBox(width: 8),
+            itemBuilder: (context, i) {
+              final item = counts[i];
+              final isOn = selected.contains(item.typeId);
+              return Material(
+                color: isOn
+                    ? accent.withValues(alpha: 0.16)
+                    : scheme.surfaceContainerHighest.withValues(alpha: 0.45),
+                borderRadius: BorderRadius.circular(20),
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(20),
+                  onTap: () => onSelect(item.typeId),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 7,
+                    ),
+                    child: Row(
+                      children: [
+                        Text(
+                          item.name,
+                          style: TextStyle(
+                            fontSize: 12.5,
+                            fontWeight: FontWeight.w700,
+                            color: isOn ? accent : scheme.onSurface,
+                          ),
+                        ),
+                        const SizedBox(width: 6),
+                        Text(
+                          Formatters.count(item.total),
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w900,
+                            color: isOn ? accent : scheme.onSurfaceVariant,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
+        );
+      },
+    );
+  }
+}
+
+/// Free-text location search over the list (owner review: "missing search
+/// engine ... properties screens"). Typed text is resolved against the LIVE
+/// /lookup cities and areas, then applied as the real Spatie filter — never
+/// as a fake client-side text match.
+class _LocationSearchField extends StatefulWidget {
+  final void Function(int? cityId, int? areaId) onResolved;
+
+  const _LocationSearchField({required this.onResolved});
+
+  @override
+  State<_LocationSearchField> createState() => _LocationSearchFieldState();
+}
+
+class _LocationSearchFieldState extends State<_LocationSearchField> {
+  final TextEditingController _controller = TextEditingController();
+  bool _working = false;
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  Future<void> _submit(String raw) async {
+    final text = raw.trim().toLowerCase();
+    final l10n = AppLocalizations.of(context);
+    if (text.isEmpty) {
+      widget.onResolved(null, null);
+      return;
+    }
+
+    setState(() => _working = true);
+    final lookup = sl<LookupService>();
+    int? cityId;
+    int? areaId;
+    try {
+      for (final city in await lookup.cities()) {
+        if (city.name.toLowerCase() == text) {
+          cityId = int.tryParse(city.id);
+          break;
+        }
+      }
+      if (cityId == null) {
+        for (final area in await lookup.areas()) {
+          if (area.name.toLowerCase().contains(text)) {
+            areaId = area.id;
+            cityId = area.cityId;
+            break;
+          }
+        }
+      }
+    } catch (_) {
+      // Lookup is best-effort; the field simply reports no match.
+    }
+    if (!mounted) return;
+    setState(() => _working = false);
+
+    if (cityId == null && areaId == null) {
+      ScaffoldMessenger.of(context)
+        ..hideCurrentSnackBar()
+        ..showSnackBar(SnackBar(content: Text(l10n.noResults)));
+      return;
+    }
+    widget.onResolved(cityId, areaId);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final scheme = Theme.of(context).colorScheme;
+
+    return Padding(
+      padding: const EdgeInsetsDirectional.fromSTEB(16, 10, 16, 2),
+      child: TextField(
+        controller: _controller,
+        textInputAction: TextInputAction.search,
+        onSubmitted: _submit,
+        decoration: InputDecoration(
+          hintText: l10n.searchPropertiesHint,
+          prefixIcon: _working
+              ? const Padding(
+                  padding: EdgeInsets.all(12),
+                  child: SizedBox(
+                    width: 16,
+                    height: 16,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  ),
+                )
+              : const Icon(Icons.search_rounded, size: 20),
+          suffixIcon: _controller.text.isEmpty
+              ? null
+              : IconButton(
+                  icon: const Icon(Icons.close_rounded, size: 18),
+                  onPressed: () {
+                    _controller.clear();
+                    widget.onResolved(null, null);
+                    setState(() {});
+                  },
+                ),
+          filled: true,
+          fillColor: scheme.surfaceContainerHighest.withValues(alpha: 0.5),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(14),
+            borderSide: BorderSide.none,
+          ),
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 14,
+            vertical: 12,
+          ),
+        ),
+        onChanged: (_) => setState(() {}),
       ),
     );
   }
@@ -381,6 +613,7 @@ class _PropertiesList extends StatelessWidget {
           }
           final property = loaded.properties[i];
           return PropertyCard(
+            showActions: true,
             property: property,
             onTap: () =>
                 context.push(RoutePaths.propertyDetailPath(property.slug)),

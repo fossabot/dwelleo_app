@@ -143,6 +143,18 @@ abstract final class ApiEndpoints {
   @bodyPending
   static const String listingsGenerateAiContent =
       '$_base/listings/generate-ai-content';
+
+  // ── Market Insights (dwelleo.sa/en/market-insights) ───────────────────
+  /// CAPTURED LIVE 2026-07-21 from the page's own network traffic. Only
+  /// `rental` is served; `sale` 404s, so the site's Rent/Sale toggle has no
+  /// Sale data behind it. Titles/descriptions come back localized via the
+  /// `Accept-Language` header.
+  static const String marketInsightsType = 'rental';
+
+  static String marketInsights(String segment) =>
+      '$_base/market-insights/$marketInsightsType/$segment';
+
+  static String get marketInsightLookups => marketInsights('lookups');
 }
 
 /// Spatie query-builder filter keys for the property search (confirmed from the web bundle).

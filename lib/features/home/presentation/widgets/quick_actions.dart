@@ -10,10 +10,7 @@ import '../../../../l10n/app_localizations.dart';
 /// City & property-type ids are CONFIRMED live values shared by /lookup and
 /// /market/cities (2026-07-02): Riyadh=1, Jeddah=11; Apartment=1, Villa=2.
 class QuickActions extends StatelessWidget {
-  /// Scrolls Home to the City Intelligence section.
-  final VoidCallback onPriceStats;
-
-  const QuickActions({super.key, required this.onPriceStats});
+  const QuickActions({super.key});
 
   static const int _riyadhCityId = 1;
   static const int _jeddahCityId = 11;
@@ -35,7 +32,7 @@ class QuickActions extends StatelessWidget {
                   icon: Icons.bar_chart_rounded,
                   tint: const Color(0xFF6366F1),
                   label: l10n.quickPriceStats,
-                  onTap: onPriceStats,
+                  onTap: () => context.push(RoutePaths.marketInsights),
                 ),
               ),
               const SizedBox(width: 10),

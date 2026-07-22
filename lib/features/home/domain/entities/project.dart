@@ -45,6 +45,11 @@ class Project extends Equatable {
   final String? expectedHandoverDate;
   final ProjectDeveloper? developer;
 
+  // Detail-page fields (VERIFIED on GET /projects/{id}, probed 2026-07-22).
+  final String? overviewDescription;
+  final List<String> keyFeatures;
+  final List<String> amenityNames;
+
   const Project({
     required this.id,
     required this.slug,
@@ -60,6 +65,9 @@ class Project extends Equatable {
     this.launchDate,
     this.expectedHandoverDate,
     this.developer,
+    this.overviewDescription,
+    this.keyFeatures = const [],
+    this.amenityNames = const [],
   });
 
   String? get cityName => city?.name;

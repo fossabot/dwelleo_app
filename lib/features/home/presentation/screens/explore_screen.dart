@@ -88,16 +88,39 @@ class _ExploreScreenState extends State<ExploreScreen> {
   }
 }
 
-class _LoadedView extends StatelessWidget {
+class _LoadedView extends StatefulWidget {
   final ExploreLoaded loaded;
 
   const _LoadedView({required this.loaded});
 
   @override
+  State<_LoadedView> createState() => _LoadedViewState();
+}
+
+class _LoadedViewState extends State<_LoadedView> {
+  final TextEditingController _search = TextEditingController();
+
+  @override
+  void dispose() {
+    _search.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final loaded = widget.loaded;
     final l10n = AppLocalizations.of(context);
     final cities = loaded.cities;
-    final projects = loaded.filtered;
+    final query = _search.text.trim().toLowerCase();
+    final projects = query.isEmpty
+        ? loaded.filtered
+        : loaded.filtered
+              .where(
+                (p) =>
+                    p.name.toLowerCase().contains(query) ||
+                    (p.cityName ?? '').toLowerCase().contains(query),
+              )
+              .toList(growable: false);
 
     return RefreshIndicator(
       color: AppColors.primary,
@@ -110,6 +133,38 @@ class _LoadedView extends StatelessWidget {
               title: l10n.exploreProjectsLead,
               accent: l10n.exploreProjectsAccent,
               subtitle: l10n.exploreProjectsSubtitle,
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsetsDirectional.fromSTEB(16, 0, 16, 12),
+              child: TextField(
+                controller: _search,
+                textInputAction: TextInputAction.search,
+                onChanged: (_) => setState(() {}),
+                decoration: InputDecoration(
+                  hintText: l10n.searchProjectsHint,
+                  prefixIcon: const Icon(Icons.search_rounded, size: 20),
+                  suffixIcon: _search.text.isEmpty
+                      ? null
+                      : IconButton(
+                          icon: const Icon(Icons.close_rounded, size: 18),
+                          onPressed: () => setState(_search.clear),
+                        ),
+                  filled: true,
+                  fillColor: Theme.of(
+                    context,
+                  ).colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(14),
+                    borderSide: BorderSide.none,
+                  ),
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 14,
+                    vertical: 12,
+                  ),
+                ),
+              ),
             ),
           ),
           SliverToBoxAdapter(

@@ -11,12 +11,21 @@ import '../../features/auth/presentation/screens/login_screen.dart';
 import '../../features/auth/presentation/screens/role_selection_screen.dart';
 import '../../features/auth/presentation/screens/signup_form_screen.dart';
 import '../../features/auth/presentation/screens/verification_code_screen.dart';
+import '../../features/estimate/presentation/screens/estimate_screen.dart';
+import '../../features/market_insights/presentation/screens/market_insights_screen.dart';
+import '../../features/home/domain/entities/developer.dart';
+import '../../features/home/domain/entities/project.dart';
+import '../../features/home/presentation/screens/developer_profile_screen.dart';
+import '../../features/home/presentation/screens/developers_directory_screen.dart';
 import '../../features/home/presentation/screens/explore_screen.dart';
 import '../../features/home/presentation/screens/home_screen.dart';
+import '../../features/home/presentation/screens/price_statistics_screen.dart';
+import '../../features/home/presentation/screens/project_detail_screen.dart';
 import '../../features/onboarding/presentation/screens/language_selection_screen.dart';
 import '../../features/onboarding/presentation/screens/onboarding_screen.dart';
 import '../../features/profile/presentation/screens/profile_screen.dart';
 import '../../features/properties/domain/entities/property_query.dart';
+import '../../features/properties/presentation/screens/compare_screen.dart';
 import '../../features/properties/presentation/screens/properties_list_screen.dart';
 import '../../features/properties/presentation/screens/property_detail_screen.dart';
 import '../../features/properties/presentation/screens/saved_properties_screen.dart';
@@ -169,6 +178,48 @@ class AppRouter {
             ExploreScreen(initialCity: state.extra as String?),
       ),
 
+      // ── Full pages from the owner's review: screens, not sheets ─────────
+      GoRoute(
+        path: RoutePaths.projectDetail,
+        name: RoutePaths.projectDetail,
+        builder: (context, state) => ProjectDetailScreen(
+          projectId: int.tryParse(state.pathParameters['id'] ?? '') ?? 0,
+          preview: state.extra is Project ? state.extra as Project : null,
+        ),
+      ),
+      GoRoute(
+        path: RoutePaths.developersDirectory,
+        name: RoutePaths.developersDirectory,
+        builder: (context, state) => const DevelopersDirectoryScreen(),
+      ),
+      GoRoute(
+        path: RoutePaths.developerProfile,
+        name: RoutePaths.developerProfile,
+        builder: (context, state) => DeveloperProfileScreen(
+          developerId: int.tryParse(state.pathParameters['id'] ?? '') ?? 0,
+          preview: state.extra is Developer ? state.extra as Developer : null,
+        ),
+      ),
+      GoRoute(
+        path: RoutePaths.estimate,
+        name: RoutePaths.estimate,
+        builder: (context, state) => const EstimateScreen(),
+      ),
+      GoRoute(
+        path: RoutePaths.compare,
+        name: RoutePaths.compare,
+        builder: (context, state) => const CompareScreen(),
+      ),
+      GoRoute(
+        path: RoutePaths.marketInsights,
+        name: RoutePaths.marketInsights,
+        builder: (context, state) => const MarketInsightsScreen(),
+      ),
+      GoRoute(
+        path: RoutePaths.priceStats,
+        name: RoutePaths.priceStats,
+        builder: (context, state) => const PriceStatisticsScreen(),
+      ),
       // Property list/detail push OVER the shell (full-screen, no bottom bar) —
       // they are destinations from Home, not tabs.
       GoRoute(

@@ -24,6 +24,23 @@ abstract final class ContactLauncher {
     text == null || text.isEmpty ? null : {'text': text},
   );
 
+  /// Opens the platform's maps app at a coordinate. Uses the geo: scheme's
+  /// universal `?q=lat,lng(label)` form, which Apple Maps and Google Maps
+  /// both honour.
+  static Future<bool> openMap({
+    required double lat,
+    required double lng,
+    String? label,
+  }) {
+    final query = label == null || label.isEmpty
+        ? '$lat,$lng'
+        : '$lat,$lng($label)';
+    return launchUrl(
+      Uri.parse('https://maps.google.com/?q=${Uri.encodeComponent(query)}'),
+      mode: LaunchMode.externalApplication,
+    );
+  }
+
   static Future<bool> call(String phone) =>
       launchUrl(telUri(phone), mode: LaunchMode.externalApplication);
 

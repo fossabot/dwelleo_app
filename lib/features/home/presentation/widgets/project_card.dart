@@ -1,20 +1,22 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../core/constants/app_assets.dart';
+import '../../../../core/routing/route_paths.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/utils/dwelleo_images.dart';
 import '../../../../core/utils/formatters.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../core/widgets/arrow_badge.dart';
 import '../../domain/entities/project.dart';
-import 'project_details_sheet.dart';
 
 /// Image-first project card in the dwelleo.sa style: full-bleed photo,
 /// bottom gradient, name + city + "Starting From" price overlay, and the
-/// site's ↗ affordance. Tapping opens the project quick-look sheet
-/// (built from the already-loaded entity — no extra API call).
+/// site's ↗ affordance. Tapping opens the FULL project page
+/// (owner review: screens, not sheets), seeded with this entity for an
+/// instant paint while GET /projects/{id} loads.
 /// Works in horizontal rails (fixed [width]) and vertical lists (null width).
 class ProjectCard extends StatelessWidget {
   final Project project;
@@ -33,8 +35,12 @@ class ProjectCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    void open() =>
-        onTap != null ? onTap!() : showProjectDetailsSheet(context, project);
+    void open() => onTap != null
+        ? onTap!()
+        : context.push(
+            RoutePaths.projectDetailPath(project.id),
+            extra: project,
+          );
 
     return SizedBox(
       width: width,
