@@ -22,14 +22,24 @@ FIREBASE_ANDROID_APP_IDS = {
 
 # ── Helpers ──────────────────────────────────────────────────────────────
 
+# AI feature keys (GROQ / GEMINI / SERPER) are read via String.fromEnvironment,
+# so release builds MUST pass them or the AI Sales Agent and AI Search disable
+# themselves at runtime. They live in env/ai.json (gitignored secret). CI must
+# materialize this file from a secret before building — see docs/ci/SECRETS.md.
+AI_ENV_FILE = File.join(REPO_ROOT, "env", "ai.json")
+
+def dart_define_args
+  File.exist?(AI_ENV_FILE) ? "--dart-define-from-file=#{AI_ENV_FILE} " : ""
+end
+
 def flutter_build_apk(flavor, target)
   sh("cd #{REPO_ROOT} && flutter build apk --flavor #{flavor} " \
-     "-t #{target} --release --no-tree-shake-icons")
+     "-t #{target} --release --no-tree-shake-icons #{dart_define_args}")
 end
 
 def flutter_build_aab(flavor, target)
   sh("cd #{REPO_ROOT} && flutter build appbundle --flavor #{flavor} " \
-     "-t #{target} --release --no-tree-shake-icons")
+     "-t #{target} --release --no-tree-shake-icons #{dart_define_args}")
 end
 
 def head_release_notes
@@ -110,13 +120,14 @@ platform :android do
       testers: "hakemm663@gmail.com, hakemm663@icloud.com",
       release_notes: <<~NOTES
         What's new in this build:
-        • Save & compare properties — bookmark listings and compare them side by side
+        • AI Sales Agent (Sarah) is now enabled — chat 24/7 in Arabic & English
+        • Save & compare properties — bookmark listings and compare side by side
         • Instant price estimate — get a value range for any listing
         • Market insights — explore rental & commercial growth trends by city
         • Developers directory — browse developers and their projects
-        • Faster listings with live property-type counts
 
-        Please try these flows and share your feedback. Thanks!
+        Please uninstall the previous version once, then install this build.
+        Thanks for testing!
       NOTES
     )
   end
