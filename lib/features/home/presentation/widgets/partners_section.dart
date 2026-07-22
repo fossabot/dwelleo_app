@@ -1,7 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/routing/route_paths.dart';
 import '../../../../core/localization/failure_l10n.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/utils/dwelleo_images.dart';
@@ -9,7 +11,6 @@ import '../../../../l10n/app_localizations.dart';
 import '../../domain/entities/developer.dart';
 import '../cubit/home_cubit.dart';
 import '../cubit/home_state.dart';
-import 'partner_details_sheet.dart';
 import 'scroll_rail.dart';
 import 'section_error_box.dart';
 
@@ -190,8 +191,8 @@ class _PartnersTab extends StatelessWidget {
 }
 
 ///// Site-style partner card: white logo plate, name, lime divider and the
-/// circular arrow. Tapping opens the partner sheet whose CTA lists the
-/// partner's real properties (`filter[developer_id]`).
+/// circular arrow. Tapping opens the partner's
+/// FULL profile page (owner review: screens, not sheets).
 class _PartnerCard extends StatelessWidget {
   final Developer partner;
 
@@ -200,7 +201,10 @@ class _PartnerCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    void open() => showPartnerDetailsSheet(context, partner);
+    void open() => context.push(
+      RoutePaths.developerProfilePath(partner.id),
+      extra: partner,
+    );
 
     return Material(
       color: scheme.surface,

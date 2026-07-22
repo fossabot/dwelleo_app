@@ -37,6 +37,8 @@ import '../session/session_state.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 
 import '../analytics/analytics_service.dart';
+import '../errors/api_result.dart';
+import '../utils/formatters.dart';
 import '../storage/recent_searches_store.dart';
 import '../storage/saved_searches_store.dart';
 import '../../features/properties/data/datasources/property_remote_data_source.dart';
@@ -47,6 +49,11 @@ import '../../features/properties/domain/usecases/get_property_detail.dart';
 import '../../features/properties/domain/usecases/search_properties.dart';
 import '../../features/properties/presentation/cubit/properties_cubit.dart';
 import '../../features/properties/presentation/cubit/property_detail_cubit.dart';
+import '../../features/properties/data/datasources/favorites_local_data_source.dart';
+import '../../features/properties/data/repositories/favorites_repository_impl.dart';
+import '../../features/properties/domain/repositories/favorites_repository.dart';
+import '../../features/properties/domain/usecases/favorites_usecases.dart';
+import '../../features/properties/presentation/cubit/favorites_cubit.dart';
 import '../../features/ai_sales_agent/data/datasources/groq_sales_remote_data_source.dart';
 import '../../features/ai_sales_agent/data/datasources/sales_chat_local_data_source.dart';
 import '../../features/ai_sales_agent/data/datasources/sales_remote_data_source.dart';
@@ -66,6 +73,28 @@ import '../../features/ai_search/domain/usecases/interpret_ai_query.dart';
 import '../../features/ai_search/presentation/cubit/ai_search_cubit.dart';
 import '../speech/speech_service.dart';
 import '../speech/tts_service.dart';
+import '../../features/home/domain/usecases/get_all_agents.dart';
+import '../../features/home/domain/usecases/get_all_brokers.dart';
+import '../../features/home/domain/usecases/get_all_developers.dart';
+import '../../features/home/domain/usecases/get_project_detail.dart';
+import '../../features/home/presentation/cubit/developers_directory_cubit.dart';
+import '../../features/home/presentation/cubit/project_detail_cubit.dart';
+import '../../features/properties/presentation/cubit/compare_cubit.dart';
+import '../../features/properties/presentation/cubit/type_counts_cache.dart';
+import '../../features/properties/presentation/cubit/type_counts_cubit.dart';
+import '../../features/estimate/data/datasources/estimate_local_data_source.dart';
+import '../../features/estimate/data/repositories/estimate_repository_impl.dart';
+import '../../features/estimate/domain/repositories/estimate_repository.dart';
+import '../../features/estimate/domain/usecases/calculate_estimate.dart';
+import '../../features/estimate/domain/usecases/get_estimates.dart';
+import '../../features/estimate/domain/usecases/save_estimate.dart';
+import '../../features/estimate/presentation/cubit/estimate_cubit.dart';
+import '../../features/market_insights/data/datasources/market_insight_remote_data_source.dart';
+import '../../features/market_insights/data/repositories/market_insight_repository_impl.dart';
+import '../../features/market_insights/domain/repositories/market_insight_repository.dart';
+import '../../features/market_insights/domain/usecases/get_market_insight_lookups.dart';
+import '../../features/market_insights/domain/usecases/get_market_insight_series.dart';
+import '../../features/market_insights/presentation/cubit/market_insight_cubit.dart';
 
 final sl = GetIt.instance;
 
@@ -112,7 +141,9 @@ Future<void> setupServiceLocator() async {
   );
 
   // ── Lookups (cities, …) ────────────────────────────────────────────────────
-  sl.registerLazySingleton<LookupService>(() => LookupService(sl<Dio>()));
+  sl.registerLazySingleton<LookupService>(
+    () => LookupService(sl<Dio>(), sl<SecureStorage>()),
+  );
 
   // ── Feature: Auth ──────────────────────────────────────────────────────────
   sl.registerLazySingleton<AuthRemoteDataSource>(
@@ -159,6 +190,20 @@ Future<void> setupServiceLocator() async {
   sl.registerLazySingleton(() => GetPropertyDetail(sl<PropertyRepository>()));
   sl.registerFactory(() => PropertiesCubit(sl<SearchProperties>()));
   sl.registerFactory(() => PropertyDetailCubit(sl<GetPropertyDetail>()));
+  // Local favorites (Saved tab + hearts everywhere + Sarah's buyer context).
+  sl.registerLazySingleton<FavoritesLocalDataSource>(
+    () => FavoritesLocalDataSource(sl<AppDatabase>()),
+  );
+  sl.registerLazySingleton<FavoritesRepository>(
+    () => FavoritesRepositoryImpl(sl<FavoritesLocalDataSource>()),
+  );
+  sl.registerLazySingleton(() => GetFavorites(sl<FavoritesRepository>()));
+  sl.registerLazySingleton(() => GetFavoriteIds(sl<FavoritesRepository>()));
+  sl.registerLazySingleton(() => ToggleFavorite(sl<FavoritesRepository>()));
+  sl.registerLazySingleton(() => RemoveFavorite(sl<FavoritesRepository>()));
+  sl.registerFactory(
+    () => FavoritesCubit(sl<GetFavorites>(), sl<RemoveFavorite>()),
+  );
 
   // ── Feature: AI Search (PR-11) ───────────────────────────────────────────
   // On-device interpreter over verified /properties filters; SpeechService is
@@ -179,7 +224,30 @@ Future<void> setupServiceLocator() async {
   sl.registerLazySingleton<SalesAgentRepository>(
     () => SalesAgentRepositoryImpl(sl<SalesRemoteDataSource>()),
   );
-  sl.registerLazySingleton(() => SendSalesMessage(sl<SalesAgentRepository>()));
+  sl.registerLazySingleton(
+    () => SendSalesMessage(
+      sl<SalesAgentRepository>(),
+      // Sarah reads the buyer's SAVED listings (owner vision: user actions
+      // in the local DB feed the agent's thinking). Failure ⇒ null ⇒ chat
+      // proceeds without context.
+      buyerContext: () async {
+        final result = await sl<GetFavorites>()();
+        return switch (result) {
+          ApiSuccess(:final data) when data.isNotEmpty =>
+            data
+                .take(5)
+                .map(
+                  (p) =>
+                      '- ${p.title}'
+                      '${p.price != null ? ' (${Formatters.price(p.price)})' : ''}'
+                      '${p.cityName != null ? ' — ${p.cityName}' : ''}',
+                )
+                .join('\n'),
+          _ => null,
+        };
+      },
+    ),
+  );
   sl.registerLazySingleton<SerperSearchDataSource>(
     () => SerperSearchDataSource(),
   );
@@ -216,6 +284,41 @@ Future<void> setupServiceLocator() async {
   sl.registerLazySingleton(() => GetFeaturedBrokers(sl<HomeRepository>()));
   sl.registerLazySingleton(() => GetCityMarketStats(sl<HomeRepository>()));
   sl.registerLazySingleton(() => GetMarketDistricts(sl<HomeRepository>()));
+  sl.registerLazySingleton(() => GetProjectDetail(sl<HomeRepository>()));
+  sl.registerLazySingleton(() => GetAllDevelopers(sl<HomeRepository>()));
+  sl.registerLazySingleton(() => GetAllBrokers(sl<HomeRepository>()));
+  sl.registerLazySingleton(() => GetAllAgents(sl<HomeRepository>()));
+
+  // ── Market Insights (live /market-insights/rental/* charts) ───────────
+  sl.registerLazySingleton<MarketInsightRemoteDataSource>(
+    () => MarketInsightRemoteDataSourceImpl(sl<Dio>()),
+  );
+  sl.registerLazySingleton<MarketInsightRepository>(
+    () => MarketInsightRepositoryImpl(sl<MarketInsightRemoteDataSource>()),
+  );
+  sl.registerLazySingleton(
+    () => GetMarketInsightSeries(sl<MarketInsightRepository>()),
+  );
+  sl.registerLazySingleton(
+    () => GetMarketInsightLookups(sl<MarketInsightRepository>()),
+  );
+  sl.registerFactory(
+    () => MarketInsightCubit(
+      sl<GetMarketInsightSeries>(),
+      sl<GetMarketInsightLookups>(),
+    ),
+  );
+
+  // ── Estimate Property (6-phase wizard over verified market data) ──────
+  sl.registerLazySingleton<EstimateLocalDataSource>(
+    () => EstimateLocalDataSource(sl<AppDatabase>()),
+  );
+  sl.registerLazySingleton<EstimateRepository>(
+    () => EstimateRepositoryImpl(sl<EstimateLocalDataSource>()),
+  );
+  sl.registerLazySingleton(() => CalculateEstimate(sl<GetMarketDistricts>()));
+  sl.registerLazySingleton(() => SaveEstimate(sl<EstimateRepository>()));
+  sl.registerLazySingleton(() => GetEstimates(sl<EstimateRepository>()));
   sl.registerLazySingleton<RecentSearchesStore>(RecentSearchesStore.new);
   sl.registerLazySingleton<SavedSearchesStore>(SavedSearchesStore.new);
   sl.registerLazySingleton<AnalyticsService>(
@@ -230,6 +333,36 @@ Future<void> setupServiceLocator() async {
     ),
   );
   sl.registerFactory(() => ExploreCubit(sl<GetProjects>()));
+  sl.registerFactory(() => ProjectDetailCubit(sl<GetProjectDetail>()));
+  sl.registerFactory(
+    () => DevelopersDirectoryCubit(
+      sl<GetAllDevelopers>(),
+      sl<GetAllBrokers>(),
+      sl<GetAllAgents>(),
+    ),
+  );
+  // Compare tray is app-wide state (toggle on any property, view at /compare).
+  sl.registerLazySingleton<CompareCubit>(CompareCubit.new);
+  // Session-scoped so the type-count strip survives across list-screen visits
+  // and revisits skip the per-type fan-out.
+  sl.registerLazySingleton<TypeCountsCache>(
+    () => TypeCountsCache(sl<SecureStorage>()),
+  );
+  sl.registerFactory(
+    () => TypeCountsCubit(
+      sl<SearchProperties>(),
+      sl<LookupService>(),
+      sl<TypeCountsCache>(),
+    ),
+  );
+  sl.registerFactory(
+    () => EstimateCubit(
+      sl<CalculateEstimate>(),
+      sl<SaveEstimate>(),
+      sl<GetMarketDistricts>(),
+      sl<LookupService>(),
+    ),
+  );
   sl.registerFactory(() => MarketStatsCubit(sl<GetCityMarketStats>()));
   sl.registerFactory(
     () => MarketMapCubit(sl<GetCityMarketStats>(), sl<GetMarketDistricts>()),

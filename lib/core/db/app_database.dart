@@ -9,7 +9,7 @@ class AppDatabase {
   // running _open() before the first one finishes (race on the ??= read).
   Future<Database>? _opening;
 
-  static const _version = 1;
+  static const _version = 3;
 
   Future<Database> get database => _opening ??= _open();
 
@@ -48,11 +48,56 @@ class AppDatabase {
       'CREATE INDEX idx_sales_messages_convo '
       'ON sales_messages(conversation_id)',
     );
+    await db.execute(_createFavorites);
+    await db.execute(_createEstimates);
   }
 
+  /// v2: local favorites — the Saved tab's source of truth (guest-friendly;
+  /// the authed `filter[is_favorite]` sync can merge in later).
+  static const _createFavorites = '''
+      CREATE TABLE favorites(
+        property_id INTEGER PRIMARY KEY,
+        slug TEXT NOT NULL,
+        title TEXT NOT NULL,
+        price REAL,
+        city TEXT,
+        image_url TEXT,
+        listing_key TEXT,
+        beds INTEGER,
+        baths INTEGER,
+        area REAL,
+        created_at INTEGER NOT NULL
+      )
+    ''';
+
   Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
-    // v1 → future migrations go here, gated by oldVersion checks.
+    if (oldVersion < 2) {
+      await db.execute(_createFavorites);
+    }
+    if (oldVersion < 3) {
+      await db.execute(_createEstimates);
+    }
   }
+
+  /// v3: saved property estimates — the 6-phase wizard's output, kept on
+  /// device so the owner's "wizard effects the database" requirement holds
+  /// for guests too and the Sales Agent can read the seller's own valuation.
+  static const _createEstimates = '''
+      CREATE TABLE estimates(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        purpose TEXT NOT NULL,
+        city_id INTEGER,
+        city_name TEXT NOT NULL,
+        district_id INTEGER,
+        district_name TEXT NOT NULL,
+        unit_type_id INTEGER NOT NULL,
+        area_sqm REAL NOT NULL,
+        mid REAL NOT NULL,
+        low REAL NOT NULL,
+        high REAL NOT NULL,
+        created_at INTEGER NOT NULL
+      )
+    ''';
 
   Future<void> close() async {
     final db = await _opening;

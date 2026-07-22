@@ -92,6 +92,14 @@ class HomeNavStrip extends StatelessWidget {
                 onDevelopers();
               },
             ),
+            _SheetItem(
+              icon: Icons.calculate_outlined,
+              label: l10n.estimateProperty,
+              onTap: () {
+                Navigator.pop(sheetContext);
+                context.push(RoutePaths.estimate);
+              },
+            ),
             const SizedBox(height: 8),
           ],
         ),

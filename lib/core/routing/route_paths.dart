@@ -72,4 +72,28 @@ abstract final class RoutePaths {
       queryParameters: params.isEmpty ? null : params,
     ).toString();
   }
+
+  // ── Full-page routes from the properties/projects refactor ──
+  /// Project detail — VERIFIED GET /projects/{id}.
+  static const String projectDetail = '/projects/:id';
+  static String projectDetailPath(int id) => '/projects/$id';
+
+  /// Developer/broker profile (list-payload preview via `extra`).
+  static const String developerProfile = '/developers/:id';
+  static String developerProfilePath(int id) => '/developers/$id';
+
+  /// Developers & brokers directory with search.
+  static const String developersDirectory = '/developers';
+
+  /// Side-by-side compare of the two tray properties.
+  static const String compare = '/compare';
+
+  /// Full-page Price Statistics (live /market/cities table).
+  static const String priceStats = '/market/price-stats';
+
+  /// 6-phase Estimate Property wizard.
+  static const String estimate = '/estimate';
+
+  /// Market Insights — the site's data-driven charts page.
+  static const String marketInsights = '/market-insights';
 }

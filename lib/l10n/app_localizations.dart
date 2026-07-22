@@ -1261,6 +1261,852 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Preferences'**
   String get leadPreferences;
+
+  /// No description provided for @insightsAiPricePrediction.
+  ///
+  /// In en, this message translates to:
+  /// **'AI Price Prediction'**
+  String get insightsAiPricePrediction;
+
+  /// No description provided for @insightsPredictedPrice.
+  ///
+  /// In en, this message translates to:
+  /// **'predicted price'**
+  String get insightsPredictedPrice;
+
+  /// No description provided for @insightsRange.
+  ///
+  /// In en, this message translates to:
+  /// **'Predicted range'**
+  String get insightsRange;
+
+  /// No description provided for @insightsInvestmentScore.
+  ///
+  /// In en, this message translates to:
+  /// **'Investment Score'**
+  String get insightsInvestmentScore;
+
+  /// No description provided for @insightsLifestyleScore.
+  ///
+  /// In en, this message translates to:
+  /// **'Lifestyle Score'**
+  String get insightsLifestyleScore;
+
+  /// No description provided for @insightsSimilar.
+  ///
+  /// In en, this message translates to:
+  /// **'Similar Properties'**
+  String get insightsSimilar;
+
+  /// No description provided for @tierExcellent.
+  ///
+  /// In en, this message translates to:
+  /// **'Excellent'**
+  String get tierExcellent;
+
+  /// No description provided for @tierGood.
+  ///
+  /// In en, this message translates to:
+  /// **'Good'**
+  String get tierGood;
+
+  /// No description provided for @tierFair.
+  ///
+  /// In en, this message translates to:
+  /// **'Fair'**
+  String get tierFair;
+
+  /// No description provided for @tierWeak.
+  ///
+  /// In en, this message translates to:
+  /// **'Weak'**
+  String get tierWeak;
+
+  /// No description provided for @factorValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Value vs market'**
+  String get factorValue;
+
+  /// No description provided for @factorIncome.
+  ///
+  /// In en, this message translates to:
+  /// **'Income return'**
+  String get factorIncome;
+
+  /// No description provided for @factorLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Location quality'**
+  String get factorLocation;
+
+  /// No description provided for @factorSaturation.
+  ///
+  /// In en, this message translates to:
+  /// **'Market saturation'**
+  String get factorSaturation;
+
+  /// No description provided for @lifeWalkability.
+  ///
+  /// In en, this message translates to:
+  /// **'Walkability'**
+  String get lifeWalkability;
+
+  /// No description provided for @lifeActivity.
+  ///
+  /// In en, this message translates to:
+  /// **'Area activity'**
+  String get lifeActivity;
+
+  /// No description provided for @lifeWellness.
+  ///
+  /// In en, this message translates to:
+  /// **'Wellness'**
+  String get lifeWellness;
+
+  /// No description provided for @lifeNoise.
+  ///
+  /// In en, this message translates to:
+  /// **'Noise level'**
+  String get lifeNoise;
+
+  /// No description provided for @lifeBike.
+  ///
+  /// In en, this message translates to:
+  /// **'Bikeability'**
+  String get lifeBike;
+
+  /// No description provided for @lifeTransport.
+  ///
+  /// In en, this message translates to:
+  /// **'Transport'**
+  String get lifeTransport;
+
+  /// No description provided for @brokers.
+  ///
+  /// In en, this message translates to:
+  /// **'Brokers'**
+  String get brokers;
+
+  /// No description provided for @share.
+  ///
+  /// In en, this message translates to:
+  /// **'Share'**
+  String get share;
+
+  /// No description provided for @view.
+  ///
+  /// In en, this message translates to:
+  /// **'View'**
+  String get view;
+
+  /// No description provided for @compare.
+  ///
+  /// In en, this message translates to:
+  /// **'Compare'**
+  String get compare;
+
+  /// No description provided for @compareTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Compare properties'**
+  String get compareTitle;
+
+  /// No description provided for @compareEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick two properties to compare — tap the compare icon on any property page.'**
+  String get compareEmpty;
+
+  /// No description provided for @compareAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'Added to compare'**
+  String get compareAdded;
+
+  /// No description provided for @compareRemoved.
+  ///
+  /// In en, this message translates to:
+  /// **'Removed from compare'**
+  String get compareRemoved;
+
+  /// No description provided for @launchDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Launch date'**
+  String get launchDate;
+
+  /// No description provided for @keyFeatures.
+  ///
+  /// In en, this message translates to:
+  /// **'Key features'**
+  String get keyFeatures;
+
+  /// No description provided for @overview.
+  ///
+  /// In en, this message translates to:
+  /// **'Overview'**
+  String get overview;
+
+  /// No description provided for @amenities.
+  ///
+  /// In en, this message translates to:
+  /// **'Amenities'**
+  String get amenities;
+
+  /// No description provided for @searchDevelopersHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search developers or brokers'**
+  String get searchDevelopersHint;
+
+  /// No description provided for @searchProjectsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search projects by name or city'**
+  String get searchProjectsHint;
+
+  /// No description provided for @searchPropertiesHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search by city or district'**
+  String get searchPropertiesHint;
+
+  /// No description provided for @sar.
+  ///
+  /// In en, this message translates to:
+  /// **'SAR'**
+  String get sar;
+
+  /// No description provided for @sqm.
+  ///
+  /// In en, this message translates to:
+  /// **'m²'**
+  String get sqm;
+
+  /// No description provided for @district.
+  ///
+  /// In en, this message translates to:
+  /// **'District'**
+  String get district;
+
+  /// No description provided for @next.
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get next;
+
+  /// No description provided for @back.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get back;
+
+  /// No description provided for @estimateProperty.
+  ///
+  /// In en, this message translates to:
+  /// **'Estimate Property'**
+  String get estimateProperty;
+
+  /// No description provided for @estimateStepOf.
+  ///
+  /// In en, this message translates to:
+  /// **'STEP {step} OF {total}'**
+  String estimateStepOf(int step, int total);
+
+  /// No description provided for @estimateOptional.
+  ///
+  /// In en, this message translates to:
+  /// **'OPTIONAL'**
+  String get estimateOptional;
+
+  /// No description provided for @estimatePurposeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'What do you want to do?'**
+  String get estimatePurposeTitle;
+
+  /// No description provided for @estimatePurposeSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'We tailor your estimate and next steps to your goal.'**
+  String get estimatePurposeSubtitle;
+
+  /// No description provided for @estimateSell.
+  ///
+  /// In en, this message translates to:
+  /// **'Sell my property'**
+  String get estimateSell;
+
+  /// No description provided for @estimateSellHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Get a suggested asking price'**
+  String get estimateSellHint;
+
+  /// No description provided for @estimateRent.
+  ///
+  /// In en, this message translates to:
+  /// **'Rent my property'**
+  String get estimateRent;
+
+  /// No description provided for @estimateRentHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Expected rent & yield'**
+  String get estimateRentHint;
+
+  /// No description provided for @estimateLocationTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Property location'**
+  String get estimateLocationTitle;
+
+  /// No description provided for @estimateLocationSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Location is the biggest price driver — pick the district precisely.'**
+  String get estimateLocationSubtitle;
+
+  /// No description provided for @estimateGateLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Select city and district to continue'**
+  String get estimateGateLocation;
+
+  /// No description provided for @estimateTypeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Property type'**
+  String get estimateTypeTitle;
+
+  /// No description provided for @estimateTypeSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick what best matches your property.'**
+  String get estimateTypeSubtitle;
+
+  /// No description provided for @estimateTypesComingSoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Penthouse · Studio · Rest house · Commercial — coming soon'**
+  String get estimateTypesComingSoon;
+
+  /// No description provided for @estimateDetailsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Property details'**
+  String get estimateDetailsTitle;
+
+  /// No description provided for @estimateDetailsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Each field shows how strongly it affects the estimate.'**
+  String get estimateDetailsSubtitle;
+
+  /// No description provided for @estimateGateDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Add the floor area and bedrooms to continue'**
+  String get estimateGateDetails;
+
+  /// No description provided for @estimateAreaAndRooms.
+  ///
+  /// In en, this message translates to:
+  /// **'Area & rooms'**
+  String get estimateAreaAndRooms;
+
+  /// No description provided for @estimateFloorArea.
+  ///
+  /// In en, this message translates to:
+  /// **'Floor area'**
+  String get estimateFloorArea;
+
+  /// No description provided for @estimateHighImpact.
+  ///
+  /// In en, this message translates to:
+  /// **'HIGH IMPACT'**
+  String get estimateHighImpact;
+
+  /// No description provided for @estimateLivingRooms.
+  ///
+  /// In en, this message translates to:
+  /// **'Living rooms'**
+  String get estimateLivingRooms;
+
+  /// No description provided for @estimateBuilding.
+  ///
+  /// In en, this message translates to:
+  /// **'Building'**
+  String get estimateBuilding;
+
+  /// No description provided for @estimateYearBuilt.
+  ///
+  /// In en, this message translates to:
+  /// **'Year built'**
+  String get estimateYearBuilt;
+
+  /// No description provided for @estimateStreetsFacing.
+  ///
+  /// In en, this message translates to:
+  /// **'Streets facing'**
+  String get estimateStreetsFacing;
+
+  /// No description provided for @estimateConditionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Interior & amenities'**
+  String get estimateConditionTitle;
+
+  /// No description provided for @estimateConditionSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Condition and fit-out move the range.'**
+  String get estimateConditionSubtitle;
+
+  /// No description provided for @estimateInterior.
+  ///
+  /// In en, this message translates to:
+  /// **'Interior'**
+  String get estimateInterior;
+
+  /// No description provided for @estimateFittedKitchen.
+  ///
+  /// In en, this message translates to:
+  /// **'Fitted kitchen'**
+  String get estimateFittedKitchen;
+
+  /// No description provided for @estimateFurnished.
+  ///
+  /// In en, this message translates to:
+  /// **'Furnished'**
+  String get estimateFurnished;
+
+  /// No description provided for @estimateAcInstalled.
+  ///
+  /// In en, this message translates to:
+  /// **'AC installed'**
+  String get estimateAcInstalled;
+
+  /// No description provided for @estimateAcType.
+  ///
+  /// In en, this message translates to:
+  /// **'AC type'**
+  String get estimateAcType;
+
+  /// No description provided for @estimateAcNone.
+  ///
+  /// In en, this message translates to:
+  /// **'None'**
+  String get estimateAcNone;
+
+  /// No description provided for @estimateAcSplit.
+  ///
+  /// In en, this message translates to:
+  /// **'Split'**
+  String get estimateAcSplit;
+
+  /// No description provided for @estimateAcCentral.
+  ///
+  /// In en, this message translates to:
+  /// **'Central'**
+  String get estimateAcCentral;
+
+  /// No description provided for @estimateAcConcealed.
+  ///
+  /// In en, this message translates to:
+  /// **'Concealed'**
+  String get estimateAcConcealed;
+
+  /// No description provided for @estimateFeaturesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Most impactful features'**
+  String get estimateFeaturesTitle;
+
+  /// No description provided for @estimateFeaturesSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your estimate is ready after this step.'**
+  String get estimateFeaturesSubtitle;
+
+  /// No description provided for @estimateElevator.
+  ///
+  /// In en, this message translates to:
+  /// **'Elevator'**
+  String get estimateElevator;
+
+  /// No description provided for @estimateParking.
+  ///
+  /// In en, this message translates to:
+  /// **'Parking'**
+  String get estimateParking;
+
+  /// No description provided for @estimateStorageRoom.
+  ///
+  /// In en, this message translates to:
+  /// **'Storage room'**
+  String get estimateStorageRoom;
+
+  /// No description provided for @estimateSecurity.
+  ///
+  /// In en, this message translates to:
+  /// **'24/7 security'**
+  String get estimateSecurity;
+
+  /// No description provided for @estimateBoostTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Improve your estimate\'s accuracy'**
+  String get estimateBoostTitle;
+
+  /// No description provided for @estimateBoostSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a few more characteristics to raise the confidence index.'**
+  String get estimateBoostSubtitle;
+
+  /// No description provided for @estimateImproveAccuracy.
+  ///
+  /// In en, this message translates to:
+  /// **'Improve accuracy (optional)'**
+  String get estimateImproveAccuracy;
+
+  /// No description provided for @estimateFacing.
+  ///
+  /// In en, this message translates to:
+  /// **'Facing direction'**
+  String get estimateFacing;
+
+  /// No description provided for @estimateNorth.
+  ///
+  /// In en, this message translates to:
+  /// **'North'**
+  String get estimateNorth;
+
+  /// No description provided for @estimateEast.
+  ///
+  /// In en, this message translates to:
+  /// **'East'**
+  String get estimateEast;
+
+  /// No description provided for @estimateSouth.
+  ///
+  /// In en, this message translates to:
+  /// **'South'**
+  String get estimateSouth;
+
+  /// No description provided for @estimateWest.
+  ///
+  /// In en, this message translates to:
+  /// **'West'**
+  String get estimateWest;
+
+  /// No description provided for @estimateExtras.
+  ///
+  /// In en, this message translates to:
+  /// **'Extras'**
+  String get estimateExtras;
+
+  /// No description provided for @estimateBalcony.
+  ///
+  /// In en, this message translates to:
+  /// **'Balcony'**
+  String get estimateBalcony;
+
+  /// No description provided for @estimateSeeResult.
+  ///
+  /// In en, this message translates to:
+  /// **'See estimate'**
+  String get estimateSeeResult;
+
+  /// No description provided for @estimateAnalysing.
+  ///
+  /// In en, this message translates to:
+  /// **'Analysing market data…'**
+  String get estimateAnalysing;
+
+  /// No description provided for @estimateReady.
+  ///
+  /// In en, this message translates to:
+  /// **'Estimate ready'**
+  String get estimateReady;
+
+  /// No description provided for @estimateRestart.
+  ///
+  /// In en, this message translates to:
+  /// **'Start over'**
+  String get estimateRestart;
+
+  /// No description provided for @estimateResultTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your property\'s estimated price'**
+  String get estimateResultTitle;
+
+  /// No description provided for @estimateRentTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your property\'s expected rent'**
+  String get estimateRentTitle;
+
+  /// No description provided for @estimatedPrice.
+  ///
+  /// In en, this message translates to:
+  /// **'Estimated price'**
+  String get estimatedPrice;
+
+  /// No description provided for @estimateAnnualRent.
+  ///
+  /// In en, this message translates to:
+  /// **'Expected annual rent'**
+  String get estimateAnnualRent;
+
+  /// No description provided for @estimateNetYield.
+  ///
+  /// In en, this message translates to:
+  /// **'Net rental yield'**
+  String get estimateNetYield;
+
+  /// No description provided for @estimateLowRange.
+  ///
+  /// In en, this message translates to:
+  /// **'Low range'**
+  String get estimateLowRange;
+
+  /// No description provided for @estimateHighRange.
+  ///
+  /// In en, this message translates to:
+  /// **'High range'**
+  String get estimateHighRange;
+
+  /// No description provided for @estimateConfidence.
+  ///
+  /// In en, this message translates to:
+  /// **'Confidence index'**
+  String get estimateConfidence;
+
+  /// No description provided for @estimateHighAccuracy.
+  ///
+  /// In en, this message translates to:
+  /// **'High accuracy — advanced details completed'**
+  String get estimateHighAccuracy;
+
+  /// No description provided for @estimateAddDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Add more details to raise accuracy'**
+  String get estimateAddDetails;
+
+  /// No description provided for @estimateWhy.
+  ///
+  /// In en, this message translates to:
+  /// **'Why this estimate?'**
+  String get estimateWhy;
+
+  /// No description provided for @estimateFactorDistrict.
+  ///
+  /// In en, this message translates to:
+  /// **'District average price'**
+  String get estimateFactorDistrict;
+
+  /// No description provided for @estimateFactorArea.
+  ///
+  /// In en, this message translates to:
+  /// **'Floor area & rooms'**
+  String get estimateFactorArea;
+
+  /// No description provided for @estimateFactorAge.
+  ///
+  /// In en, this message translates to:
+  /// **'Building age'**
+  String get estimateFactorAge;
+
+  /// No description provided for @estimateFactorAmenities.
+  ///
+  /// In en, this message translates to:
+  /// **'Elevator, parking & amenities'**
+  String get estimateFactorAmenities;
+
+  /// No description provided for @estimatePositive.
+  ///
+  /// In en, this message translates to:
+  /// **'Positive'**
+  String get estimatePositive;
+
+  /// No description provided for @estimateNegative.
+  ///
+  /// In en, this message translates to:
+  /// **'Negative'**
+  String get estimateNegative;
+
+  /// No description provided for @estimateDisclaimer.
+  ///
+  /// In en, this message translates to:
+  /// **'Indicative estimate based on Dwelleo market data — not an accredited valuation (Taqeem). For an official valuation, request a report from an accredited valuer.'**
+  String get estimateDisclaimer;
+
+  /// No description provided for @estimateTalkToAgent.
+  ///
+  /// In en, this message translates to:
+  /// **'Discuss this with Sarah'**
+  String get estimateTalkToAgent;
+
+  /// No description provided for @agents.
+  ///
+  /// In en, this message translates to:
+  /// **'Agents'**
+  String get agents;
+
+  /// No description provided for @apply.
+  ///
+  /// In en, this message translates to:
+  /// **'Apply'**
+  String get apply;
+
+  /// No description provided for @marketDataDriven.
+  ///
+  /// In en, this message translates to:
+  /// **'DATA-DRIVEN INSIGHTS'**
+  String get marketDataDriven;
+
+  /// No description provided for @marketInsightsLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Real-Time Saudi'**
+  String get marketInsightsLead;
+
+  /// No description provided for @marketInsightsAccent.
+  ///
+  /// In en, this message translates to:
+  /// **'Market Insights'**
+  String get marketInsightsAccent;
+
+  /// No description provided for @marketInsightsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Live insights into the Saudi real estate market.'**
+  String get marketInsightsSubtitle;
+
+  /// No description provided for @marketTabTopCities.
+  ///
+  /// In en, this message translates to:
+  /// **'Commercial Growth'**
+  String get marketTabTopCities;
+
+  /// No description provided for @marketTabHighestGrowth.
+  ///
+  /// In en, this message translates to:
+  /// **'Highest Growth'**
+  String get marketTabHighestGrowth;
+
+  /// No description provided for @marketTabRegions.
+  ///
+  /// In en, this message translates to:
+  /// **'By Region'**
+  String get marketTabRegions;
+
+  /// No description provided for @marketOverallGrowth.
+  ///
+  /// In en, this message translates to:
+  /// **'OVERALL GROWTH'**
+  String get marketOverallGrowth;
+
+  /// No description provided for @marketBaseYear.
+  ///
+  /// In en, this message translates to:
+  /// **'Base year'**
+  String get marketBaseYear;
+
+  /// No description provided for @marketLatestYear.
+  ///
+  /// In en, this message translates to:
+  /// **'Latest year'**
+  String get marketLatestYear;
+
+  /// No description provided for @marketUnits.
+  ///
+  /// In en, this message translates to:
+  /// **'units'**
+  String get marketUnits;
+
+  /// No description provided for @marketRegion.
+  ///
+  /// In en, this message translates to:
+  /// **'Region'**
+  String get marketRegion;
+
+  /// No description provided for @marketUnitType.
+  ///
+  /// In en, this message translates to:
+  /// **'Unit type'**
+  String get marketUnitType;
+
+  /// No description provided for @marketUnitPurpose.
+  ///
+  /// In en, this message translates to:
+  /// **'Purpose'**
+  String get marketUnitPurpose;
+
+  /// No description provided for @marketTierHigh.
+  ///
+  /// In en, this message translates to:
+  /// **'50%+ growth'**
+  String get marketTierHigh;
+
+  /// No description provided for @marketTierMid.
+  ///
+  /// In en, this message translates to:
+  /// **'25%+ growth'**
+  String get marketTierMid;
+
+  /// No description provided for @marketTierLow.
+  ///
+  /// In en, this message translates to:
+  /// **'10%+ growth'**
+  String get marketTierLow;
+
+  /// No description provided for @marketTierFlat.
+  ///
+  /// In en, this message translates to:
+  /// **'<10% growth'**
+  String get marketTierFlat;
+
+  /// No description provided for @location.
+  ///
+  /// In en, this message translates to:
+  /// **'Location'**
+  String get location;
+
+  /// No description provided for @openInMaps.
+  ///
+  /// In en, this message translates to:
+  /// **'Open in Maps'**
+  String get openInMaps;
+
+  /// No description provided for @nearbyPlaces.
+  ///
+  /// In en, this message translates to:
+  /// **'Nearby places'**
+  String get nearbyPlaces;
+
+  /// No description provided for @insightsAskingAbove.
+  ///
+  /// In en, this message translates to:
+  /// **'Asking price is {pct}% above the AI prediction'**
+  String insightsAskingAbove(int pct);
+
+  /// No description provided for @insightsAskingBelow.
+  ///
+  /// In en, this message translates to:
+  /// **'Asking price is {pct}% below the AI prediction'**
+  String insightsAskingBelow(int pct);
+
+  /// No description provided for @insightsAskingInline.
+  ///
+  /// In en, this message translates to:
+  /// **'Asking price is in line with the AI prediction'**
+  String get insightsAskingInline;
 }
 
 class _AppLocalizationsDelegate

@@ -6,16 +6,19 @@ import '../theme/app_colors.dart';
 /// (Sales Agent action row, AI Search quick replies). Accent follows the
 /// brand rule: lime in dark mode, purple in light mode.
 class SuggestionPill extends StatelessWidget {
-  final IconData icon;
+  /// Material icon, OR pass [glyph] for a brand mark (e.g. WhatsApp).
+  final IconData? icon;
+  final Widget? glyph;
   final String label;
   final VoidCallback onTap;
 
   const SuggestionPill({
     super.key,
-    required this.icon,
+    this.icon,
+    this.glyph,
     required this.label,
     required this.onTap,
-  });
+  }) : assert(icon != null || glyph != null, 'need an icon or a glyph');
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +41,7 @@ class SuggestionPill extends StatelessWidget {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(icon, size: 15, color: accent),
+              glyph ?? Icon(icon, size: 15, color: accent),
               const SizedBox(width: 6),
               Text(
                 label,

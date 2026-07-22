@@ -36,10 +36,17 @@ class _FakeHomeRepo implements HomeRepository {
   Future<ApiResult<List<Project>>> getProjects() async => projects;
 
   @override
+  Future<ApiResult<Project>> getProject(int id) async =>
+      const ApiError(UnknownFailure('unused in this test'));
+
+  @override
   Future<ApiResult<List<Developer>>> getDevelopers() async => developers;
 
   @override
   Future<ApiResult<List<Developer>>> getBrokers() async => brokers;
+
+  @override
+  Future<ApiResult<List<Developer>>> getAgents() async => const ApiSuccess([]);
 
   @override
   Future<ApiResult<List<CityMarketStat>>> getCityMarketStats(

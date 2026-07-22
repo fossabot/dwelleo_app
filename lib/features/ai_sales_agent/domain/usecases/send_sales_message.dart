@@ -51,7 +51,14 @@ in the user's language.
 class SendSalesMessage {
   final SalesAgentRepository _repository;
 
-  const SendSalesMessage(this._repository);
+  /// Optional factual app context injected per send (e.g. the buyer's saved
+  /// listings, wired in DI). A provider failure must never block chatting.
+  final Future<String?> Function()? _buyerContext;
+
+  const SendSalesMessage(
+    this._repository, {
+    Future<String?> Function()? buyerContext,
+  }) : _buyerContext = buyerContext;
 
   /// False when the build carries no GROQ_API_KEY — the screen then shows
   /// its "not configured" state and no network call is ever made.
@@ -60,5 +67,15 @@ class SendSalesMessage {
   Future<ApiResult<SalesReply>> call({
     required List<SalesMessage> history,
     required String message,
-  }) => _repository.send(history: history, message: message);
+  }) async {
+    String? context;
+    try {
+      context = await _buyerContext?.call();
+    } catch (_) {}
+    return _repository.send(
+      history: history,
+      message: message,
+      buyerContext: context,
+    );
+  }
 }

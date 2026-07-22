@@ -326,6 +326,7 @@ class _FakeRepo implements SalesAgentRepository {
   Future<ApiResult<SalesReply>> send({
     required List<SalesMessage> history,
     required String message,
+    String? buyerContext,
   }) async {
     calls++;
     lastHistory = history;

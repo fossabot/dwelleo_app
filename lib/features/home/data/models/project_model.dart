@@ -17,6 +17,26 @@ abstract final class ProjectModel {
         .toList(growable: false);
   }
 
+  /// GET /projects/{id} → `{data:{project:{...}}}` or `{data:{...}}`.
+  static Project? detailFromEnvelope(Map<String, dynamic> json) {
+    final data = json['data'];
+    if (data is! Map) return null;
+    final node = data['project'] is Map ? data['project'] : data;
+    return fromJson(Map<String, dynamic>.from(node as Map));
+  }
+
+  static List<String> _stringList(dynamic v) {
+    if (v is! List) return const [];
+    return v
+        .map((e) {
+          if (e is String) return e;
+          if (e is Map) return '${e['title'] ?? e['name'] ?? ''}';
+          return '';
+        })
+        .where((t) => t.trim().isNotEmpty)
+        .toList(growable: false);
+  }
+
   static Project fromJson(Map<String, dynamic> j) {
     final coords = JsonParse.asMap(j['location_coordinates']);
     return Project(
@@ -39,6 +59,10 @@ abstract final class ProjectModel {
       launchDate: j['launch_date']?.toString(),
       expectedHandoverDate: j['expected_handover_date']?.toString(),
       developer: _developer(j['developer']),
+      overviewDescription: (j['overview_description'] ?? j['description'])
+          ?.toString(),
+      keyFeatures: _stringList(j['key_features']),
+      amenityNames: _stringList(j['amenities']),
     );
   }
 

@@ -2,16 +2,24 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../core/analytics/analytics_service.dart';
 import '../../../../core/constants/app_assets.dart';
 import '../../../../core/di/service_locator.dart';
+import '../../../../core/routing/route_paths.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/utils/contact_launcher.dart';
 import '../../../../core/utils/formatters.dart';
+import '../../../../core/utils/share_link.dart';
+import '../../../../core/widgets/whatsapp_icon.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../domain/entities/property.dart';
+import '../cubit/compare_cubit.dart';
 import '../cubit/property_detail_cubit.dart';
+import '../widgets/favorite_heart.dart';
+import '../widgets/property_insights.dart';
+import '../widgets/property_location_section.dart';
 import '../cubit/property_detail_state.dart';
 
 class PropertyDetailScreen extends StatefulWidget {
@@ -88,24 +96,45 @@ class _DetailBodyState extends State<_DetailBody> {
   @override
   void initState() {
     super.initState();
-    _images = _buildImages();
+    // Dedupe (cover already appears in `images`) lives on the entity —
+    // Property.galleryImages — so it stays out of the widget layer.
+    _images = widget.property.galleryImages;
   }
 
   @override
   void didUpdateWidget(_DetailBody old) {
     super.didUpdateWidget(old);
-    if (old.property != widget.property) _images = _buildImages();
-  }
-
-  List<MediaImage> _buildImages() {
-    final p = widget.property;
-    return [if (p.coverImage != null) p.coverImage!, ...p.images];
+    if (old.property != widget.property) {
+      _images = widget.property.galleryImages;
+    }
   }
 
   @override
   void dispose() {
     _pageController.dispose();
     super.dispose();
+  }
+
+  /// Toggle the compare tray with feedback; when the tray fills (2 items)
+  /// the snackbar offers a jump straight to the /compare page.
+  void _toggleCompare(BuildContext context, Property property) {
+    final l10n = AppLocalizations.of(context);
+    final cubit = sl<CompareCubit>();
+    final wasIn = cubit.contains(property.id);
+    cubit.toggle(property);
+    final messenger = ScaffoldMessenger.of(context);
+    messenger.hideCurrentSnackBar();
+    messenger.showSnackBar(
+      SnackBar(
+        content: Text(wasIn ? l10n.compareRemoved : l10n.compareAdded),
+        action: !wasIn && cubit.isFull
+            ? SnackBarAction(
+                label: l10n.view,
+                onPressed: () => context.push(RoutePaths.compare),
+              )
+            : null,
+      ),
+    );
   }
 
   @override
@@ -120,6 +149,45 @@ class _DetailBodyState extends State<_DetailBody> {
           pinned: true,
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           surfaceTintColor: Colors.transparent,
+          actions: [
+            // Share / Compare sit on a scrim disc so they read the same as
+            // the favourite heart over any photo (owner review).
+            _ScrimAction(
+              tooltip: AppLocalizations.of(context).share,
+              glyph: SvgPicture.asset(
+                AppSvg.share,
+                width: 15,
+                height: 15,
+                colorFilter: const ColorFilter.mode(
+                  Colors.white,
+                  BlendMode.srcIn,
+                ),
+              ),
+              onTap: () => ShareLink.shareProperty(
+                slug: property.slug,
+                title: property.title,
+                arabic: Localizations.localeOf(context).languageCode == 'ar',
+              ),
+            ),
+            BlocBuilder<CompareCubit, List<Property>>(
+              bloc: sl<CompareCubit>(),
+              builder: (context, tray) {
+                final inTray = tray.any((p) => p.id == property.id);
+                return _ScrimAction(
+                  tooltip: AppLocalizations.of(context).compare,
+                  icon: inTray
+                      ? Icons.library_add_check_rounded
+                      : Icons.compare_arrows_rounded,
+                  active: inTray,
+                  onTap: () => _toggleCompare(context, property),
+                );
+              },
+            ),
+            Padding(
+              padding: const EdgeInsetsDirectional.only(end: 8),
+              child: FavoriteHeart(property: property, scrim: true),
+            ),
+          ],
           flexibleSpace: FlexibleSpaceBar(
             background: Stack(
               fit: StackFit.expand,
@@ -232,6 +300,13 @@ class _DetailBodyState extends State<_DetailBody> {
                     ],
                   ),
                 ],
+                // dwelleo.sa parity: the AI insight system (price
+                // prediction / investment / lifestyle) + similar listings,
+                // all from the verified public payload.
+                PropertyLocationSection(property: property),
+                const SizedBox(height: 22),
+                PropertyInsightsSection(property: property),
+                SimilarPropertiesSection(property: property),
                 if (property.owner != null) ...[
                   const _SectionTitle('Listed by'),
                   _OwnerCard(owner: property.owner!),
@@ -535,7 +610,7 @@ class _ContactBar extends StatelessWidget {
           Expanded(
             child: OutlinedButton.icon(
               onPressed: () => _contact(context, whatsApp: true),
-              icon: SvgPicture.asset(AppSvg.whatsapp, width: 18, height: 18),
+              icon: const WhatsAppIcon(),
               label: Text(l10n.whatsapp),
             ),
           ),
@@ -578,6 +653,53 @@ class _DetailError extends StatelessWidget {
               const SizedBox(height: 16),
               FilledButton(onPressed: onRetry, child: const Text('Retry')),
             ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Circular scrim button used by the detail app bar so Share and Compare
+/// match the favourite heart's treatment over the hero photo.
+class _ScrimAction extends StatelessWidget {
+  final IconData? icon;
+  final Widget? glyph;
+  final String tooltip;
+  final bool active;
+  final VoidCallback onTap;
+
+  const _ScrimAction({
+    this.icon,
+    this.glyph,
+    required this.tooltip,
+    this.active = false,
+    required this.onTap,
+  }) : assert(icon != null || glyph != null, 'need an icon or a glyph');
+
+  @override
+  Widget build(BuildContext context) {
+    final accent = AppColors.accentFor(Theme.of(context).brightness);
+
+    return Padding(
+      padding: const EdgeInsetsDirectional.only(end: 6),
+      child: Tooltip(
+        message: tooltip,
+        child: Material(
+          color: Colors.black.withValues(alpha: 0.35),
+          shape: const CircleBorder(),
+          clipBehavior: Clip.antiAlias,
+          child: InkWell(
+            onTap: onTap,
+            child: SizedBox(
+              width: 38,
+              height: 38,
+              child: Center(
+                child:
+                    glyph ??
+                    Icon(icon, size: 19, color: active ? accent : Colors.white),
+              ),
+            ),
           ),
         ),
       ),

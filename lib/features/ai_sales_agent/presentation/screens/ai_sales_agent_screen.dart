@@ -12,6 +12,7 @@ import '../../../../core/utils/contact_launcher.dart';
 import '../../../../core/speech/tts_service.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/utils/arabic_utils.dart';
+import '../../../../core/widgets/whatsapp_icon.dart';
 import '../../../../core/widgets/motion.dart';
 import '../../../../core/widgets/suggestion_pill.dart';
 import '../../../../l10n/app_localizations.dart';
@@ -1241,7 +1242,7 @@ class _ActionBar extends StatelessWidget {
             ),
             const SizedBox(width: 8),
             SuggestionPill(
-              icon: Icons.chat_rounded,
+              glyph: const WhatsAppIcon(size: 16),
               label: l10n.whatsapp,
               onTap: () => ContactLauncher.whatsApp(_dwelleoPhone),
             ),

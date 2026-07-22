@@ -19,6 +19,7 @@ class PropertyQuery extends Equatable {
   final int? areaId;
   final int? regionId;
   final int? developerId;
+  final int? projectId;
   final int? minBedrooms;
   final int? minBathrooms;
   final num? minPrice;
@@ -37,6 +38,7 @@ class PropertyQuery extends Equatable {
     this.areaId,
     this.regionId,
     this.developerId,
+    this.projectId,
     this.minBedrooms,
     this.minBathrooms,
     this.minPrice,
@@ -65,6 +67,7 @@ class PropertyQuery extends Equatable {
     int? Function()? areaId,
     int? Function()? regionId,
     int? Function()? developerId,
+    int? Function()? projectId,
     int? Function()? minBedrooms,
     int? Function()? minBathrooms,
     num? Function()? minPrice,
@@ -81,6 +84,7 @@ class PropertyQuery extends Equatable {
       areaId: areaId == null ? this.areaId : areaId(),
       regionId: regionId == null ? this.regionId : regionId(),
       developerId: developerId == null ? this.developerId : developerId(),
+      projectId: projectId == null ? this.projectId : projectId(),
       minBedrooms: minBedrooms == null ? this.minBedrooms : minBedrooms(),
       minBathrooms: minBathrooms == null ? this.minBathrooms : minBathrooms(),
       minPrice: minPrice == null ? this.minPrice : minPrice(),
@@ -106,6 +110,7 @@ class PropertyQuery extends Equatable {
     areaId,
     regionId,
     developerId,
+    projectId,
     minBedrooms,
     minBathrooms,
     minPrice,

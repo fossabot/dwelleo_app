@@ -6,6 +6,7 @@ abstract final class AppSvg {
   // Multicolor brand icon — render WITHOUT a color filter.
   static const String google = '$_d/google-icon.svg';
   static const String whatsapp = '$_d/whatsapp.svg';
+  static const String share = '$_d/share.svg';
   static const String aiVoice = '$_d/aiVoiceSearchLogo.svg';
 
   // Monochrome UI icons — safe to tint via ColorFilter.

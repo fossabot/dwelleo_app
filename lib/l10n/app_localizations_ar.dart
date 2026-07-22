@@ -622,4 +622,439 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get leadPreferences => 'التفضيلات';
+
+  @override
+  String get insightsAiPricePrediction => 'توقع السعر بالذكاء الاصطناعي';
+
+  @override
+  String get insightsPredictedPrice => 'السعر المتوقع';
+
+  @override
+  String get insightsRange => 'النطاق المتوقع';
+
+  @override
+  String get insightsInvestmentScore => 'مؤشر الاستثمار';
+
+  @override
+  String get insightsLifestyleScore => 'مؤشر جودة الحياة';
+
+  @override
+  String get insightsSimilar => 'عقارات مشابهة';
+
+  @override
+  String get tierExcellent => 'ممتاز';
+
+  @override
+  String get tierGood => 'جيد';
+
+  @override
+  String get tierFair => 'مقبول';
+
+  @override
+  String get tierWeak => 'ضعيف';
+
+  @override
+  String get factorValue => 'القيمة مقابل السوق';
+
+  @override
+  String get factorIncome => 'العائد';
+
+  @override
+  String get factorLocation => 'جودة الموقع';
+
+  @override
+  String get factorSaturation => 'تشبع السوق';
+
+  @override
+  String get lifeWalkability => 'قابلية المشي';
+
+  @override
+  String get lifeActivity => 'نشاط المنطقة';
+
+  @override
+  String get lifeWellness => 'العافية';
+
+  @override
+  String get lifeNoise => 'مستوى الضوضاء';
+
+  @override
+  String get lifeBike => 'ملاءمة الدراجات';
+
+  @override
+  String get lifeTransport => 'المواصلات';
+
+  @override
+  String get brokers => 'الوسطاء';
+
+  @override
+  String get share => 'مشاركة';
+
+  @override
+  String get view => 'عرض';
+
+  @override
+  String get compare => 'قارن';
+
+  @override
+  String get compareTitle => 'مقارنة العقارات';
+
+  @override
+  String get compareEmpty =>
+      'اختر عقارين للمقارنة — اضغط أيقونة المقارنة في صفحة أي عقار.';
+
+  @override
+  String get compareAdded => 'أُضيف إلى المقارنة';
+
+  @override
+  String get compareRemoved => 'أُزيل من المقارنة';
+
+  @override
+  String get launchDate => 'تاريخ الإطلاق';
+
+  @override
+  String get keyFeatures => 'أبرز المزايا';
+
+  @override
+  String get overview => 'نظرة عامة';
+
+  @override
+  String get amenities => 'المرافق';
+
+  @override
+  String get searchDevelopersHint => 'ابحث عن المطورين أو الوسطاء';
+
+  @override
+  String get searchProjectsHint => 'ابحث في المشاريع بالاسم أو المدينة';
+
+  @override
+  String get searchPropertiesHint => 'ابحث بالمدينة أو الحي';
+
+  @override
+  String get sar => 'ريال';
+
+  @override
+  String get sqm => 'م²';
+
+  @override
+  String get district => 'الحي';
+
+  @override
+  String get next => 'التالي';
+
+  @override
+  String get back => 'رجوع';
+
+  @override
+  String get estimateProperty => 'تقدير العقار';
+
+  @override
+  String estimateStepOf(int step, int total) {
+    return 'الخطوة $step من $total';
+  }
+
+  @override
+  String get estimateOptional => 'اختياري';
+
+  @override
+  String get estimatePurposeTitle => 'ما الذي تريد فعله؟';
+
+  @override
+  String get estimatePurposeSubtitle =>
+      'نُخصّص التقدير والخطوات التالية حسب هدفك.';
+
+  @override
+  String get estimateSell => 'بيع عقاري';
+
+  @override
+  String get estimateSellHint => 'احصل على سعر طلب مقترح';
+
+  @override
+  String get estimateRent => 'تأجير عقاري';
+
+  @override
+  String get estimateRentHint => 'الإيجار المتوقع والعائد';
+
+  @override
+  String get estimateLocationTitle => 'موقع العقار';
+
+  @override
+  String get estimateLocationSubtitle =>
+      'الموقع هو المحرك الأكبر للسعر — اختر الحي بدقة.';
+
+  @override
+  String get estimateGateLocation => 'اختر المدينة والحي للمتابعة';
+
+  @override
+  String get estimateTypeTitle => 'نوع العقار';
+
+  @override
+  String get estimateTypeSubtitle => 'اختر ما يطابق عقارك.';
+
+  @override
+  String get estimateTypesComingSoon =>
+      'بنتهاوس · استوديو · استراحة · تجاري — قريباً';
+
+  @override
+  String get estimateDetailsTitle => 'تفاصيل العقار';
+
+  @override
+  String get estimateDetailsSubtitle => 'كل حقل يوضح مدى تأثيره على التقدير.';
+
+  @override
+  String get estimateGateDetails => 'أضف المساحة وعدد الغرف للمتابعة';
+
+  @override
+  String get estimateAreaAndRooms => 'المساحة والغرف';
+
+  @override
+  String get estimateFloorArea => 'المساحة';
+
+  @override
+  String get estimateHighImpact => 'تأثير عالٍ';
+
+  @override
+  String get estimateLivingRooms => 'صالات المعيشة';
+
+  @override
+  String get estimateBuilding => 'المبنى';
+
+  @override
+  String get estimateYearBuilt => 'سنة البناء';
+
+  @override
+  String get estimateStreetsFacing => 'عدد الشوارع المطلة';
+
+  @override
+  String get estimateConditionTitle => 'الداخل والمرافق';
+
+  @override
+  String get estimateConditionSubtitle => 'الحالة والتجهيز يحركان النطاق.';
+
+  @override
+  String get estimateInterior => 'الداخل';
+
+  @override
+  String get estimateFittedKitchen => 'مطبخ مجهز';
+
+  @override
+  String get estimateFurnished => 'مفروش';
+
+  @override
+  String get estimateAcInstalled => 'التكييف مثبّت';
+
+  @override
+  String get estimateAcType => 'نوع التكييف';
+
+  @override
+  String get estimateAcNone => 'بدون';
+
+  @override
+  String get estimateAcSplit => 'سبليت';
+
+  @override
+  String get estimateAcCentral => 'مركزي';
+
+  @override
+  String get estimateAcConcealed => 'مخفي';
+
+  @override
+  String get estimateFeaturesTitle => 'أكثر المزايا تأثيراً';
+
+  @override
+  String get estimateFeaturesSubtitle => 'تقديرك جاهز بعد هذه الخطوة.';
+
+  @override
+  String get estimateElevator => 'مصعد';
+
+  @override
+  String get estimateParking => 'موقف';
+
+  @override
+  String get estimateStorageRoom => 'غرفة تخزين';
+
+  @override
+  String get estimateSecurity => 'أمن وحراسة على مدار الساعة';
+
+  @override
+  String get estimateBoostTitle => 'حسّن دقة تقديرك';
+
+  @override
+  String get estimateBoostSubtitle => 'أضف بعض الخصائص لرفع مؤشر الثقة.';
+
+  @override
+  String get estimateImproveAccuracy => 'تحسين الدقة (اختياري)';
+
+  @override
+  String get estimateFacing => 'اتجاه الواجهة';
+
+  @override
+  String get estimateNorth => 'شمال';
+
+  @override
+  String get estimateEast => 'شرق';
+
+  @override
+  String get estimateSouth => 'جنوب';
+
+  @override
+  String get estimateWest => 'غرب';
+
+  @override
+  String get estimateExtras => 'إضافات';
+
+  @override
+  String get estimateBalcony => 'شرفة';
+
+  @override
+  String get estimateSeeResult => 'عرض التقدير';
+
+  @override
+  String get estimateAnalysing => 'جارٍ تحليل بيانات السوق…';
+
+  @override
+  String get estimateReady => 'التقدير جاهز';
+
+  @override
+  String get estimateRestart => 'البدء من جديد';
+
+  @override
+  String get estimateResultTitle => 'السعر التقديري لعقارك';
+
+  @override
+  String get estimateRentTitle => 'الإيجار المتوقع لعقارك';
+
+  @override
+  String get estimatedPrice => 'السعر التقديري';
+
+  @override
+  String get estimateAnnualRent => 'الإيجار السنوي المتوقع';
+
+  @override
+  String get estimateNetYield => 'صافي العائد الإيجاري';
+
+  @override
+  String get estimateLowRange => 'الحد الأدنى';
+
+  @override
+  String get estimateHighRange => 'الحد الأعلى';
+
+  @override
+  String get estimateConfidence => 'مؤشر الثقة';
+
+  @override
+  String get estimateHighAccuracy => 'دقة عالية — اكتملت التفاصيل المتقدمة';
+
+  @override
+  String get estimateAddDetails => 'أضف تفاصيل أكثر لرفع الدقة';
+
+  @override
+  String get estimateWhy => 'لماذا هذا التقدير؟';
+
+  @override
+  String get estimateFactorDistrict => 'متوسط سعر الحي';
+
+  @override
+  String get estimateFactorArea => 'المساحة والغرف';
+
+  @override
+  String get estimateFactorAge => 'عمر المبنى';
+
+  @override
+  String get estimateFactorAmenities => 'المصعد والمواقف والمرافق';
+
+  @override
+  String get estimatePositive => 'إيجابي';
+
+  @override
+  String get estimateNegative => 'سلبي';
+
+  @override
+  String get estimateDisclaimer =>
+      'تقدير استرشادي مبني على بيانات سوق دويليو — وليس تقييماً معتمداً (تقييم). للتقييم الرسمي اطلب تقريراً من مُقيّم معتمد.';
+
+  @override
+  String get estimateTalkToAgent => 'ناقش هذا مع سارة';
+
+  @override
+  String get agents => 'الوكلاء';
+
+  @override
+  String get apply => 'تطبيق';
+
+  @override
+  String get marketDataDriven => 'رؤى قائمة على البيانات';
+
+  @override
+  String get marketInsightsLead => 'رؤى السوق السعودي';
+
+  @override
+  String get marketInsightsAccent => 'لحظة بلحظة';
+
+  @override
+  String get marketInsightsSubtitle => 'رؤى حية لسوق العقار السعودي.';
+
+  @override
+  String get marketTabTopCities => 'النمو التجاري';
+
+  @override
+  String get marketTabHighestGrowth => 'الأعلى نمواً';
+
+  @override
+  String get marketTabRegions => 'حسب المنطقة';
+
+  @override
+  String get marketOverallGrowth => 'النمو الإجمالي';
+
+  @override
+  String get marketBaseYear => 'سنة الأساس';
+
+  @override
+  String get marketLatestYear => 'أحدث سنة';
+
+  @override
+  String get marketUnits => 'وحدة';
+
+  @override
+  String get marketRegion => 'المنطقة';
+
+  @override
+  String get marketUnitType => 'نوع الوحدة';
+
+  @override
+  String get marketUnitPurpose => 'الغرض';
+
+  @override
+  String get marketTierHigh => 'نمو 50%+';
+
+  @override
+  String get marketTierMid => 'نمو 25%+';
+
+  @override
+  String get marketTierLow => 'نمو 10%+';
+
+  @override
+  String get marketTierFlat => 'نمو أقل من 10%';
+
+  @override
+  String get location => 'الموقع';
+
+  @override
+  String get openInMaps => 'افتح في الخرائط';
+
+  @override
+  String get nearbyPlaces => 'أماكن قريبة';
+
+  @override
+  String insightsAskingAbove(int pct) {
+    return 'سعر الطلب أعلى بنسبة $pct% من تقدير الذكاء الاصطناعي';
+  }
+
+  @override
+  String insightsAskingBelow(int pct) {
+    return 'سعر الطلب أقل بنسبة $pct% من تقدير الذكاء الاصطناعي';
+  }
+
+  @override
+  String get insightsAskingInline =>
+      'سعر الطلب متوافق مع تقدير الذكاء الاصطناعي';
 }

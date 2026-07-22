@@ -12,6 +12,11 @@ const _query = MarketQuery();
 
 class _SuccessSource implements HomeRemoteDataSource {
   @override
+  Future<List<Developer>> getAgents() async => const [];
+  @override
+  Future<Project?> getProject(int id) async => null;
+
+  @override
   Future<List<Project>> getProjects() async => const [
     Project(id: 1, slug: 'p', name: 'P'),
   ];
@@ -40,6 +45,11 @@ class _SuccessSource implements HomeRemoteDataSource {
 }
 
 class _ThrowingSource implements HomeRemoteDataSource {
+  @override
+  Future<List<Developer>> getAgents() async => throw error;
+  @override
+  Future<Project?> getProject(int id) async => throw error;
+
   final DioException error;
   _ThrowingSource(this.error);
 
@@ -61,6 +71,17 @@ class _ThrowingSource implements HomeRemoteDataSource {
     int cityId,
     MarketQuery query,
   ) async => throw error;
+}
+
+/// Counts underlying city-stat fetches so the in-flight dedup is observable.
+class _CountingSource extends _SuccessSource {
+  int cityStatsCalls = 0;
+
+  @override
+  Future<List<CityMarketStat>> getCityMarketStats(MarketQuery query) {
+    cityStatsCalls++;
+    return super.getCityMarketStats(query);
+  }
 }
 
 DioException _dio(DioExceptionType type, {int? status}) {
@@ -113,5 +134,35 @@ void main() {
       final result = await repo.getCityMarketStats(_query);
       expect(result.failureOrNull, isA<ServerFailure>());
     });
+
+    test('coalesces concurrent identical city-stat requests', () async {
+      // The home Table and Map cubits load the same query on startup — one
+      // network call must serve both instead of two identical GETs.
+      final source = _CountingSource();
+      final repo = HomeRepositoryImpl(source);
+
+      final results = await Future.wait([
+        repo.getCityMarketStats(_query),
+        repo.getCityMarketStats(_query),
+      ]);
+
+      expect(source.cityStatsCalls, 1);
+      expect(results[0].dataOrNull, hasLength(1));
+      expect(results[1].dataOrNull, hasLength(1));
+    });
+
+    test(
+      're-fetches city stats after the in-flight request completes',
+      () async {
+        // Dedup is in-flight only, so pull-to-refresh still hits the network.
+        final source = _CountingSource();
+        final repo = HomeRepositoryImpl(source);
+
+        await repo.getCityMarketStats(_query);
+        await repo.getCityMarketStats(_query);
+
+        expect(source.cityStatsCalls, 2);
+      },
+    );
   });
 }

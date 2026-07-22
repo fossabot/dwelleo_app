@@ -81,6 +81,7 @@ class PropertyRemoteDataSourceImpl implements PropertyRemoteDataSource {
     put(PropertyFilters.areaId, q.areaId);
     put(PropertyFilters.regionId, q.regionId);
     put(PropertyFilters.developerId, q.developerId);
+    put(PropertyFilters.projectId, q.projectId);
     put(PropertyFilters.bedrooms, q.minBedrooms);
     put(PropertyFilters.bathrooms, q.minBathrooms);
     put(PropertyFilters.minPrice, q.minPrice);
