@@ -108,7 +108,16 @@ platform :android do
       flavor: "production",
       apk_filename: "app-production-release.apk",
       testers: "hakemm663@gmail.com, hakemm663@icloud.com",
-      release_notes: "Test new features and bug fixes with this internal build. Feedback welcome!"
+      release_notes: <<~NOTES
+        What's new in this build:
+        • Save & compare properties — bookmark listings and compare them side by side
+        • Instant price estimate — get a value range for any listing
+        • Market insights — explore rental & commercial growth trends by city
+        • Developers directory — browse developers and their projects
+        • Faster listings with live property-type counts
+
+        Please try these flows and share your feedback. Thanks!
+      NOTES
     )
   end
 end

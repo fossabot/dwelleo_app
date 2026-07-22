@@ -58,15 +58,28 @@ jobs:
           MAPS_API_KEY: ${{ secrets.MAPS_API_KEY }}
           FIREBASE_SERVICE_ACCOUNT_JSON: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON }}
         run: |
-          for name in GOOGLE_SERVICES_JSON FIREBASE_SERVICE_ACCOUNT_JSON MAPS_API_KEY; do
-            if [ -z "${!name}" ]; then
-              echo "::error::$name secret is not set (see docs/ci/SECRETS.md)."
+          if [ -z "$MAPS_API_KEY" ]; then
+            echo "::error::MAPS_API_KEY secret is not set (see docs/ci/SECRETS.md)."
+            exit 1
+          fi
+          # A JSON secret may hold either raw JSON or base64 — accept both, then
+          # validate. A malformed/empty secret fails HERE with a clear message
+          # instead of deep inside fastlane (JSON::ParserError at column 1).
+          write_json_secret() {
+            local value="$1" dest="$2" name="$3"
+            if [ "$(printf '%s' "$value" | tr -d '[:space:]' | cut -c1)" = '{' ]; then
+              printf '%s' "$value" > "$dest"                          # already raw JSON
+            else
+              printf '%s' "$value" | openssl base64 -d -A > "$dest" 2>/dev/null || true
+            fi
+            if ! jq empty "$dest" >/dev/null 2>&1; then
+              echo "::error::$name did not resolve to valid JSON. Set it to base64 of the file (base64 -i <file> | pbcopy) or paste the raw JSON. See docs/ci/SECRETS.md."
               exit 1
             fi
-          done
-          echo "$GOOGLE_SERVICES_JSON" | openssl base64 -d -A > android/app/google-services.json
+          }
+          write_json_secret "$GOOGLE_SERVICES_JSON" android/app/google-services.json GOOGLE_SERVICES_JSON
+          write_json_secret "$FIREBASE_SERVICE_ACCOUNT_JSON" android/fastlane/firebase-service-account.json FIREBASE_SERVICE_ACCOUNT_JSON
           printf 'MAPS_API_KEY=%s\n' "$MAPS_API_KEY" > android/secrets.properties
-          echo "$FIREBASE_SERVICE_ACCOUNT_JSON" | openssl base64 -d -A > android/fastlane/firebase-service-account.json
 
       - name: Fastlane → Firebase App Distribution
         working-directory: android
