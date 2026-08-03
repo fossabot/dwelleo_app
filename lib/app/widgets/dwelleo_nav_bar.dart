@@ -1,14 +1,10 @@
 import 'package:flutter/material.dart';
 
-import '../../core/theme/app_colors.dart';
-import '../../core/widgets/motion.dart';
 import '../../l10n/app_localizations.dart';
 
-/// Bottom navigation for the main shell — the mobile answer to dwelleo.sa's
-/// header/user-menu: Home, AI Sales Agent, a raised lime AI Search action
-/// (the brand's signature CTA), Saved and Profile.
-///
-/// RTL-safe: a plain [Row] mirrors automatically with text direction.
+/// Five equal top-level destinations. Copilot remains the product
+/// differentiator through its content, not through a floating or continuously
+/// animated control that breaks the navigation geometry.
 class DwelleoNavBar extends StatelessWidget {
   final int currentIndex;
   final ValueChanged<int> onTap;
@@ -24,190 +20,43 @@ class DwelleoNavBar extends StatelessWidget {
     final l10n = AppLocalizations.of(context);
     final scheme = Theme.of(context).colorScheme;
 
-    return Material(
-      color: scheme.surface,
-      child: Container(
-        decoration: BoxDecoration(
-          border: Border(top: BorderSide(color: scheme.outlineVariant)),
-        ),
-        child: SafeArea(
-          top: false,
-          child: SizedBox(
-            height: 64,
-            child: Row(
-              children: [
-                _NavItem(
-                  index: 0,
-                  currentIndex: currentIndex,
-                  onTap: onTap,
-                  icon: Icons.home_outlined,
-                  activeIcon: Icons.home_rounded,
-                  label: l10n.home,
-                ),
-                _NavItem(
-                  index: 1,
-                  currentIndex: currentIndex,
-                  onTap: onTap,
-                  icon: Icons.auto_awesome_outlined,
-                  activeIcon: Icons.auto_awesome,
-                  label: l10n.aiSearchShort,
-                ),
-                // The glowing center spot belongs to the app's flagship —
-                // the AI Sales Agent (owner decision).
-                _AiNavItem(
-                  selected: currentIndex == 2,
-                  onTap: () => onTap(2),
-                  label: l10n.salesTabLabel,
-                ),
-                _NavItem(
-                  index: 3,
-                  currentIndex: currentIndex,
-                  onTap: onTap,
-                  icon: Icons.favorite_outline_rounded,
-                  activeIcon: Icons.favorite_rounded,
-                  label: l10n.saved,
-                ),
-                _NavItem(
-                  index: 4,
-                  currentIndex: currentIndex,
-                  onTap: onTap,
-                  icon: Icons.person_outline_rounded,
-                  activeIcon: Icons.person_rounded,
-                  label: l10n.profile,
-                ),
-              ],
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: scheme.surface,
+        border: Border(top: BorderSide(color: scheme.outlineVariant)),
+      ),
+      child: SafeArea(
+        top: false,
+        child: NavigationBar(
+          selectedIndex: currentIndex,
+          onDestinationSelected: onTap,
+          destinations: [
+            NavigationDestination(
+              icon: const Icon(Icons.explore_outlined),
+              selectedIcon: const Icon(Icons.explore_rounded),
+              label: l10n.home,
             ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _NavItem extends StatelessWidget {
-  final int index;
-  final int currentIndex;
-  final ValueChanged<int> onTap;
-  final IconData icon;
-  final IconData activeIcon;
-  final String label;
-
-  const _NavItem({
-    required this.index,
-    required this.currentIndex,
-    required this.onTap,
-    required this.icon,
-    required this.activeIcon,
-    required this.label,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final selected = index == currentIndex;
-    final brightness = Theme.of(context).brightness;
-    final color = selected
-        ? AppColors.accentFor(brightness)
-        : Theme.of(context).colorScheme.onSurfaceVariant;
-
-    return Expanded(
-      child: InkResponse(
-        onTap: () => onTap(index),
-        radius: 36,
-        child: Semantics(
-          selected: selected,
-          button: true,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(selected ? activeIcon : icon, size: 24, color: color),
-              const SizedBox(height: 3),
-              Text(
-                label,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  fontSize: 11,
-                  color: color,
-                  fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-/// The raised center action — lime circle with the AI spark, floating a touch
-/// above the bar like dwelleo.sa's glowing CTA.
-class _AiNavItem extends StatelessWidget {
-  final bool selected;
-  final VoidCallback onTap;
-  final String label;
-
-  const _AiNavItem({
-    required this.selected,
-    required this.onTap,
-    required this.label,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final brightness = Theme.of(context).brightness;
-    final color = selected
-        ? AppColors.accentFor(brightness)
-        : Theme.of(context).colorScheme.onSurfaceVariant;
-
-    return Expanded(
-      child: InkResponse(
-        onTap: onTap,
-        radius: 40,
-        child: Semantics(
-          selected: selected,
-          button: true,
-          label: label,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Transform.translate(
-                offset: const Offset(0, -12),
-                child: PulseGlow(
-                  glowColor: AppColors.primary,
-                  child: Container(
-                    width: 46,
-                    height: 46,
-                    decoration: BoxDecoration(
-                      color: AppColors.primary,
-                      shape: BoxShape.circle,
-                      border: Border.all(
-                        color: Theme.of(context).colorScheme.surface,
-                        width: 3,
-                      ),
-                    ),
-                    child: const Icon(
-                      Icons.support_agent_rounded,
-                      size: 23,
-                      color: AppColors.ink,
-                    ),
-                  ),
-                ),
-              ),
-              Transform.translate(
-                offset: const Offset(0, -10),
-                child: Text(
-                  label,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    fontSize: 11,
-                    color: color,
-                    fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
-                  ),
-                ),
-              ),
-            ],
-          ),
+            NavigationDestination(
+              icon: const Icon(Icons.search_rounded),
+              selectedIcon: const Icon(Icons.manage_search_rounded),
+              label: l10n.search,
+            ),
+            NavigationDestination(
+              icon: const Icon(Icons.auto_awesome_outlined),
+              selectedIcon: const Icon(Icons.auto_awesome_rounded),
+              label: l10n.salesTabLabel,
+            ),
+            NavigationDestination(
+              icon: const Icon(Icons.favorite_outline_rounded),
+              selectedIcon: const Icon(Icons.favorite_rounded),
+              label: l10n.saved,
+            ),
+            NavigationDestination(
+              icon: const Icon(Icons.person_outline_rounded),
+              selectedIcon: const Icon(Icons.person_rounded),
+              label: l10n.profile,
+            ),
+          ],
         ),
       ),
     );
