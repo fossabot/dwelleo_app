@@ -2,220 +2,206 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'app_colors.dart';
+import 'app_tokens.dart';
 
-/// App theming calibrated to dwelleo.sa. Light and dark share one builder so the
-/// two stay in lockstep; the app bar is seamless with the page (no tint clash),
-/// and every surface/text/icon color flows from the [ColorScheme] so toggling
-/// light/dark restyles the whole app.
 abstract final class AppTheme {
   static ThemeData get light => _build(Brightness.light);
   static ThemeData get dark => _build(Brightness.dark);
 
-  static ColorScheme _scheme(Brightness b) {
-    final isDark = b == Brightness.dark;
-    return ColorScheme.fromSeed(
+  static ThemeData _build(Brightness brightness) {
+    final isDark = brightness == Brightness.dark;
+    final background = isDark
+        ? AppColors.backgroundDark
+        : AppColors.background;
+    final surface = isDark ? AppColors.surfaceDark : AppColors.surface;
+    final elevated = isDark ? AppColors.cardDark : AppColors.surface;
+    final muted = isDark
+        ? AppColors.mutedSurfaceDark
+        : AppColors.mutedSurface;
+    final outline = isDark ? AppColors.dividerDark : AppColors.divider;
+    final onSurface = isDark
+        ? AppColors.textPrimaryDark
+        : AppColors.textPrimary;
+    final onSurfaceVariant = isDark
+        ? AppColors.textSecondaryDark
+        : AppColors.textSecondary;
+    final primary = AppColors.accentFor(brightness);
+
+    final scheme = ColorScheme.fromSeed(
       seedColor: AppColors.primary,
-      brightness: b,
+      brightness: brightness,
     ).copyWith(
-      // dwelleo.sa flips its primary action color by theme: purple in light,
-      // lime in dark. Drive the whole ColorScheme from that so every CTA,
-      // selected state, link and focus ring matches the site in both modes.
-      primary: AppColors.accentFor(b),
-      onPrimary: AppColors.onAccentFor(b),
-      secondary: isDark ? AppColors.accent : AppColors.primary,
-      onSecondary: isDark ? Colors.white : AppColors.ink,
-      surface: isDark ? AppColors.surfaceDark : AppColors.surface,
-      onSurface: isDark ? AppColors.textPrimaryDark : AppColors.textPrimary,
-      onSurfaceVariant: isDark
-          ? AppColors.textSecondaryDark
-          : AppColors.textSecondary,
-      surfaceContainerHighest: isDark
-          ? AppColors.cardDark
-          : const Color(0xFFEFF1EA),
-      outline: isDark ? AppColors.dividerDark : AppColors.divider,
-      outlineVariant: isDark ? AppColors.dividerDark : AppColors.divider,
+      primary: primary,
+      onPrimary: Colors.white,
+      primaryContainer: isDark
+          ? const Color(0xFF163D38)
+          : const Color(0xFFDDF3EE),
+      onPrimaryContainer: isDark
+          ? AppColors.textPrimaryDark
+          : AppColors.primaryDeep,
+      secondary: AppColors.accent,
+      onSecondary: AppColors.ink,
+      secondaryContainer: isDark
+          ? const Color(0xFF34431F)
+          : const Color(0xFFEDF8CE),
+      onSecondaryContainer: isDark
+          ? AppColors.textPrimaryDark
+          : AppColors.ink,
+      surface: surface,
+      onSurface: onSurface,
+      onSurfaceVariant: onSurfaceVariant,
+      surfaceContainerHighest: muted,
+      outline: outline,
+      outlineVariant: outline,
       error: AppColors.error,
     );
-  }
-
-  static ThemeData _build(Brightness b) {
-    final isDark = b == Brightness.dark;
-    final scheme = _scheme(b);
-    // Owner direction: TRUE-BLACK dark mode across the app (modern look;
-    // surfaces/cards keep their tonal ladder for contrast).
-    final bg = isDark ? AppColors.ink : AppColors.background;
-    final card = isDark ? AppColors.cardDark : AppColors.surface;
 
     return ThemeData(
       useMaterial3: true,
-      brightness: b,
+      brightness: brightness,
       colorScheme: scheme,
-      scaffoldBackgroundColor: bg,
-      // Dwelleo's brand typeface (matches dwelleo.sa exactly).
-      fontFamily: 'RocGrotesk',
-      textTheme: _textTheme,
+      scaffoldBackgroundColor: background,
+      textTheme: _textTheme.apply(
+        bodyColor: onSurface,
+        displayColor: onSurface,
+      ),
+      extensions: [
+        AppSurfaceTokens(
+          muted: muted,
+          elevated: elevated,
+          warm: isDark ? const Color(0xFF4B3820) : AppColors.warmLight,
+          onWarm: isDark ? const Color(0xFFFFE8BF) : const Color(0xFF5A3B0A),
+          successContainer: isDark
+              ? const Color(0xFF143B2B)
+              : const Color(0xFFDDF4E8),
+          onSuccessContainer: isDark
+              ? const Color(0xFFB7E9D1)
+              : const Color(0xFF145C3E),
+        ),
+      ],
       splashFactory: InkSparkle.splashFactory,
-
-      // Seamless app bar: same color as the page, no tint, no shadow.
       appBarTheme: AppBarTheme(
-        backgroundColor: bg,
+        backgroundColor: background,
         surfaceTintColor: Colors.transparent,
-        foregroundColor: scheme.onSurface,
+        foregroundColor: onSurface,
         elevation: 0,
         scrolledUnderElevation: 0,
         centerTitle: false,
         titleTextStyle: TextStyle(
-          color: scheme.onSurface,
-          fontSize: 20,
-          fontWeight: FontWeight.w800,
+          color: onSurface,
+          fontSize: 22,
+          fontWeight: FontWeight.w700,
+          letterSpacing: -0.3,
         ),
         systemOverlayStyle: isDark
             ? SystemUiOverlayStyle.light
             : SystemUiOverlayStyle.dark,
       ),
-
       cardTheme: CardThemeData(
-        color: card,
+        color: elevated,
         surfaceTintColor: Colors.transparent,
-        elevation: isDark ? 0 : 1.5,
-        shadowColor: AppColors.shadow,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+        elevation: 0,
+        margin: EdgeInsets.zero,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppRadius.lg),
+          side: BorderSide(color: outline),
+        ),
         clipBehavior: Clip.antiAlias,
       ),
-
       filledButtonTheme: FilledButtonThemeData(
         style: FilledButton.styleFrom(
-          backgroundColor: AppColors.accentFor(b),
-          foregroundColor: AppColors.onAccentFor(b),
-          // Disabled state mirrors the site exactly: solid zinc-grey #A1A1AA
-          // with a darker label (captured from dwelleo.sa's disabled Sign In).
-          disabledBackgroundColor: const Color(0xFFA1A1AA),
-          disabledForegroundColor: const Color(0xFF3F3F46),
-          minimumSize: const Size.fromHeight(54),
+          backgroundColor: primary,
+          foregroundColor: Colors.white,
+          disabledBackgroundColor: muted,
+          disabledForegroundColor: onSurfaceVariant,
+          minimumSize: const Size.fromHeight(52),
           textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
-          // dwelleo.sa CTAs use a 14px radius (not a full pill).
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(14),
+            borderRadius: BorderRadius.circular(AppRadius.md),
           ),
         ),
       ),
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
-          foregroundColor: scheme.onSurface,
-          side: BorderSide(color: scheme.outline),
-          minimumSize: const Size.fromHeight(54),
+          foregroundColor: onSurface,
+          side: BorderSide(color: outline),
+          minimumSize: const Size.fromHeight(52),
           textStyle: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(14),
+            borderRadius: BorderRadius.circular(AppRadius.md),
           ),
         ),
       ),
-      textButtonTheme: TextButtonThemeData(
-        style: TextButton.styleFrom(foregroundColor: AppColors.accentFor(b)),
-      ),
-
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        // Glassy fields like the site: translucent white over the grey page in
-        // dark, solid white in light.
-        fillColor: isDark ? Colors.white.withValues(alpha: 0.05) : Colors.white,
-        hintStyle: TextStyle(color: scheme.onSurfaceVariant),
+        fillColor: elevated,
+        hintStyle: TextStyle(color: onSurfaceVariant),
         contentPadding: const EdgeInsets.symmetric(
-          horizontal: 18,
-          vertical: 18,
+          horizontal: AppSpacing.md,
+          vertical: AppSpacing.md,
         ),
-        border: _inputBorder(scheme.outline),
-        enabledBorder: _inputBorder(scheme.outline),
-        focusedBorder: _inputBorder(AppColors.accentFor(b), width: 1.6),
-        prefixIconColor: scheme.onSurfaceVariant,
-        suffixIconColor: scheme.onSurfaceVariant,
+        border: _inputBorder(outline),
+        enabledBorder: _inputBorder(outline),
+        focusedBorder: _inputBorder(primary, width: 1.5),
+        errorBorder: _inputBorder(AppColors.error),
+        prefixIconColor: onSurfaceVariant,
+        suffixIconColor: onSurfaceVariant,
       ),
-
       chipTheme: ChipThemeData(
-        backgroundColor: isDark ? AppColors.cardDark : const Color(0xFFF0F2EA),
-        // Selected chips read as a clean accent tint (not a murky olive box).
-        selectedColor: AppColors.accentFor(b).withValues(alpha: 0.18),
-        checkmarkColor: AppColors.accentFor(b),
-        side: BorderSide(color: scheme.outline),
-        labelStyle: TextStyle(color: scheme.onSurface, fontSize: 12),
-        secondaryLabelStyle: TextStyle(color: scheme.onSurface, fontSize: 12),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      ),
-
-      dividerTheme: DividerThemeData(color: scheme.outline, thickness: 1),
-      iconTheme: IconThemeData(color: scheme.onSurface),
-      checkboxTheme: CheckboxThemeData(
-        fillColor: WidgetStateProperty.resolveWith(
-          (states) => states.contains(WidgetState.selected)
-              ? AppColors.accentFor(b)
-              : Colors.transparent,
+        backgroundColor: muted,
+        selectedColor: scheme.primaryContainer,
+        checkmarkColor: primary,
+        side: BorderSide(color: outline),
+        labelStyle: TextStyle(color: onSurface, fontSize: 13),
+        secondaryLabelStyle: TextStyle(color: onSurface, fontSize: 13),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppRadius.pill),
         ),
-        checkColor: WidgetStateProperty.all(AppColors.onAccentFor(b)),
-        side: BorderSide(color: scheme.outline, width: 1.5),
       ),
-      progressIndicatorTheme: ProgressIndicatorThemeData(
-        color: AppColors.accentFor(b),
+      navigationBarTheme: NavigationBarThemeData(
+        height: 72,
+        backgroundColor: elevated,
+        elevation: 0,
+        indicatorColor: scheme.primaryContainer,
+        labelTextStyle: WidgetStateProperty.resolveWith(
+          (states) => TextStyle(
+            fontSize: 11,
+            fontWeight: states.contains(WidgetState.selected)
+                ? FontWeight.w700
+                : FontWeight.w500,
+            color: states.contains(WidgetState.selected)
+                ? primary
+                : onSurfaceVariant,
+          ),
+        ),
       ),
+      dividerTheme: DividerThemeData(color: outline, thickness: 1),
+      iconTheme: IconThemeData(color: onSurface),
+      progressIndicatorTheme: ProgressIndicatorThemeData(color: primary),
     );
   }
 
   static OutlineInputBorder _inputBorder(Color color, {double width = 1}) =>
       OutlineInputBorder(
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(AppRadius.md),
         borderSide: BorderSide(color: color, width: width),
       );
 
   static const TextTheme _textTheme = TextTheme(
-    displayLarge: TextStyle(
-      fontSize: 57,
-      fontWeight: FontWeight.w800,
-      letterSpacing: -0.5,
-    ),
-    displayMedium: TextStyle(fontSize: 45, fontWeight: FontWeight.w800),
-    displaySmall: TextStyle(fontSize: 36, fontWeight: FontWeight.w700),
-    headlineLarge: TextStyle(fontSize: 32, fontWeight: FontWeight.w800),
-    headlineMedium: TextStyle(fontSize: 28, fontWeight: FontWeight.w800),
-    headlineSmall: TextStyle(fontSize: 24, fontWeight: FontWeight.w700),
-    titleLarge: TextStyle(fontSize: 22, fontWeight: FontWeight.w700),
-    titleMedium: TextStyle(
-      fontSize: 16,
-      fontWeight: FontWeight.w600,
-      letterSpacing: 0.15,
-    ),
-    titleSmall: TextStyle(
-      fontSize: 14,
-      fontWeight: FontWeight.w600,
-      letterSpacing: 0.1,
-    ),
-    bodyLarge: TextStyle(
-      fontSize: 16,
-      fontWeight: FontWeight.w400,
-      letterSpacing: 0.15,
-    ),
-    bodyMedium: TextStyle(
-      fontSize: 14,
-      fontWeight: FontWeight.w400,
-      letterSpacing: 0.25,
-    ),
-    bodySmall: TextStyle(
-      fontSize: 12,
-      fontWeight: FontWeight.w400,
-      letterSpacing: 0.3,
-    ),
-    labelLarge: TextStyle(
-      fontSize: 14,
-      fontWeight: FontWeight.w600,
-      letterSpacing: 0.1,
-    ),
-    labelMedium: TextStyle(
-      fontSize: 12,
-      fontWeight: FontWeight.w600,
-      letterSpacing: 0.4,
-    ),
-    labelSmall: TextStyle(
-      fontSize: 11,
-      fontWeight: FontWeight.w600,
-      letterSpacing: 0.4,
-    ),
+    displayLarge: TextStyle(fontSize: 48, fontWeight: FontWeight.w700),
+    displayMedium: TextStyle(fontSize: 40, fontWeight: FontWeight.w700),
+    displaySmall: TextStyle(fontSize: 34, fontWeight: FontWeight.w700),
+    headlineLarge: TextStyle(fontSize: 30, fontWeight: FontWeight.w700),
+    headlineMedium: TextStyle(fontSize: 26, fontWeight: FontWeight.w700),
+    headlineSmall: TextStyle(fontSize: 22, fontWeight: FontWeight.w700),
+    titleLarge: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
+    titleMedium: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+    titleSmall: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+    bodyLarge: TextStyle(fontSize: 16, height: 1.45),
+    bodyMedium: TextStyle(fontSize: 14, height: 1.45),
+    bodySmall: TextStyle(fontSize: 12, height: 1.4),
+    labelLarge: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+    labelMedium: TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+    labelSmall: TextStyle(fontSize: 11, fontWeight: FontWeight.w600),
   );
 }
