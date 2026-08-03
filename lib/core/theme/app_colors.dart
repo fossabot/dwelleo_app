@@ -1,70 +1,57 @@
 import 'package:flutter/material.dart';
 
-/// Brand palette, calibrated to dwelleo.sa (lime + purple on near-black / white).
+/// Independent mobile-product palette.
+///
+/// The compatibility names are intentionally retained so existing features can
+/// migrate incrementally without continuing the old website-derived visual
+/// system.
 abstract final class AppColors {
-  // ── Brand ──────────────────────────────────────────────────────────────────
-  /// Signature lime — sampled from dwelleo.sa's live CTA (#D1F145), a bright
-  /// chartreuse. (Earlier #B8D030 was too dark/olive and made accents look off.)
-  static const Color primary = Color(0xFFD1F145);
-  static const Color primaryDark = Color(0xFFB5D62E);
-  static const Color primaryLight = Color(0xFFE2FF6E);
+  // Brand: calm mineral teal with a restrained lime highlight.
+  static const Color primary = Color(0xFF0F766E);
+  static const Color primaryDark = Color(0xFF0B5F59);
+  static const Color primaryLight = Color(0xFF50B9A3);
+  static const Color primaryDeep = Color(0xFF075E58);
 
-  /// Readable lime for LIGHT surfaces (labels/edge bars): bright lime fails
-  /// contrast on light grey, this dark-olive lime passes while keeping the
-  /// brand hue.
-  static const Color primaryDeep = Color(0xFF5E6B07);
+  /// Secondary product highlight. It is no longer the primary CTA colour.
+  static const Color accent = Color(0xFFC6EF65);
+  static const Color accentLight = Color(0xFFDDF7A0);
 
-  /// Purple accent (List Property / AI pill).
-  static const Color accent = Color(0xFF6B4FA0);
-  static const Color accentLight = Color(0xFF9B7FD4);
+  static const Color warm = Color(0xFFD8A85B);
+  static const Color warmLight = Color(0xFFF5E7CB);
 
-  /// dwelleo.sa flips its PRIMARY action color by theme: purple in light mode,
-  /// lime in dark mode. Use these for CTAs, selected states, links and icon
-  /// tints so the app matches the site in both themes.
-  static Color accentFor(Brightness b) =>
-      b == Brightness.dark ? primary : accent;
+  static Color accentFor(Brightness brightness) =>
+      brightness == Brightness.dark ? primaryLight : primary;
 
-  /// Foreground that sits on [accentFor]: near-black on lime, white on purple.
-  static Color onAccentFor(Brightness b) =>
-      b == Brightness.dark ? ink : Colors.white;
+  static Color onAccentFor(Brightness brightness) => Colors.white;
 
-  /// Text/icon color that sits ON the lime CTA — near-pure black per the
-  /// captured spec (§5), not a green-tinted ink.
-  static const Color ink = Color(0xFF0A0A0A);
+  static const Color ink = Color(0xFF17201E);
 
-  // ── Light surfaces ──────────────────────────────────────────────────────────
-  static const Color background = Color(0xFFF6F7F3);
+  // Light surfaces.
+  static const Color background = Color(0xFFF7F7F3);
   static const Color surface = Color(0xFFFFFFFF);
   static const Color cardBackground = Color(0xFFFFFFFF);
-  static const Color divider = Color(0xFFE7E9E2);
+  static const Color mutedSurface = Color(0xFFEEF2EF);
+  static const Color divider = Color(0xFFDDE4E0);
+  static const Color textPrimary = Color(0xFF17201E);
+  static const Color textSecondary = Color(0xFF66706D);
 
-  static const Color textPrimary = Color(0xFF14160F);
-  static const Color textSecondary = Color(0xFF646B58);
+  // Dark surfaces form a visible tonal ladder rather than one flat black page.
+  static const Color backgroundDark = Color(0xFF0C1211);
+  static const Color surfaceDark = Color(0xFF141B19);
+  static const Color cardDark = Color(0xFF1B2421);
+  static const Color mutedSurfaceDark = Color(0xFF222D29);
+  static const Color dividerDark = Color(0xFF2D3A36);
+  static const Color textPrimaryDark = Color(0xFFF3F7F5);
+  static const Color textSecondaryDark = Color(0xFFA9B3AF);
 
-  // ── Dark surfaces — sampled from dwelleo.sa: the page is a NEUTRAL #1B1B1B
-  //     grey (not near-black, no green tint). Cards sit a touch lighter, like
-  //     the site's translucent white panels reading over the grey page. ───────
-  //
-  // NOTE: the app's dark Scaffold background is now AppColors.ink (#0A0A0A)
-  //   (true-black per owner spec). backgroundDark is kept for component
-  //   use (sheets, overlays, hover states) that want the lighter grey.
-  static const Color backgroundDark = Color(0xFF1B1B1B);
-  static const Color surfaceDark = Color(0xFF1F1F20);
-  static const Color cardDark = Color(0xFF242427);
-  static const Color dividerDark = Color(0xFF333335);
+  // Shared semantic colours.
+  static const Color textOnPrimary = Colors.white;
+  static const Color success = Color(0xFF16855B);
+  static const Color error = Color(0xFFC94A4A);
+  static const Color warning = Color(0xFFB9791D);
+  static const Color info = Color(0xFF3678A8);
+  static const Color shadow = Color(0x1A0A1512);
 
-  static const Color textPrimaryDark = Color(0xFFF4F4F5);
-  static const Color textSecondaryDark = Color(0xFFA1A1AA);
-
-  // ── Shared ──────────────────────────────────────────────────────────────────
-  static const Color textOnPrimary = ink;
-  static const Color success = Color(0xFF22C55E);
-  static const Color error = Color(0xFFEF4444);
-  static const Color warning = Color(0xFFF59E0B);
-  static const Color info = Color(0xFF3B82F6);
-  static const Color shadow = Color(0x14000000);
-
-  /// Onboarding/auth hero gradient (deep greenish-black -> black).
-  static const Color heroTop = Color(0xFF12180A);
-  static const Color heroBottom = Color(0xFF000000);
+  static const Color heroTop = Color(0xFF123D39);
+  static const Color heroBottom = Color(0xFF0C1211);
 }
