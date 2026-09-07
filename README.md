@@ -1,4 +1,6 @@
 # Dwelleo Mobile App
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fhakemm663%2Fdwelleo_app.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fhakemm663%2Fdwelleo_app?ref=badge_shield)
+
 
 > A production-upgrade Flutter implementation of Dwelleo’s Saudi real-estate experience for iOS and Android.
 
@@ -16,3 +18,7 @@
 </p>
 
 
+
+
+## License
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fhakemm663%2Fdwelleo_app.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fhakemm663%2Fdwelleo_app?ref=badge_large)
